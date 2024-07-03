@@ -16,9 +16,12 @@ class HomeVC: TemplateVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        print(" in HomeVC -")
+        let userStore = UserStore.shared
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
         setup_HomeScreen()
+        print("user name is \(userStore.user.username!)")
     }
 
     func setup_HomeScreen(){

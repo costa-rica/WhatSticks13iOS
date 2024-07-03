@@ -13,6 +13,7 @@ class TabController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("- in TabController -")
         self.setupTabs()
         self.tabBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
         self.tabBar.tintColor = UIColor(named: "ColorTabBarSelected")

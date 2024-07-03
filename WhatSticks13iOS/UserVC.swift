@@ -27,21 +27,30 @@ class UserVC: TemplateVC {
     
     let lineViewUserCredentials = UIView()
     
-    let lineViewDeleteUser = UIView()
+    let lineViewUserAcct = UIView()
     let lblDeleteUser=UILabel()
     var btnDeleteUser=UIButton()
+    
+    let lblRegisterUser=UILabel()
+    var btnRegisterUser=UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        let userStore = UserStore.shared
         self.setup_TopSafeBar()
         setup_scrollView()
         setupContent()
-//        setup_ScreenName()
-//        self.lblScreenName.text = "User"
         setup_lblFindSettingsScreenForAppleHealthPermission()
         setup_locationDayWeather()
-        setup_btnDeleteUser()
+        setup_userLineView()
+        print("user name is \(userStore.user.username!) -- UserVC")
+        if userStore.user.username == "new_user"{
+            print("register user")
+            setup_btnRegisterUser()
+        }else {
+            setup_btnDeleteUser()
+        }
     }
     func setup_scrollView(){
         scrollView.translatesAutoresizingMaskIntoConstraints=false
@@ -61,6 +70,7 @@ class UserVC: TemplateVC {
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
     private func setupContent() {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
@@ -186,15 +196,51 @@ class UserVC: TemplateVC {
     func setup_userCredentials(){
         lineViewUserCredentials.backgroundColor = UIColor(named: "lineColor")
         contentView.addSubview(lineViewUserCredentials)
-        lineViewDeleteUser.translatesAutoresizingMaskIntoConstraints = false
+        lineViewUserAcct.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    
-    func setup_btnDeleteUser(){
-        lineViewDeleteUser.backgroundColor = UIColor(named: "lineColor")
-        contentView.addSubview(lineViewDeleteUser)
-        lineViewDeleteUser.translatesAutoresizingMaskIntoConstraints = false
+    func setup_userLineView(){
+        lineViewUserAcct.backgroundColor = UIColor(named: "lineColor")
+        contentView.addSubview(lineViewUserAcct)
+        lineViewUserAcct.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            lineViewUserAcct.bottomAnchor.constraint(equalTo: swtchLocTrackReoccurring.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lineViewUserAcct.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            lineViewUserAcct.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            lineViewUserAcct.heightAnchor.constraint(equalToConstant: 1), // Set line thickness
+            ])
+    }
+    func setup_btnRegisterUser(){
+
         
+        lblRegisterUser.accessibilityIdentifier="lblRegisterUser"
+        lblRegisterUser.text = "Register Account"
+        lblRegisterUser.translatesAutoresizingMaskIntoConstraints=false
+        lblRegisterUser.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+        lblRegisterUser.numberOfLines = 0
+        contentView.addSubview(lblRegisterUser)
+        
+        btnRegisterUser.translatesAutoresizingMaskIntoConstraints=false
+        btnRegisterUser.accessibilityIdentifier="btnRegisterUser"
+//        btnDeleteUser.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
+        btnRegisterUser.addTarget(self, action: #selector(touchUpInside_btnRegisterUser(_:)), for: .touchUpInside)
+        btnRegisterUser.backgroundColor = .systemBlue
+        btnRegisterUser.layer.cornerRadius = 10
+        btnRegisterUser.setTitle(" Register Account ", for: .normal)
+        contentView.addSubview(btnRegisterUser)
+        
+        NSLayoutConstraint.activate([
+            lblRegisterUser.topAnchor.constraint(equalTo: lineViewUserAcct.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblRegisterUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: widthFromPct(percent: 2)),
+            lblRegisterUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: widthFromPct(percent: 2)),
+            
+            btnRegisterUser.topAnchor.constraint(equalTo: lblRegisterUser.bottomAnchor, constant: heightFromPct(percent:4)),
+            btnRegisterUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: widthFromPct(percent: -2)),
+            btnRegisterUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnRegisterUser.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -2)),
+        ])
+    }
+    func setup_btnDeleteUser(){
         lblDeleteUser.accessibilityIdentifier="lblDeleteUser"
         lblDeleteUser.text = "Delete Account"
         lblDeleteUser.translatesAutoresizingMaskIntoConstraints=false
@@ -212,12 +258,7 @@ class UserVC: TemplateVC {
         contentView.addSubview(btnDeleteUser)
         
         NSLayoutConstraint.activate([
-            lineViewDeleteUser.bottomAnchor.constraint(equalTo: swtchLocTrackReoccurring.bottomAnchor, constant: heightFromPct(percent: 5)),
-            lineViewDeleteUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            lineViewDeleteUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            lineViewDeleteUser.heightAnchor.constraint(equalToConstant: 1), // Set line thickness
-            
-            lblDeleteUser.topAnchor.constraint(equalTo: lineViewDeleteUser.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblDeleteUser.topAnchor.constraint(equalTo: lineViewUserAcct.bottomAnchor, constant: heightFromPct(percent: 5)),
             lblDeleteUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: widthFromPct(percent: 2)),
             lblDeleteUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: widthFromPct(percent: 2)),
             
@@ -313,6 +354,26 @@ class UserVC: TemplateVC {
         }, completion: nil)
         print("delete user api call")
         print("alertDeleteConfirmation()")
+        
+    }
+    
+    @objc func touchUpInside_btnRegisterUser(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        print("regisert user api call")
+        print("alert registratino()")
+//        let rinconOptionsInviteVC = RinconOptionsInviteVC()
+        let registerVC = RegisterVC()
+
+        // Set the modal presentation style
+        registerVC.modalPresentationStyle = .overCurrentContext
+        registerVC.modalTransitionStyle = .crossDissolve
+//        rinconOptionsInviteVC.rincon = self.rincon
+//        rinconOptionsInviteVC.rinconStore = self.rinconStore
+
+        // Present the registerVC
+        self.present(registerVC, animated: true, completion: nil)
         
     }
     

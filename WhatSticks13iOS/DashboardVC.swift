@@ -12,8 +12,10 @@ class DashboardVC: TemplateVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .systemGreen
+//        view.backgroundColor = .systemGreen
+        let userStore = UserStore.shared
         self.lblScreenName.text = "Dashboard"
+        print("user name is \(userStore.user.username!) in DashbaordVC")
     }
 
 
