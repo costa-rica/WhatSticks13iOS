@@ -98,15 +98,9 @@ class RegisterVC: UIViewController{
             txtPassword.trailingAnchor.constraint(equalTo: btnShowPassword.leadingAnchor, constant: widthFromPct(percent: 2)),
             txtPassword.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: widthFromPct(percent: 2))
             ])
-        
-        
-
-        
-
-        
-
-        
     }
+    
+    
     func setup_btnRegister(){
         btnRegister.setTitle("Submit", for: .normal)
         btnRegister.layer.borderColor = UIColor.systemBlue.cgColor
@@ -182,6 +176,8 @@ class TestVC: TemplateVC {
     
     var vwRegisterVC = UIView()
     var lblRegister = UILabel()
+    
+    let btnShowPassword = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -231,34 +227,36 @@ class TestVC: TemplateVC {
         txtEmailTest.keyboardType = .emailAddress
         txtEmailTest.autocapitalizationType = .none
         txtEmailTest.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(txtEmailTest)
+        vwRegisterVC.addSubview(txtEmailTest)
 
         // Set up the password text field
         txtPasswordTest.placeholder = "Enter your password"
         txtPasswordTest.borderStyle = .roundedRect
         txtPasswordTest.isSecureTextEntry = true
         txtPasswordTest.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(txtPasswordTest)
+        vwRegisterVC.addSubview(txtPasswordTest)
 
-//        // Set up the constraints for the text fields
-//        NSLayoutConstraint.activate([
-//            txtEmailTest.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-//            txtEmailTest.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-//            txtEmailTest.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-//
-//            txtPasswordTest.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: 20),
-//            txtPasswordTest.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-//            txtPasswordTest.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-//        ])
+        btnShowPassword.accessibilityIdentifier = "btnShowPassword"
+        btnShowPassword.translatesAutoresizingMaskIntoConstraints = false
+        btnShowPassword.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        vwRegisterVC.addSubview(btnShowPassword)
+        
+        
         // Set up the constraints for the text fields
         NSLayoutConstraint.activate([
             txtEmailTest.topAnchor.constraint(equalTo: lblRegister.bottomAnchor, constant: smallPaddingTop),
             txtEmailTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
             txtEmailTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
 
+            btnShowPassword.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
+            btnShowPassword.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
+            btnShowPassword.widthAnchor.constraint(lessThanOrEqualToConstant: widthFromPct(percent: 10)),
+
             txtPasswordTest.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
             txtPasswordTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
-            txtPasswordTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide)
+            txtPasswordTest.trailingAnchor.constraint(equalTo: btnShowPassword.leadingAnchor,constant:widthFromPct(percent: -1)),
+            
+
         ])
     }
 }
