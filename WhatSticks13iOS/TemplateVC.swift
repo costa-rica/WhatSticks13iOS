@@ -17,6 +17,8 @@ class TemplateVC: UIViewController {
     let vwFooter = UIView()
     var bodySidePaddingPercentage = Float(5.0)
     var bodyTopPaddingPercentage = Float(20.0)
+    var smallPaddingTop = heightFromPct(percent: 2)
+    var smallPaddingSide = widthFromPct(percent: 2)
     var spinnerView: UIView?
     var activityIndicator:UIActivityIndicatorView!
     var lblMessage = UILabel()

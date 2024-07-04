@@ -174,7 +174,7 @@ class RegisterVC: UIViewController{
 
 import UIKit
 
-class TestVC: UIViewController {
+class TestVC: TemplateVC {
 
     // Declare the text fields
     let txtEmailTest = UITextField()
@@ -217,9 +217,9 @@ class TestVC: UIViewController {
         vwRegisterVC.addSubview(lblRegister)
         lblRegister.accessibilityIdentifier="lblRegister"
         NSLayoutConstraint.activate([
-            lblRegister.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: 20),
-            lblRegister.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: 20),
-            lblRegister.topAnchor.constraint(equalTo: vwRegisterVC.topAnchor, constant: 20)
+            lblRegister.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
+            lblRegister.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
+            lblRegister.topAnchor.constraint(equalTo: vwRegisterVC.topAnchor, constant: smallPaddingTop)
         ])
     }
     
@@ -252,13 +252,13 @@ class TestVC: UIViewController {
 //        ])
         // Set up the constraints for the text fields
         NSLayoutConstraint.activate([
-            txtEmailTest.topAnchor.constraint(equalTo: vwRegisterVC.topAnchor, constant: 50),
-            txtEmailTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: 20),
-            txtEmailTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -20),
+            txtEmailTest.topAnchor.constraint(equalTo: lblRegister.bottomAnchor, constant: smallPaddingTop),
+            txtEmailTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
+            txtEmailTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
 
-            txtPasswordTest.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: 20),
-            txtPasswordTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: 20),
-            txtPasswordTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -20)
+            txtPasswordTest.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
+            txtPasswordTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
+            txtPasswordTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide)
         ])
     }
 }
