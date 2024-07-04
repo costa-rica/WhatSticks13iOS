@@ -157,12 +157,15 @@ class RegModalVC: TemplateVC {
     
     @objc private func handleTap(_ sender: UITapGestureRecognizer) {
         let tapLocation = sender.location(in: view)
-        let tapLocationInView = view.convert(tapLocation, to: vwRegisterVC)
+         let tapLocationInView = view.convert(tapLocation, to: vwRegisterVC)
 
-        if !vwRegisterVC.bounds.contains(tapLocationInView) {
-            print("Tap gesture outside of vwRegisterVC")
-            dismiss(animated: true, completion: nil)
-        }
+         if let firstResponder = view.findFirstResponder() {
+             // If the keyboard is present, dismiss it
+             firstResponder.resignFirstResponder()
+         } else if !vwRegisterVC.bounds.contains(tapLocationInView) {
+             // If the keyboard is not present and the tap is outside of vwRegisterVC, dismiss the view controller
+             dismiss(animated: true, completion: nil)
+         }
 
     }
     

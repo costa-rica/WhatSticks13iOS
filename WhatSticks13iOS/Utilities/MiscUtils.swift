@@ -174,3 +174,19 @@ func borderColor(for traitCollection: UITraitCollection) -> CGColor {
         return UIColor.black.cgColor
     }
 }
+
+extension UIView {
+    func findFirstResponder() -> UIView? {
+        if isFirstResponder {
+            return self
+        }
+
+        for subview in subviews {
+            if let firstResponder = subview.findFirstResponder() {
+                return firstResponder
+            }
+        }
+
+        return nil
+    }
+}
