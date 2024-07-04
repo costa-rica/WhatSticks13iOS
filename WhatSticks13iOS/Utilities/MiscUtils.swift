@@ -165,3 +165,12 @@ func findActiveTextField(uiStackView: UIStackView) -> UITextField? {
     }
     return nil
 }
+
+
+func borderColor(for traitCollection: UITraitCollection) -> CGColor {
+    if traitCollection.userInterfaceStyle == .dark {
+        return UIColor.white.cgColor
+    } else {
+        return UIColor.black.cgColor
+    }
+}

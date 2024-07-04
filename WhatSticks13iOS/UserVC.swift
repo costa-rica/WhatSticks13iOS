@@ -365,7 +365,8 @@ class UserVC: TemplateVC {
         print("alert registration()")
 //        let rinconOptionsInviteVC = RinconOptionsInviteVC()
 //        let registerVC = RegisterVC()
-        let registerVC = TestVC()
+//        let registerVC = TestVC()
+        let registerVC = RegModalVC()
 
         // Set the modal presentation style
         registerVC.modalPresentationStyle = .overCurrentContext
