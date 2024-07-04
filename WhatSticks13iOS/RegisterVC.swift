@@ -308,10 +308,21 @@ class TestVC: TemplateVC {
     
     private func addTapGestureRecognizer() {
         // Create a tap gesture recognizer
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         print("add tap gester")
         // Add the gesture recognizer to the view
-//        view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func handleTap(_ sender: UITapGestureRecognizer) {
+        let tapLocation = sender.location(in: view)
+        let tapLocationInView = view.convert(tapLocation, to: vwRegisterVC)
+
+        if !vwRegisterVC.bounds.contains(tapLocationInView) {
+            print("Tap gesture outside of vwRegisterVC")
+            dismiss(animated: true, completion: nil)
+        }
+
     }
     
 }
