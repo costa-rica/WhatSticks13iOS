@@ -82,12 +82,12 @@
 			isa = PBXGroup;
 			children = (
 				01312BCB2C2EC49B0089F9C0 /* TemplateVC.swift */,
-				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
 				01312BE12C30326B0089F9C0 /* Utilities */,
 				01312BD62C302F440089F9C0 /* Stores */,
 				01312BD32C302EF50089F9C0 /* Models */,
 				01312BB82C2EC1C20089F9C0 /* HomeVC.swift */,
 				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
+				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
 				01312BE42C303A230089F9C0 /* RegisterVC.swift */,
 				01312BC92C2EC2370089F9C0 /* TabController.swift */,
 				01312BC82C2EC2050089F9C0 /* Supporting */,

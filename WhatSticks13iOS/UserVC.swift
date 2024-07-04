@@ -362,9 +362,10 @@ class UserVC: TemplateVC {
             sender.transform = .identity
         }, completion: nil)
         print("regisert user api call")
-        print("alert registratino()")
+        print("alert registration()")
 //        let rinconOptionsInviteVC = RinconOptionsInviteVC()
-        let registerVC = RegisterVC()
+//        let registerVC = RegisterVC()
+        let registerVC = TestVC()
 
         // Set the modal presentation style
         registerVC.modalPresentationStyle = .overCurrentContext
