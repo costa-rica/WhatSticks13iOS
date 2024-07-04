@@ -178,6 +178,7 @@ class TestVC: TemplateVC {
     var lblRegister = UILabel()
     
     let btnShowPassword = UIButton()
+    let btnRegister = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -185,6 +186,7 @@ class TestVC: TemplateVC {
         setup_vwRegisterVC()
         setup_lblRegister()
         setup_test()
+        setup_btnRegister()
     }
     
 
@@ -260,12 +262,51 @@ class TestVC: TemplateVC {
 
         ])
     }
+    func setup_btnRegister(){
+        btnRegister.setTitle("Submit", for: .normal)
+        btnRegister.layer.borderColor = UIColor.systemBlue.cgColor
+        btnRegister.layer.borderWidth = 2
+        btnRegister.backgroundColor = .systemBlue
+        btnRegister.layer.cornerRadius = 10
+        btnRegister.translatesAutoresizingMaskIntoConstraints = false
+        btnRegister.accessibilityIdentifier="btnRegister"
+        vwRegisterVC.addSubview(btnRegister)
+        
+        btnRegister.bottomAnchor.constraint(equalTo: vwRegisterVC.bottomAnchor, constant: -20).isActive=true
+        btnRegister.centerXAnchor.constraint(equalTo: vwRegisterVC.centerXAnchor).isActive=true
+        btnRegister.widthAnchor.constraint(equalToConstant: widthFromPct(percent: 80)).isActive=true
+        
+        btnRegister.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        btnRegister.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+    }
     
     @objc func togglePasswordVisibility() {
         txtPassword.isSecureTextEntry = !txtPassword.isSecureTextEntry
         let imageName = txtPassword.isSecureTextEntry ? "eye.slash" : "eye"
         btnShowPassword.setImage(UIImage(systemName: imageName), for: .normal)
     }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        if let email = txtEmailTest.text, isValidEmail(email) {
+            // Email is valid, proceed to check password
+            if let password = txtPassword.text, !password.isEmpty {
+                // Proceed with registration logic
+//                requestRegister()
+                print(" send api register")
+            } else {
+//                self.templateAlert(alertTitle: "", alertMessage: "Must have password")
+                print("test")
+            }
+        } else {
+//            self.templateAlert(alertTitle: "", alertMessage: "Must valid have email")
+            print("test")
+        }
+    }
+    
 }
 
 
