@@ -171,7 +171,7 @@ import UIKit
 class TestVC: TemplateVC {
 
     // Declare the text fields
-    let txtEmailTest = UITextField()
+    let txtEmail = UITextField()
     let txtPassword = UITextField()
     
     var vwRegisterVC = UIView()
@@ -187,6 +187,7 @@ class TestVC: TemplateVC {
         setup_lblRegister()
         setup_test()
         setup_btnRegister()
+        addTapGestureRecognizer()
     }
     
 
@@ -224,12 +225,12 @@ class TestVC: TemplateVC {
     func setup_test(){
         
         // Set up the email text field
-        txtEmailTest.placeholder = "Enter your email"
-        txtEmailTest.borderStyle = .roundedRect
-        txtEmailTest.keyboardType = .emailAddress
-        txtEmailTest.autocapitalizationType = .none
-        txtEmailTest.translatesAutoresizingMaskIntoConstraints = false
-        vwRegisterVC.addSubview(txtEmailTest)
+        txtEmail.placeholder = "Enter your email"
+        txtEmail.borderStyle = .roundedRect
+        txtEmail.keyboardType = .emailAddress
+        txtEmail.autocapitalizationType = .none
+        txtEmail.translatesAutoresizingMaskIntoConstraints = false
+        vwRegisterVC.addSubview(txtEmail)
 
         // Set up the password text field
         txtPassword.placeholder = "Enter your password"
@@ -247,19 +248,17 @@ class TestVC: TemplateVC {
         
         // Set up the constraints for the text fields
         NSLayoutConstraint.activate([
-            txtEmailTest.topAnchor.constraint(equalTo: lblRegister.bottomAnchor, constant: smallPaddingTop),
-            txtEmailTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
-            txtEmailTest.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
+            txtEmail.topAnchor.constraint(equalTo: lblRegister.bottomAnchor, constant: smallPaddingTop),
+            txtEmail.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
+            txtEmail.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
 
-            btnShowPassword.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
+            btnShowPassword.topAnchor.constraint(equalTo: txtEmail.bottomAnchor, constant: smallPaddingTop),
             btnShowPassword.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
             btnShowPassword.widthAnchor.constraint(lessThanOrEqualToConstant: widthFromPct(percent: 10)),
 
-            txtPassword.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
+            txtPassword.topAnchor.constraint(equalTo: txtEmail.bottomAnchor, constant: smallPaddingTop),
             txtPassword.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
             txtPassword.trailingAnchor.constraint(equalTo: btnShowPassword.leadingAnchor,constant:widthFromPct(percent: -1)),
-            
-
         ])
     }
     func setup_btnRegister(){
@@ -291,20 +290,28 @@ class TestVC: TemplateVC {
             sender.transform = .identity
         }, completion: nil)
         
-        if let email = txtEmailTest.text, isValidEmail(email) {
+        if let email = txtEmail.text, isValidEmail(email) {
             // Email is valid, proceed to check password
             if let password = txtPassword.text, !password.isEmpty {
                 // Proceed with registration logic
 //                requestRegister()
                 print(" send api register")
             } else {
-//                self.templateAlert(alertTitle: "", alertMessage: "Must have password")
-                print("test")
+                self.templateAlert(alertTitle: "", alertMessage: "Must have password")
+//                print("test")
             }
         } else {
-//            self.templateAlert(alertTitle: "", alertMessage: "Must valid have email")
-            print("test")
+            self.templateAlert(alertTitle: "", alertMessage: "Must valid have email")
+//            print("test")
         }
+    }
+    
+    private func addTapGestureRecognizer() {
+        // Create a tap gesture recognizer
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        print("add tap gester")
+        // Add the gesture recognizer to the view
+//        view.addGestureRecognizer(tapGesture)
     }
     
 }
