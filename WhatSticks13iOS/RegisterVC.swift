@@ -172,7 +172,7 @@ class TestVC: TemplateVC {
 
     // Declare the text fields
     let txtEmailTest = UITextField()
-    let txtPasswordTest = UITextField()
+    let txtPassword = UITextField()
     
     var vwRegisterVC = UIView()
     var lblRegister = UILabel()
@@ -230,16 +230,17 @@ class TestVC: TemplateVC {
         vwRegisterVC.addSubview(txtEmailTest)
 
         // Set up the password text field
-        txtPasswordTest.placeholder = "Enter your password"
-        txtPasswordTest.borderStyle = .roundedRect
-        txtPasswordTest.isSecureTextEntry = true
-        txtPasswordTest.translatesAutoresizingMaskIntoConstraints = false
-        vwRegisterVC.addSubview(txtPasswordTest)
+        txtPassword.placeholder = "Enter your password"
+        txtPassword.borderStyle = .roundedRect
+        txtPassword.isSecureTextEntry = true
+        txtPassword.translatesAutoresizingMaskIntoConstraints = false
+        vwRegisterVC.addSubview(txtPassword)
 
         btnShowPassword.accessibilityIdentifier = "btnShowPassword"
         btnShowPassword.translatesAutoresizingMaskIntoConstraints = false
         btnShowPassword.setImage(UIImage(systemName: "eye.slash"), for: .normal)
         vwRegisterVC.addSubview(btnShowPassword)
+        btnShowPassword.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
         
         
         // Set up the constraints for the text fields
@@ -252,12 +253,18 @@ class TestVC: TemplateVC {
             btnShowPassword.trailingAnchor.constraint(equalTo: vwRegisterVC.trailingAnchor, constant: -smallPaddingSide),
             btnShowPassword.widthAnchor.constraint(lessThanOrEqualToConstant: widthFromPct(percent: 10)),
 
-            txtPasswordTest.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
-            txtPasswordTest.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
-            txtPasswordTest.trailingAnchor.constraint(equalTo: btnShowPassword.leadingAnchor,constant:widthFromPct(percent: -1)),
+            txtPassword.topAnchor.constraint(equalTo: txtEmailTest.bottomAnchor, constant: smallPaddingTop),
+            txtPassword.leadingAnchor.constraint(equalTo: vwRegisterVC.leadingAnchor, constant: smallPaddingSide),
+            txtPassword.trailingAnchor.constraint(equalTo: btnShowPassword.leadingAnchor,constant:widthFromPct(percent: -1)),
             
 
         ])
+    }
+    
+    @objc func togglePasswordVisibility() {
+        txtPassword.isSecureTextEntry = !txtPassword.isSecureTextEntry
+        let imageName = txtPassword.isSecureTextEntry ? "eye.slash" : "eye"
+        btnShowPassword.setImage(UIImage(systemName: imageName), for: .normal)
     }
 }
 
