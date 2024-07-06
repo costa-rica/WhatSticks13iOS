@@ -31,6 +31,8 @@ class UserVC: TemplateVC {
     let lblDeleteUser=UILabel()
     var btnDeleteUser=UIButton()
     
+    let vwUserVcAccount = UserVcAccount()
+    
     let lblRegisterUser=UILabel()
     var btnRegisterUser=UIButton()
     
@@ -45,9 +47,10 @@ class UserVC: TemplateVC {
         setup_locationDayWeather()
         setup_userLineView()
         print("user name is \(userStore.user.username!) -- UserVC")
-        if userStore.user.username == "new_user"{
+        if userStore.user.email == nil {
             print("register user")
             setup_btnRegisterUser()
+            
         }else {
             setup_btnDeleteUser()
         }
@@ -56,12 +59,7 @@ class UserVC: TemplateVC {
         scrollView.translatesAutoresizingMaskIntoConstraints=false
         scrollView.accessibilityIdentifier = "scrollView"
         view.addSubview(scrollView)
-//        NSLayoutConstraint.activate([
-//            scrollView.topAnchor.constraint(equalTo: vwTopBar.bottomAnchor),
-//            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//        ])
+
         // Add constraints to the scrollView to respect the safe area
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor),
@@ -100,7 +98,7 @@ class UserVC: TemplateVC {
         
         lblFindSettingsScreenForAppleHealthPermission.accessibilityIdentifier="lblFindSettingsScreenForAppleHealthPermission"
         lblFindSettingsScreenForAppleHealthPermission.translatesAutoresizingMaskIntoConstraints=false
-        let text_for_message = "Go to Settings > Health > Data Access & Devices > WhatSticks11iOS to grant access.\n\nFor this app to work properly please make sure all data types are allowed."
+        let text_for_message = "Go to Settings > Health > Data Access & Devices > WhatSticks to grant access.\n\nFor this app to work properly please make sure all data types are allowed."
         lblFindSettingsScreenForAppleHealthPermission.text = text_for_message
         lblFindSettingsScreenForAppleHealthPermission.numberOfLines = 0
         contentView.addSubview(lblFindSettingsScreenForAppleHealthPermission)
@@ -210,19 +208,29 @@ class UserVC: TemplateVC {
             lineViewUserAcct.heightAnchor.constraint(equalToConstant: 1), // Set line thickness
             ])
     }
+    
+
+    
+    
     func setup_btnRegisterUser(){
 
         
         lblRegisterUser.accessibilityIdentifier="lblRegisterUser"
-        lblRegisterUser.text = "Register Account"
+        lblRegisterUser.text = "Register an account"
         lblRegisterUser.translatesAutoresizingMaskIntoConstraints=false
         lblRegisterUser.font = UIFont(name: "ArialRoundedMTBold", size: 25)
         lblRegisterUser.numberOfLines = 0
         contentView.addSubview(lblRegisterUser)
         
+        vwUserVcAccount.setup_views()
+        vwUserVcAccount.accessibilityIdentifier = "vwUserVcAccount"
+        vwUserVcAccount.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(vwUserVcAccount)
+               
+        
         btnRegisterUser.translatesAutoresizingMaskIntoConstraints=false
         btnRegisterUser.accessibilityIdentifier="btnRegisterUser"
-//        btnDeleteUser.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
+        btnRegisterUser.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
         btnRegisterUser.addTarget(self, action: #selector(touchUpInside_btnRegisterUser(_:)), for: .touchUpInside)
         btnRegisterUser.backgroundColor = .systemBlue
         btnRegisterUser.layer.cornerRadius = 10
@@ -234,7 +242,14 @@ class UserVC: TemplateVC {
             lblRegisterUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: widthFromPct(percent: 2)),
             lblRegisterUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: widthFromPct(percent: 2)),
             
-            btnRegisterUser.topAnchor.constraint(equalTo: lblRegisterUser.bottomAnchor, constant: heightFromPct(percent:4)),
+            
+            vwUserVcAccount.topAnchor.constraint(equalTo: lblRegisterUser.bottomAnchor, constant: smallPaddingTop),
+            vwUserVcAccount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: smallPaddingSide),
+            vwUserVcAccount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -smallPaddingSide),
+            vwUserVcAccount.heightAnchor.constraint(equalToConstant: 50),
+            
+            
+            btnRegisterUser.topAnchor.constraint(equalTo: vwUserVcAccount.bottomAnchor, constant: heightFromPct(percent:4)),
             btnRegisterUser.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: widthFromPct(percent: -2)),
             btnRegisterUser.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnRegisterUser.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -2)),
@@ -362,24 +377,187 @@ class UserVC: TemplateVC {
             sender.transform = .identity
         }, completion: nil)
         print("regisert user api call")
-        print("alert registration()")
-//        let rinconOptionsInviteVC = RinconOptionsInviteVC()
-//        let registerVC = RegisterVC()
-//        let registerVC = TestVC()
+
         let registerVC = RegModalVC()
 
         // Set the modal presentation style
         registerVC.modalPresentationStyle = .overCurrentContext
         registerVC.modalTransitionStyle = .crossDissolve
-//        rinconOptionsInviteVC.rincon = self.rincon
-//        rinconOptionsInviteVC.rinconStore = self.rinconStore
 
         // Present the registerVC
         self.present(registerVC, animated: true, completion: nil)
         
     }
-    
-    
-    
 
 }
+
+
+class UserVcAccount: UIView {
+    let stckVwUser = UIStackView()
+    let stckVwUsername = UIStackView()
+    let stckVwRecordCount = UIStackView()
+    let lblUsername = UILabel()
+    let lblUsernameFilled = UILabel()
+    let lblRecordCount = UILabel()
+    let lblRecordCountFilled = UILabel()
+    var userStore: UserStore!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // This triggers as soon as the app starts
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        setup_views()
+    }
+    
+    func setup_views(){
+        userStore = UserStore.shared
+        stckVwUser.accessibilityIdentifier = "stckVwUser"
+        stckVwUser.translatesAutoresizingMaskIntoConstraints=false
+        
+        stckVwUser.axis = .vertical
+        stckVwUser.alignment = .fill
+        stckVwUser.distribution = .fillEqually
+        stckVwUser.spacing = 10
+        
+        stckVwUsername.accessibilityIdentifier = "stckVwUser"
+        stckVwUsername.translatesAutoresizingMaskIntoConstraints=false
+        stckVwUsername.axis = .horizontal
+        stckVwUsername.alignment = .fill
+        stckVwUsername.distribution = .fillEqually
+        stckVwUsername.spacing = 10
+        
+
+        
+        lblUsername.accessibilityIdentifier="lblUsername"
+        lblUsername.text = "username"
+        lblUsername.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblUsername.translatesAutoresizingMaskIntoConstraints=false
+        lblUsernameFilled.accessibilityIdentifier="lblUsernameFilled"
+        lblUsernameFilled.text = userStore.user.username
+        
+//        lblUsernameFilled.text = "userStore.user.username"
+        lblUsernameFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblUsernameFilled.translatesAutoresizingMaskIntoConstraints=false
+        stckVwUsername.addArrangedSubview(lblUsername)
+        stckVwUsername.addArrangedSubview(lblUsernameFilled)
+        
+        
+        
+        stckVwRecordCount.accessibilityIdentifier = "stckVwUser"
+        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
+        
+        lblRecordCount.accessibilityIdentifier="lblRecordCount"
+        lblRecordCount.text = "record count"
+        lblRecordCount.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblRecordCount.translatesAutoresizingMaskIntoConstraints=false
+        lblRecordCountFilled.accessibilityIdentifier="lblRecordCountFilled"
+        lblRecordCountFilled.text = userStore.user.username
+        lblRecordCountFilled.text = "0"
+        lblRecordCountFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblRecordCountFilled.backgroundColor = .brown
+        lblRecordCountFilled.translatesAutoresizingMaskIntoConstraints=false
+        stckVwRecordCount.addArrangedSubview(lblRecordCount)
+        stckVwRecordCount.addArrangedSubview(lblRecordCountFilled)
+        
+        
+        stckVwUser.addArrangedSubview(stckVwUsername)
+        stckVwUser.addArrangedSubview(stckVwRecordCount)
+        
+        self.addSubview(stckVwUser)
+
+        
+        NSLayoutConstraint.activate([
+            stckVwUser.topAnchor.constraint(equalTo: self.topAnchor),
+            stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+            ])
+    }
+    
+}
+
+class UserVcAccount_OBE: UIView {
+    let stckVwUser: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8
+        return stackView
+    }()
+
+    let stckVwUsername: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        return stackView
+    }()
+
+    let lblUsername: UILabel = {
+        let label = UILabel()
+        label.text = "username"
+        return label
+    }()
+
+    let txtUsername: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+
+    let stckVwRecordCount: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        return stackView
+    }()
+
+    let lblRecordCount: UILabel = {
+        let label = UILabel()
+        label.text = "record count"
+        return label
+    }()
+
+    let txtRecordCount: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        return textField
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupViews()
+    }
+
+    private func setupViews() {
+        addSubview(stckVwUser)
+        stckVwUser.translatesAutoresizingMaskIntoConstraints = false
+        stckVwUser.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+        stckVwUser.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        stckVwUser.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
+        stckVwUser.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16).isActive = true
+
+        stckVwUser.addArrangedSubview(stckVwUsername)
+        stckVwUser.addArrangedSubview(stckVwRecordCount)
+
+        stckVwUsername.addArrangedSubview(lblUsername)
+        stckVwUsername.addArrangedSubview(txtUsername)
+
+        stckVwRecordCount.addArrangedSubview(lblRecordCount)
+        stckVwRecordCount.addArrangedSubview(txtRecordCount)
+    }
+}
+
+
+
+

@@ -18,6 +18,9 @@ class HomeVC: TemplateVC {
         // Do any additional setup after loading the view.
         print(" in HomeVC -")
         let userStore = UserStore.shared
+        let parentRequestStore = RequestStore()
+        userStore.requestStore = parentRequestStore
+        userStore.connectDevice()
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
         setup_HomeScreen()

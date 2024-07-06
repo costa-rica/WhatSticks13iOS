@@ -21,3 +21,6 @@ DerivedData/
 
 # CocoaPods
 Pods/
+
+# Ignore Xcode user-specific settings
+xcuserdata/
