@@ -31,7 +31,8 @@ enum EndPoint: String {
     case register_generic_account = "register_generic_account"
     case convert_generic_account_to_custom_account = "convert_generic_account_to_custom_account"
     case delete_user = "delete_user"
-
+    case update_user_location_with_user_location_json = "update_user_location_with_user_location_json"
+    case update_user_location_with_lat_lon = "update_user_location_with_lat_lon"
     case get_reset_password_token = "get_reset_password_token"
 
 }

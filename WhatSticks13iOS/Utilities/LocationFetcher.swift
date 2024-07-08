@@ -21,10 +21,13 @@ enum LocationFetcherError:Error{
 }
 
 class LocationFetcher: NSObject, CLLocationManagerDelegate {
+    
+    static let shared = LocationFetcher()
+    
     private let locationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?
     private var locationFetchCompletion: ((Bool) -> Void)?
-    var arryHistUserLocation:[HistUserLocation]?
+    var arryHistUserLocation:[[String]]?
     var userLocationManagerAuthStatus: String {
         // This computed property returns the string representation of the authorization status
         didSet {
@@ -42,12 +45,7 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.allowsBackgroundLocationUpdates = true // Enable background location updates
         locationManager.pausesLocationUpdatesAutomatically = false // Prevent automatic pausing
-        checkUserLocationJson { result in
-            if result{
-                print("arryHistUserLocation is populated")
-                
-            }
-        }
+
     }
     // Convert CLLocationManager.AuthorizationStatus to a readable string
     private static func string(for status: CLAuthorizationStatus) -> String {
@@ -61,7 +59,6 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         }
     }
     func requestLocationPermission() {
-
         locationManager.requestAlwaysAuthorization()
     }
     func startMonitoringLocationChanges() {
@@ -81,7 +78,6 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         print("-----------------------------------")
     }
     
-    
     func fetchLocation(completion: @escaping (Bool) -> Void) {
         DispatchQueue.global().async {
             if CLLocationManager.locationServicesEnabled() {
@@ -99,83 +95,25 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
             }
         }
     }
-    
-    
-    // MARK: - File Handling
-    private func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-//    // This method goes with appendLocationToFile
-//    private func pre_appendLocationToFile(lastLocation: CLLocation){
-//        currentLocation = lastLocation.coordinate
-//        let locationData = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
-//        appendLocationToFile(locationData)
-//        locationFetchCompletion?(true) // Call completion with true since location is updated
-//        locationFetchCompletion = nil // Clear the stored completion handler
-//    }
-    
-//    private func appendLocationToFile(_ locationData: [String]) {
-    private func appendLocationToFile(lastLocation: CLLocation) {
         
-        let locationData = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
+    func appendLocationToUserDefaultArryHistUserLocation(lastLocation: CLLocation) {
         
-        let fileURL = getDocumentsDirectory().appendingPathComponent("user_location.json")
-        
-        do {
-            if FileManager.default.fileExists(atPath: fileURL.path) {
-                // File exists, append data
-                var currentData = try JSONDecoder().decode([[String]].self, from: Data(contentsOf: fileURL))
-                //                currentData.append(modifiedLocationData)
-                currentData.append(locationData)
-                let updatedData = try JSONEncoder().encode(currentData)
-                try updatedData.write(to: fileURL)
-            } else {
-                // File doesn't exist, create and write data
-                //                let newData = try JSONEncoder().encode([modifiedLocationData])
-                let newData = try JSONEncoder().encode([locationData])
-                try newData.write(to: fileURL)
-            }
-            print("Location data saved with local time.")
-        } catch {
-            print("Failed to save location data: \(error.localizedDescription)")
+        let arryUserLocation = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
+        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            userLocationArray.append(arryUserLocation)
+            UserDefaults.standard.set(userLocationArray, forKey: "user_location")
+        } else {
+            UserDefaults.standard.set([arryUserLocation], forKey: "user_location")
         }
-        locationFetchCompletion?(true) // Call completion with true since location is updated
-        locationFetchCompletion = nil // Clear the stored completion handler
     }
-    
-    func checkUserLocationJson(completion: @escaping (Bool) -> Void) {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let userJsonFile = documentsURL.appendingPathComponent("user_location.json")
-        
-        guard fileManager.fileExists(atPath: userJsonFile.path) else {
-            //            completion(.failure(LocationFetcherError.somethingWentWrong))
-            print("checkUserLocationJson error: \(LocationFetcherError.somethingWentWrong)")
-            completion(false)
-            return
-        }
-        do {
-            let jsonData = try Data(contentsOf: userJsonFile)
-            let rawData = try JSONDecoder().decode([[String]].self, from: jsonData)
-            let locations = rawData.map { array -> HistUserLocation in
-                let location = HistUserLocation()
-                location.dateTimeUtc = array[0]
-                location.latitude = array[1]
-                location.longitude = array[2]
-                return location
-            }
-            self.arryHistUserLocation = locations
-            completion(true)
-        } catch {
-            print("- failed to make userDict")
-            print("checkUserLocationJson error: \(LocationFetcherError.failedDecode)")
-            completion(false)
+
+    func checkUserDefaultUserLocation(){
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            self.arryHistUserLocation = userLocationArray
         }
     }
     
-    
+
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -192,7 +130,8 @@ extension LocationFetcher {
         let lastUpdateTimestamp = userDefaults.double(forKey: "lastUpdateTimestamp")
         let now = Date().timeIntervalSince1970
         if now - lastUpdateTimestamp >= updateInterval {
-            appendLocationToFile(lastLocation: lastLocation)
+//            appendLocationToFile(lastLocation: lastLocation)
+            appendLocationToUserDefaultArryHistUserLocation(lastLocation: lastLocation)
             // Update the timestamp of the last processed update
             userDefaults.set(now, forKey: "lastUpdateTimestamp")
         } 
@@ -214,14 +153,14 @@ extension LocationFetcher {
 }
 
 
-class HistUserLocation:Codable{
-    var dateTimeUtc:String?
-    var latitude:String?
-    var longitude:String?
-}
+//class HistUserLocation:Codable{
+//    var dateTimeUtc:String?
+//    var latitude:String?
+//    var longitude:String?
+//}
 
 class DictSendUserLocation:Codable{
-    var user_location:[HistUserLocation]!
+    var user_location:[[String]]!
     var timestamp_utc:String!//"yyyyMMdd-HHmm"
 }
 

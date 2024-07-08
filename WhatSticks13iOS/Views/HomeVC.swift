@@ -13,18 +13,31 @@ class HomeVC: TemplateVC {
     let lblWhatSticks = UILabel()
     let lblDescription = UILabel()
     
+    // News feed
+    let btnCheckUserDefaultUserLocation = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         print(" in HomeVC -")
         let userStore = UserStore.shared
-        let parentRequestStore = RequestStore()
+        let locationFetcher = LocationFetcher.shared
+        locationFetcher.requestLocationPermission()
+        let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
         userStore.connectDevice()
+        
+        
+        
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
         setup_HomeScreen()
         print("user name is \(userStore.user.username!)")
+        print("user locations:")
+        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            print(userLocationArray)
+        }
+        setup_btnCheckUserDeafultUserLocaiton()
     }
 
     func setup_HomeScreen(){
@@ -54,7 +67,7 @@ class HomeVC: TemplateVC {
             lblWhatSticks.topAnchor.constraint(equalTo: imgVwLogo.bottomAnchor, constant: -20)
         ])
         lblDescription.text = "The app designed to use data already being collected by your devices and other apps to help you understand your tendencies and habits."
-        lblDescription.font = UIFont(name: "ArialRoundedMTBold", size: 17)
+//        lblDescription.font = UIFont(name: "ArialRoundedMT", size: 17)
         lblDescription.numberOfLines = 0
 //        lblDescription.lin
         lblDescription.translatesAutoresizingMaskIntoConstraints=false
@@ -67,5 +80,47 @@ class HomeVC: TemplateVC {
             lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: 10)
         ])
     }
+    
+    func setup_btnCheckUserDeafultUserLocaiton(){
+        btnCheckUserDefaultUserLocation.accessibilityIdentifier = "btnCheckUserDefaultUserLocation"
+        btnCheckUserDefaultUserLocation.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(btnCheckUserDefaultUserLocation)
+        btnCheckUserDefaultUserLocation.setTitle("User Location", for: .normal)
+        btnCheckUserDefaultUserLocation.layer.borderColor = UIColor.systemBlue.cgColor
+        btnCheckUserDefaultUserLocation.layer.borderWidth = 2
+        btnCheckUserDefaultUserLocation.backgroundColor = .systemBlue
+        btnCheckUserDefaultUserLocation.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+//            lblDescription
+            btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 5)),
+            btnCheckUserDefaultUserLocation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            btnCheckUserDefaultUserLocation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+        
+        
+        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        
+    }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            print(userLocationArray)
+            self.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)")
+        } else {
+            self.templateAlert(alertTitle: "", alertMessage: "No location")
+        }
+
+        
+        
+
+    }
+    
+    
 }
 

@@ -54,6 +54,15 @@ class TemplateVC: UIViewController {
             vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075),
         ])
     }
+    func setup_vwFooter(){
+//        vwFooter.backgroundColor = UIColor(named: "ColorTableTabModalBack")
+        view.addSubview(vwFooter)
+        vwFooter.translatesAutoresizingMaskIntoConstraints = false
+        vwFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        vwFooter.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        vwFooter.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        vwFooter.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.0).isActive = true
+    }
     
 //    private func setupViews() {
 //        // Setup vwTopSafeBar
@@ -195,5 +204,10 @@ class TemplateVC: UIViewController {
     }
     func removeLblMessage(){
         lblMessage.removeFromSuperview()
+    }
+    
+    // Implement the delegate method
+    func presentAlertController(_ alertController: UIAlertController) {
+        present(alertController, animated: true, completion: nil)
     }
 }

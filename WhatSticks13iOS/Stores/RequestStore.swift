@@ -21,7 +21,7 @@ enum RequestStoreError: Error{
 }
 
 class RequestStore {
-    
+    static let shared = RequestStore()
     var urlStore:URLStore!
     var token: String!
     let session: URLSession = {
@@ -70,7 +70,7 @@ class RequestStore {
         return request
     }
     
-    func createRequestWithBody<T: Encodable>(endPoint: EndPoint, token:Bool,body: T) ->Result<URLRequest,Error> {
+    func createRequestWithTokenAndBody<T: Encodable>(endPoint: EndPoint, token:Bool,body: T) ->Result<URLRequest,Error> {
         print("- createRequestWithTokenAndBody")
         let url = urlStore.callEndpoint(endPoint: endPoint)
         var request = URLRequest(url: url)
@@ -149,6 +149,7 @@ class RequestStore {
             print("Failed to encode body: \(error)")
             
         }
+        print("- Finished createRequestWithUsername ---")
         return request
         
     }
