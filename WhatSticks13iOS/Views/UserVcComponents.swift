@@ -26,7 +26,7 @@ class UserVcFindAppleHealthPermissionsView: UIView {
         setup_labels()
     }
     func setup_labels(){
-        print("--- we should see something in UserVcFindAppleHealthPermissionsView <-----")
+//        print("--- we should see something in UserVcFindAppleHealthPermissionsView <-----")
 //        self.backgroundColor = .green
         lblTitle.accessibilityIdentifier="lblTitle-UserVcFindAppleHealthPermissionsView"
         lblTitle.translatesAutoresizingMaskIntoConstraints = false
@@ -76,6 +76,7 @@ class UserVcLocationDayWeather: UIView {
         super.init(frame: frame)
         // This triggers as soon as the app starts
         setup_views()
+        print("- in UserVcLocationDayWeather")
     }
     
     required init?(coder: NSCoder) {
@@ -84,7 +85,7 @@ class UserVcLocationDayWeather: UIView {
     }
     
     
-    func setup_views(){
+    private func setup_views(){
         
         userStore = UserStore.shared
         locationFetcher = LocationFetcher.shared
@@ -117,7 +118,9 @@ class UserVcLocationDayWeather: UIView {
         
         stckVwLocTrackReoccurring.addArrangedSubview(swtchLocTrackReoccurring)
         
-        setLocationSwitchLabelText()
+        
+//        setLocationSwitchLabelText()
+        
         NSLayoutConstraint.activate([
             lblLocationDayWeatherTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 2)),
             lblLocationDayWeatherTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
@@ -133,7 +136,7 @@ class UserVcLocationDayWeather: UIView {
         ])
     }
 
-    func manageLocationCollection(){
+    private func manageLocationCollection(){
         print("- accessed manageLocationCollection")
         if locationFetcher.userLocationManagerAuthStatus == "Authorized Always"{
             locationFetcher.fetchLocation { locationExists in
@@ -181,7 +184,20 @@ class UserVcLocationDayWeather: UIView {
         
     }
     func setLocationSwitchLabelText(){
+        print("- in setLocationSwitchLabelText")       
+        
+        guard let location_permission_device = userStore.user.location_permission_device,
+              let location_permission_ws = userStore.user.location_permission_ws
+        else {
+            print("* No userStore.user.location_permission_device")
+            return
+        }
 
+        print("--- location_permission_device: \(location_permission_device)")
+        print("--- location_permission_ws: \(location_permission_ws)")
+
+
+        swtchLocTrackReoccurring.isOn = location_permission_ws
         if swtchLocTrackReoccurring.isOn{
             if locationFetcher.userLocationManagerAuthStatus == "Authorized Always"{
                 lblLocTrackReoccurringSwitch.text = "Track Location (Once Daily): "
@@ -203,7 +219,7 @@ class UserVcLocationDayWeather: UIView {
         }
     }
     
-    func sendUpdateDictToApi(updateDict:[String:String]){
+    private func sendUpdateDictToApi(updateDict:[String:String]){
         self.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
             switch resultString{
             case .success(_):
@@ -214,17 +230,32 @@ class UserVcLocationDayWeather: UIView {
                 }
                 
                 self.delegate?.templateAlert(alertTitle: "Success!", alertMessage: "", backScreen: false)
-            case let .failure(error):
-                DispatchQueue.main.async{
-                    self.delegate?.removeSpinner()
-                    self.switchErrorSwitchBack()
-                    self.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: error.localizedDescription,backScreen: false)
+                
+            case let .failure(userStoreError):
+                switch userStoreError {
+                case .failedToReceiveExpectedResponse:
+                    DispatchQueue.main.async{
+                        self.delegate?.removeSpinner()
+                        self.switchErrorSwitchBack()
+                        self.delegate?.templateAlert(alertTitle: "Unexpected response", alertMessage: "Restart the app",backScreen: false)
+                    }
+                    print("- UserVcLocationDayWeather failure ok ")
+                default:
+                    DispatchQueue.main.async{
+                        self.delegate?.removeSpinner()
+                        self.switchErrorSwitchBack()
+                        self.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: userStoreError.localizedDescription,backScreen: false)
+                    }
+                    print("- UserVcLocationDayWeather failure ok ")
                 }
+                print("- step 2")
             }
+            print("- step 3")
         }
+        print("- step 4")
     }
     
-    func switchErrorSwitchBack(){
+    private func switchErrorSwitchBack(){
         if self.swtchLocTrackReoccurring.isOn==true{
             self.swtchLocTrackReoccurring.isOn=false
         } else {
@@ -261,24 +292,33 @@ class UserVcLocationDayWeather: UIView {
             if self!.locationFetcher.userLocationManagerAuthStatus == "Authorized Always" || self!.locationFetcher.userLocationManagerAuthStatus == "Authorized When In Use" ||  self!.locationFetcher.userLocationManagerAuthStatus == "Restricted"{
                 updateDict["location_permission_device"]="True"
             }
+            // in case we need it here is a sampel of user_locations
+            // user locations: [["20240708-1325", "37.785834", "-122.406417"], ["20240709-1345", "37.785834", "-122.406417"]]
             self!.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
                 switch resultString{
                 case .success(_):
                     print("-successfully updated")
-                    self?.delegate?.removeSpinner()
-                    self?.swtchLocTrackReoccurring.isOn=false
-                    // Set Location Label
-                    let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
-                    self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+                    DispatchQueue.main.async{
+                        self?.delegate?.removeSpinner()
+                        
+                        self?.swtchLocTrackReoccurring.isOn=false
+                        // Set Location Label
+                        let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
+                        self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+                    }
                 case .failure(_):
                     print("-failed to update user status")
-                    self?.delegate?.removeSpinner()
-                    self?.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: "Try again or email nrodrig1@gmail.com.", backScreen: false)
-                    
-                    self?.swtchLocTrackReoccurring.isOn=true
-                    // Set Location Label
-                    let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
-                    self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+                    DispatchQueue.main.async{
+                        self?.delegate?.removeSpinner()
+                        
+                        self?.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: "Try again or email nrodrig1@gmail.com.", backScreen: false)
+                        
+                        self?.swtchLocTrackReoccurring.isOn=true
+                        // Set Location Label
+                        let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
+                        self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+                    }
+
                 }
             }
         }

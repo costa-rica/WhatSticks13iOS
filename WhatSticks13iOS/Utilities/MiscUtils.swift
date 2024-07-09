@@ -24,7 +24,18 @@ extension UIImage {
         }
         return newImage
     }
+
+    // Used for TabController UINavigation
+    func createSelectionIndicator(color: UIColor, size: CGSize, lineWidth: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRect(x: 0, y: size.height - lineWidth, width: size.width, height: lineWidth))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
 }
+
 
 
 func widthFromPct(percent:Float) -> CGFloat {

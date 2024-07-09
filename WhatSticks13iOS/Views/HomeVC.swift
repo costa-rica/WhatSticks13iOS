@@ -33,9 +33,8 @@ class HomeVC: TemplateVC {
         self.setup_TopSafeBar()
         setup_HomeScreen()
         print("user name is \(userStore.user.username!)")
-        print("user locations:")
-        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
-            print(userLocationArray)
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            print("user locations: \(userLocationArray)")
         }
         setup_btnCheckUserDeafultUserLocaiton()
     }
@@ -109,7 +108,7 @@ class HomeVC: TemplateVC {
             sender.transform = .identity
         }, completion: nil)
         
-        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
             print(userLocationArray)
             self.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)")
         } else {

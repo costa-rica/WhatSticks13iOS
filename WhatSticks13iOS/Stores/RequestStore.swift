@@ -31,11 +31,11 @@ class RequestStore {
     }()
     
     //MARK: for json writing/reading only
-    let fileManager:FileManager
-    private let documentsURL:URL
+//    let fileManager:FileManager
+//    private let documentsURL:URL
     init() {
-        self.fileManager = FileManager.default
-        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//        self.fileManager = FileManager.default
+//        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         self.urlStore=URLStore()
         //        self.urlStore.apiBase = APIBase.prod
         //        self.urlStore.apiBase = APIBase.dev

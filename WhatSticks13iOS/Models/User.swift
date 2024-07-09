@@ -26,11 +26,10 @@ class User: Codable {
     var latitude: String?
     var longitude: String?
     var timezone: String?
-    var location_permission_device: String?/* was location_permission */
-    var location_permission_ws:String? /* was location_reoccuring_permission */
+    var location_permission_device: Bool?/* was location_permission */
+    var location_permission_ws:Bool? /* was location_reoccuring_permission */
     var last_location_date: String?
     var notifications:Bool?
-    
 }
 
 

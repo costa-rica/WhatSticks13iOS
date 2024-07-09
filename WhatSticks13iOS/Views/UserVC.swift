@@ -9,6 +9,7 @@ import UIKit
 
 class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
     //    let lblScreenName = UILabel()
+    var name:String?
     let scrollView = UIScrollView()
     let contentView = UIView()
     let vwFindAppleHealthPermissions = UserVcFindAppleHealthPermissionsView()
@@ -22,10 +23,10 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        name = "UserVC"
         // Do any additional setup after loading the view.
         vwLocationDayWeather.delegate = self // Assign the delegate
         let userStore = UserStore.shared
-        let requestStore = userStore.requestStore
         self.setup_TopSafeBar()
         setupScrollView()
         setupContentView()
@@ -33,10 +34,7 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
         setup_vwUserVcLine01()
         setup_vwLocationDayWeather()
         setup_vwUserVcLine02()
-        
-        print("REquest store token: \(requestStore?.token)")
-        print("User store token: \(userStore.user.token)")
-        
+               
         
         // Tests //
         setupTestLabelsView()

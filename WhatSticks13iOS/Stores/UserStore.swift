@@ -19,6 +19,7 @@ enum UserStoreError: Error {
     case noApiPasswordIncludedInRequest
     case userHasNoUsername
     case noInternetConnection
+    case requestStoreError
     case serverError(statusCode: Int)
     var localizedDescription: String {
         switch self {
@@ -75,7 +76,7 @@ class UserStore {
     func connectDevice(){
         print("- in connectDevice() ")
 
-        UserDefaults.standard.removeObject(forKey: "userName")
+//        UserDefaults.standard.removeObject(forKey: "userName")
         
         if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
             self.user.username = "new_user"
@@ -83,7 +84,7 @@ class UserStore {
             // register user ambivalent_elf_####
             callRegisterGenericUser { result_string_string_dict in
                 switch result_string_string_dict{
-                case .success(let dict):
+                case .success(_):
                     print("response dict: success :)")
                     print("user's token: \(self.user.token!)")
                     self.requestStore.token = self.user.token
@@ -94,29 +95,24 @@ class UserStore {
                     }
                     UserDefaults.standard.set(self.user.username!, forKey: "userName")
                     self.isOffline=false
-                case .failure(let error):
-                    
+                case .failure(_):
                     print("--- Off line mode ")
-//                    print("error: \(error)")
-                    
                 }
             }
-            // get new user name and set as User
-            //            UserDefaults.standard.set("new_user", forKey: "userName")
-        } 
+        } // Register Generic Elf
         else {
             self.user.username  = UserDefaults.standard.string(forKey: "userName")
             // login user
             // call /login
             if UserDefaults.standard.string(forKey: "userEmail") == nil {
                 print("login generic user")
-                callLoginGenericUser(user: self.user) { result in
-                    switch result{
+                callLoginGenericUser(user: self.user) { result_dict_string_any_or_error in
+                    switch result_dict_string_any_or_error {
                     case  .success(_):
                         print("--- Success! : token \(self.user.token!)")
                         self.isOffline=false
                         self.requestStore.token = self.user.token
-                    case .failure(let error):
+                    case .failure(_):
 
                         print("--- Off line mode ")
                     }
@@ -126,14 +122,12 @@ class UserStore {
                 print("login real user")
             }
             
-        }
+        } // Login Generic Elf
         if UserDefaults.standard.string(forKey: "hasLaunchedOnce") == nil {
             UserDefaults.standard.set(true, forKey: "hasLaunchedOnce")
             self.hasLaunchedOnce = true
         }
-        
     }
-    
 
     func callConvertGenericAccountToCustomAccount(email: String?, username:String?, password: String?, completion: @escaping (Result<[String: String], Error>) -> Void) {
         var parameters: [String: String] = ["ws_api_password": Config.ws_api_password]
@@ -226,13 +220,12 @@ class UserStore {
 //                    let jsonDecoder = JSONDecoder()
                     if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
                         print("JSON dictionary: \(jsonResult)")
-                        
+
                         // Assuming the JSON contains a "user" object, you can decode it into a User object
                         if let userData = try? JSONSerialization.data(withJSONObject: jsonResult["user"] ?? [:], options: []) {
                             let decoder = JSONDecoder()
                             let user = try decoder.decode(User.self, from: userData)
-                            print("Decoded User: \(user)")
-                            print("decode user object has a username: \(user.username!) ")
+
                             self.user = user
                         }
                         OperationQueue.main.addOperation {
@@ -260,9 +253,6 @@ class UserStore {
     
     func callLoginGenericUser(user:User, completion: @escaping(Result<[String:Any],Error>) ->Void){
         print("- in callLoginGenericUser -")
-        
-
-        
         var parameters: [String: String] = ["ws_api_password": Config.ws_api_password]
         if let username = user.username {
             parameters["username"] = username
@@ -311,11 +301,7 @@ class UserStore {
                     if let userData = try? JSONSerialization.data(withJSONObject: jsonResult["user"] ?? [:], options: []) {
                         let decoder = JSONDecoder()
                         let user = try decoder.decode(User.self, from: userData)
-                        print("Decoded User: \(user)")
-                        print("decode user object has a username: \(user.username!) ")
                         self.user = user
-//                        if let unwp_token = se
-                        print("token: \(self.user.token!)")
                         self.requestStore.token=self.user.token
                     }
                     OperationQueue.main.addOperation {
@@ -325,6 +311,7 @@ class UserStore {
 
             } catch {
                 OperationQueue.main.addOperation {
+                    print("Failed to decode user or find a user in API response: \(UserStoreError.failedToLogin)")
                     completion(.failure(UserStoreError.failedToLogin))
                 }
             }
@@ -333,9 +320,7 @@ class UserStore {
         task.resume()
     }
     
-    
-    
-    func callUpdateUser(endPoint: EndPoint, updateDict: [String:String], completion: @escaping (Result<String, Error>) -> Void) {
+    func callUpdateUser(endPoint: EndPoint, updateDict: [String:String], completion: @escaping (Result<String, UserStoreError>) -> Void) {
         var updateDictWithApiPassword = updateDict
         updateDictWithApiPassword["ws_api_password"]=Config.ws_api_password
         let result = requestStore.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateDictWithApiPassword)
@@ -370,17 +355,23 @@ class UserStore {
                 
                 do {
                     if let jsonResult = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
-                        print("json serialized well")
-                        if let message = jsonResult["alert_message"] as? String {
+                        
+                        if let user_key_val = jsonResult["user"],
+                           let userData = try? JSONSerialization.data(withJSONObject: user_key_val, options: []), let message = jsonResult["alert_message"] as? String {
+                            
+                            let decoder = JSONDecoder()
+                            let user = try decoder.decode(User.self, from: userData)
+                            self.user = user
                             OperationQueue.main.addOperation {
+                                print("--> successful callUpdateUser api response")
                                 completion(.success(message))
                             }
+                            
                         } else {
-                            OperationQueue.main.addOperation {
-                                print("--- no message from API response")
-                                completion(.failure(UserStoreError.failedToUpdateUser))
-                            }
+                            print("- Failed to get a user back from API response < -----")
+                            completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
                         }
+                        
                     } else {
                         throw UserStoreError.failedDecode
                     }
@@ -392,66 +383,66 @@ class UserStore {
             task.resume()
         case .failure(let error):
             print("Failed to make request: \(error)")
+            completion(.failure(UserStoreError.requestStoreError))
         }
     }
     
-    
-        func callSendUserLocation(dictSendUserLocation:DictSendUserLocation, completion: @escaping(Result<Bool,Error>) ->Void) -> Void{
-            
-            let result = requestStore.createRequestWithTokenAndBody(endPoint: .update_user_location_with_user_location_json, token: true, body: dictSendUserLocation)
-            
-            switch result {
-            case .success(let request):
-                let task = session.dataTask(with: request) { data, response, error in
-                    if let error = error {
-                        print("UserStore.callSendUserLocationJsonData received an error. Error: \(error)")
+    func callSendUserLocation(dictSendUserLocation:DictSendUserLocation, completion: @escaping(Result<Bool,Error>) ->Void) -> Void{
+        
+        let result = requestStore.createRequestWithTokenAndBody(endPoint: .update_user_location_with_user_location_json, token: true, body: dictSendUserLocation)
+        
+        switch result {
+        case .success(let request):
+            let task = session.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("UserStore.callSendUserLocationJsonData received an error. Error: \(error)")
+                    DispatchQueue.main.async {
+                        completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
+                    }
+                    return
+                }
+                guard let unwrapped_data = data else {
+                    // No data scenario
+                    DispatchQueue.main.async {
+                        completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
+                        print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
+                    }
+                    return
+                }
+                do {
+                    if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
+                        print("-- successful send of user_location.json data --")
+                        print(jsonResult)
+                        DispatchQueue.main.async {
+                            completion(.success(true))
+                        }
+                        if jsonResult["alert_title"] == "Success!"{
+                            //                        self.deleteJsonFile(filename: "user_location.json")
+                            UserDefaults.standard.removeObject(forKey: "user_location")
+                        }
+                    } else {
+                        // Data is not in the expected format
                         DispatchQueue.main.async {
                             completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
+                            print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
                         }
-                        return
                     }
-                    guard let unwrapped_data = data else {
-                        // No data scenario
-                        DispatchQueue.main.async {
-                            completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
-                            print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-                        }
-                        return
-                    }
-                    do {
-                        if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
-                            print("-- successful send of user_location.json data --")
-                            print(jsonResult)
-                            DispatchQueue.main.async {
-                                completion(.success(true))
-                            }
-                            if jsonResult["alert_title"] == "Success!"{
-                                //                        self.deleteJsonFile(filename: "user_location.json")
-                                UserDefaults.standard.removeObject(forKey: "user_location")
-                            }
-                        } else {
-                            // Data is not in the expected format
-                            DispatchQueue.main.async {
-                                completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
-                                print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
-                            }
-                        }
-                    } catch {
-                        // Data parsing error
-                        DispatchQueue.main.async {
-                            completion(.failure(UserStoreError.failedDecode))
-                            print("UserStore.callSendUserLocationJsonData produced an error while parsing. Error: \(error)")
-                        }
+                } catch {
+                    // Data parsing error
+                    DispatchQueue.main.async {
+                        completion(.failure(UserStoreError.failedDecode))
+                        print("UserStore.callSendUserLocationJsonData produced an error while parsing. Error: \(error)")
                     }
                 }
-                
-                task.resume()
-            case .failure(let error):
-                print("Failed to make request: \(error)")
-                
             }
             
+            task.resume()
+        case .failure(let error):
+            print("Failed to make request: \(error)")
+            
         }
+        
+    }
     
     
 }
