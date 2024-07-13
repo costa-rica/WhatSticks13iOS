@@ -25,18 +25,25 @@ class HomeVC: TemplateVC {
         locationFetcher.requestLocationPermission()
         let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
-        userStore.connectDevice()
+//        userStore.connectDevice()
         
         
         
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
         setup_HomeScreen()
+        
+        self.showSpinner()
+        userStore.connectDevice {
+            print("- finiehd connecting device")
+            self.removeSpinner()
+        }
         print("user name is \(userStore.user.username!)")
         if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
             print("user locations: \(userLocationArray)")
         }
         setup_btnCheckUserDeafultUserLocaiton()
+
     }
 
     func setup_HomeScreen(){

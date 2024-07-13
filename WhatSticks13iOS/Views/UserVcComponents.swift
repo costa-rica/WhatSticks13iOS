@@ -8,10 +8,7 @@
 import UIKit
 
 
-
 class UserVcFindAppleHealthPermissionsView: UIView {
-    
-
     let lblTitle = UILabel()
     let lblDescription = UILabel()
     
@@ -20,21 +17,17 @@ class UserVcFindAppleHealthPermissionsView: UIView {
         // This triggers as soon as the app starts
         setup_labels()
     }
-    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_labels()
     }
     func setup_labels(){
-//        print("--- we should see something in UserVcFindAppleHealthPermissionsView <-----")
-//        self.backgroundColor = .green
         lblTitle.accessibilityIdentifier="lblTitle-UserVcFindAppleHealthPermissionsView"
         lblTitle.translatesAutoresizingMaskIntoConstraints = false
         lblTitle.text = "Apple Health Permissions"
         lblTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
         lblTitle.numberOfLines=0
         self.addSubview(lblTitle)
-//        lblTitle.backgroundColor = .colorRow1
         
         lblDescription.accessibilityIdentifier="lblDescription-UserVcFindAppleHealthPermissionsView"
         lblDescription.translatesAutoresizingMaskIntoConstraints=false
@@ -42,16 +35,15 @@ class UserVcFindAppleHealthPermissionsView: UIView {
         lblDescription.text = text_for_message
         lblDescription.numberOfLines = 0
         self.addSubview(lblDescription)
-//        lblDescription.backgroundColor = .colorRow2
         
         NSLayoutConstraint.activate([
             lblTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
             lblTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
             lblTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-            
-            lblDescription.topAnchor.constraint(equalTo: lblTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+    
+            lblDescription.topAnchor.constraint(equalTo: lblTitle.bottomAnchor, constant: heightFromPct(percent: 2)),
             lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
-            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 3)),
             lblDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: heightFromPct(percent: -5))
         ])
     }
@@ -61,31 +53,47 @@ class UserVcFindAppleHealthPermissionsView: UIView {
 class UserVcLocationDayWeather: UIView {
     
     weak var delegate: UserVcLocationDayWeatherDelegate?
-    
+    var showLine:Bool!
+    let vwLocationDayWeatherLine = UIView()
+    var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
     var userStore: UserStore!
     var locationFetcher: LocationFetcher!
     let lblLocationDayWeatherTitle = UILabel()
     let lblLocationDayWeatherDetails = UILabel()
-    // old name: LocationDayWeatherSwitch
     let stckVwLocTrackReoccurring=UIStackView()
     let lblLocTrackReoccurringSwitch=UILabel()
     let swtchLocTrackReoccurring = UISwitch()
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
+        self.showLine = false
         setup_views()
-        print("- in UserVcLocationDayWeather")
     }
-    
+    init(frame: CGRect, showLine: Bool) {
+        self.showLine = showLine
+        super.init(frame: frame)
+        setup_views_lineOption()
+        setup_views()
+    }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_views()
     }
-    
+    private func setup_views_lineOption(){
+        vwLocationDayWeatherLine.accessibilityIdentifier = "vwLocationDayWeatherLine"
+        vwLocationDayWeatherLine.translatesAutoresizingMaskIntoConstraints = false
+        vwLocationDayWeatherLine.backgroundColor = UIColor(named: "lineColor")
+        self.addSubview(vwLocationDayWeatherLine)
+        NSLayoutConstraint.activate([
+            vwLocationDayWeatherLine.topAnchor.constraint(equalTo: self.topAnchor),
+            vwLocationDayWeatherLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            vwLocationDayWeatherLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            vwLocationDayWeatherLine.heightAnchor.constraint(equalToConstant: 1),
+        ])
+    }
     
     private func setup_views(){
-        
         userStore = UserStore.shared
         locationFetcher = LocationFetcher.shared
         lblLocationDayWeatherTitle.accessibilityIdentifier="lblLocationDayWeatherTitle"
@@ -112,22 +120,25 @@ class UserVcLocationDayWeather: UIView {
         stckVwLocTrackReoccurring.addArrangedSubview(lblLocTrackReoccurringSwitch)
         
         swtchLocTrackReoccurring.accessibilityIdentifier = "swtchLocationDayWeather"
-//        swtchLocTrackReoccurring.translatesAutoresizingMaskIntoConstraints = false
         swtchLocTrackReoccurring.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
         
         stckVwLocTrackReoccurring.addArrangedSubview(swtchLocTrackReoccurring)
+        setLocationSwitchLabelText()
         
-        
-//        setLocationSwitchLabelText()
+        if showLine{
+            viewTopAnchor = vwLocationDayWeatherLine.bottomAnchor
+        } else {
+            viewTopAnchor = self.topAnchor
+        }
         
         NSLayoutConstraint.activate([
-            lblLocationDayWeatherTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 2)),
+            lblLocationDayWeatherTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
             lblLocationDayWeatherTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            lblLocationDayWeatherTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblLocationDayWeatherTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             
             lblLocationDayWeatherDetails.topAnchor.constraint(equalTo: lblLocationDayWeatherTitle.bottomAnchor, constant: heightFromPct(percent: 2)),
             lblLocationDayWeatherDetails.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            lblLocationDayWeatherDetails.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblLocationDayWeatherDetails.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 3)),
             
             stckVwLocTrackReoccurring.topAnchor.constraint(equalTo: lblLocationDayWeatherDetails.bottomAnchor, constant: heightFromPct(percent: 2)),
             stckVwLocTrackReoccurring.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -2)),
@@ -135,8 +146,12 @@ class UserVcLocationDayWeather: UIView {
         ])
     }
 
+    
     private func manageLocationCollection(){
         print("- accessed manageLocationCollection")
+        
+        print("--- swtchLocTrackReoccurring value: \(swtchLocTrackReoccurring.isEnabled)")
+        
         if locationFetcher.userLocationManagerAuthStatus == "Authorized Always"{
             locationFetcher.fetchLocation { locationExists in
                 if locationExists{
@@ -178,12 +193,12 @@ class UserVcLocationDayWeather: UIView {
             self.swtchLocTrackReoccurring.isOn=false
             // Set Location Label
             self.setLocationSwitchLabelText()
-            self.delegate?.templateAlert(alertTitle: "", alertMessage: "For better calculations go to Setting and set Location permissions to Always", backScreen: false)
+            self.delegate?.templateAlert(alertTitle: "", alertMessage: "For better calculations go to Setting and set Location permissions to Always", backScreen: false,dismissView: false)
         }
         
     }
     func setLocationSwitchLabelText(){
-        print("- in setLocationSwitchLabelText")       
+        print("- in setLocationSwitchLabelText")
         
         guard let location_permission_device = userStore.user.location_permission_device,
               let location_permission_ws = userStore.user.location_permission_ws
@@ -230,7 +245,7 @@ class UserVcLocationDayWeather: UIView {
                     self.setLocationSwitchLabelText()
                 }
                 
-                self.delegate?.templateAlert(alertTitle: "Success!", alertMessage: "", backScreen: false)
+                self.delegate?.templateAlert(alertTitle: "Success!", alertMessage: "", backScreen: false, dismissView: false)
                 
             case let .failure(userStoreError):
                 print(" (in sendUpdateDictToApi) fail")
@@ -239,14 +254,14 @@ class UserVcLocationDayWeather: UIView {
                     DispatchQueue.main.async{
                         self.delegate?.removeSpinner()
                         self.switchErrorSwitchBack()
-                        self.delegate?.templateAlert(alertTitle: "Unexpected response", alertMessage: "Restart the app",backScreen: false)
+                        self.delegate?.templateAlert(alertTitle: "Unexpected response", alertMessage: "Restart the app",backScreen: false, dismissView: false)
                     }
                     print("- UserVcLocationDayWeather failure ok ")
                 default:
                     DispatchQueue.main.async{
                         self.delegate?.removeSpinner()
                         self.switchErrorSwitchBack()
-                        self.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: userStoreError.localizedDescription,backScreen: false)
+                        self.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: userStoreError.localizedDescription,backScreen: false, dismissView: false)
                     }
                     print("- UserVcLocationDayWeather failure ok ")
                 }
@@ -275,13 +290,15 @@ class UserVcLocationDayWeather: UIView {
             manageLocationCollection()
             
         } else {
+            print("-- turned off")
             // Are you sure alert; if yes, then sends notification to WSAPI
             alertTurnOffLocationTrackingConfirmation()
         }
     }
     
     // Used for delete user
-    @objc func alertTurnOffLocationTrackingConfirmation() {
+    func alertTurnOffLocationTrackingConfirmation() {
+        print("--- alertTurnOffLocationTrackingConfirmation")
         let alertController = UIAlertController(title: "Are you sure?", message: "Turning off location tracking will reduce accuracy.", preferredStyle: .alert)
         // 'Yes' action
         let yesAction = UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
@@ -313,7 +330,7 @@ class UserVcLocationDayWeather: UIView {
                     DispatchQueue.main.async{
                         self?.delegate?.removeSpinner()
                         
-                        self?.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: "Try again or email nrodrig1@gmail.com.", backScreen: false)
+                        self?.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: "Try again or email nrodrig1@gmail.com.", backScreen: false, dismissView: false)
                         
                         self?.swtchLocTrackReoccurring.isOn=true
                         // Set Location Label
@@ -332,47 +349,40 @@ class UserVcLocationDayWeather: UIView {
         
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
-//        present(alertController, animated: true, completion: nil)
         self.delegate?.presentAlertController(alertController)
     }
-    
+
 }
 
-// Protocol definition
 protocol UserVcLocationDayWeatherDelegate: AnyObject {
-    //    func didUpdateWeatherInfo(_ weatherInfo: String)
     func removeSpinner()
     func showSpinner()
-    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool)
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
     func presentAlertController(_ alertController: UIAlertController)
 }
 
-
-
 class UserVcOffline: UIView {
-    
+    weak var delegate: UserVcOfflineDelegate?
+    let userStore = UserStore.shared
     var showLine:Bool!
     let vwOfflineLine = UIView()
-    
+    var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
     let lblOfflineTitle = UILabel()
     let btnConnectDevice = UIButton()
     let lblDescriptionTitle = UILabel()
     let lblDescription = UILabel()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
-        showLine=false
+        self.showLine = false
         setup_UserVcOfflineViews()
     }
-    // New initializer
     init(frame: CGRect, showLine: Bool) {
         self.showLine = showLine
         super.init(frame: frame)
         setup_UserVcOfflineViews_lineOption()
         setup_UserVcOfflineViews()
     }
-    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_UserVcOfflineViews()
@@ -391,6 +401,7 @@ class UserVcOffline: UIView {
         ])
     }
     
+    
     private func setup_UserVcOfflineViews(){
         lblOfflineTitle.accessibilityIdentifier="lblOfflineTitle"
         lblOfflineTitle.translatesAutoresizingMaskIntoConstraints = false
@@ -408,6 +419,9 @@ class UserVcOffline: UIView {
         btnConnectDevice.backgroundColor = .systemBlue
         btnConnectDevice.layer.cornerRadius = 10
         
+        btnConnectDevice.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnConnectDevice.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        
         lblDescriptionTitle.accessibilityIdentifier="lblDescriptionTitle"
         lblDescriptionTitle.translatesAutoresizingMaskIntoConstraints = false
         lblDescriptionTitle.text = "Why do I want to connect device?"
@@ -422,43 +436,77 @@ class UserVcOffline: UIView {
         self.addSubview(lblDescription)
         
         if showLine{
-            lblOfflineTitle.topAnchor.constraint(equalTo: vwOfflineLine.bottomAnchor, constant: heightFromPct(percent: 5)).isActive=true
+            viewTopAnchor = vwOfflineLine.bottomAnchor
         } else {
-            lblOfflineTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)).isActive=true
+            viewTopAnchor = self.topAnchor
         }
-        
+
         NSLayoutConstraint.activate([
-//            lblOfflineTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
-            lblOfflineTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            lblOfflineTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            lblOfflineTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
+            lblOfflineTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            lblOfflineTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
             
-            btnConnectDevice.topAnchor.constraint(equalTo: lblOfflineTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
-            btnConnectDevice.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            btnConnectDevice.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            btnConnectDevice.topAnchor.constraint(equalTo: lblOfflineTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnConnectDevice.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            btnConnectDevice.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
             
-            
-            lblDescriptionTitle.topAnchor.constraint(equalTo: btnConnectDevice.bottomAnchor, constant: heightFromPct(percent: 5)),
-            lblDescriptionTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblDescriptionTitle.topAnchor.constraint(equalTo: btnConnectDevice.bottomAnchor, constant: heightFromPct(percent: 3)),
+            lblDescriptionTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 2)),
             lblDescriptionTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
-            
-            lblDescription.topAnchor.constraint(equalTo: lblDescriptionTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
-            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            lblDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -2))
+            lblDescription.topAnchor.constraint(equalTo: lblDescriptionTitle.bottomAnchor, constant: heightFromPct(percent: 2)),
+            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -1)),
+            lblDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
             
         ])
         
     }
     
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        delegate?.touchDown(sender)
+    }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        userStore.connectDevice {
+            if !self.userStore.isOnline, self.userStore.user.email == nil {
+                self.delegate?.case_option_1_Offline_and_generic_name()
+            }else if self.userStore.isOnline, self.userStore.user.email == nil{
+                print("UserVC offline connected!!! --")
+                self.delegate?.case_option_2_Online_and_generic_name()
+            } else if self.userStore.isOnline, self.userStore.user.email != nil{
+                self.delegate?.case_option_3_Online_and_custom_email()
+            } else if !self.userStore.isOnline, self.userStore.user.email != nil {
+                self.delegate?.case_option_4_Offline_and_custom_email()
+            }
+        }
+
+    }
+    
 }
 
+protocol UserVcOfflineDelegate: AnyObject {
+    func removeSpinner()
+    func showSpinner()
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+    func presentAlertController(_ alertController: UIAlertController)
+    func touchDown(_ sender: UIButton)
+    func case_option_1_Offline_and_generic_name()
+    func case_option_2_Online_and_generic_name()
+    func case_option_3_Online_and_custom_email()
+    func case_option_4_Offline_and_custom_email()
+}
 
 class UserVcUserStatusView: UIView {
 
     var showLine:Bool!
     let vwUserStatusLine = UIView()
-    
+    var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
+
     var userStore: UserStore!
     let lblTitleUserStatus = UILabel()
 
@@ -480,7 +528,6 @@ class UserVcUserStatusView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        // This triggers as soon as the app starts
         self.showLine = false
         setup_UserVcAccountView()
     }
@@ -490,25 +537,22 @@ class UserVcUserStatusView: UIView {
         setup_UserVcAccountView_lineOption()
         setup_UserVcAccountView()
     }
-
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_UserVcAccountView()
     }
-    
     private func setup_UserVcAccountView_lineOption(){
         vwUserStatusLine.accessibilityIdentifier = "vwUserStatusLine"
         vwUserStatusLine.translatesAutoresizingMaskIntoConstraints = false
         vwUserStatusLine.backgroundColor = UIColor(named: "lineColor")
         self.addSubview(vwUserStatusLine)
         NSLayoutConstraint.activate([
-            vwUserStatusLine.topAnchor.constraint(equalTo: self.topAnchor),
+            vwUserStatusLine.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
             vwUserStatusLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             vwUserStatusLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             vwUserStatusLine.heightAnchor.constraint(equalToConstant: 1),
         ])
     }
-    
 
     private func setup_UserVcAccountView(){
         userStore = UserStore.shared
@@ -550,7 +594,8 @@ class UserVcUserStatusView: UIView {
         /* there is also setContentCompressionResistancePriority */
 
         btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
-        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+//        print("?????? 2 --- > \(userStore.user.username)")
+//        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
         if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
             btnUsernameFilled.titleLabel?.font = font
         }
@@ -573,7 +618,6 @@ class UserVcUserStatusView: UIView {
         lblRecordCount.translatesAutoresizingMaskIntoConstraints=false
         lblRecordCount.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
 
-
         btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
         btnRecordCountFilled.setTitle("0", for: .normal)
         if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
@@ -594,40 +638,58 @@ class UserVcUserStatusView: UIView {
 
         self.addSubview(stckVwUser)
 
-        
         if showLine{
-            lblTitleUserStatus.topAnchor.constraint(equalTo: vwUserStatusLine.bottomAnchor, constant: heightFromPct(percent: 5)).isActive=true
+            viewTopAnchor = vwUserStatusLine.bottomAnchor
         } else {
-            lblTitleUserStatus.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)).isActive=true
+            viewTopAnchor = self.topAnchor
         }
         
-        
         NSLayoutConstraint.activate([
-
-//            lblTitleUserStatus.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblTitleUserStatus.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
             lblTitleUserStatus.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: 2)),
             lblTitleUserStatus.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
 
-
             stckVwUser.topAnchor.constraint(equalTo: lblTitleUserStatus.bottomAnchor,constant: heightFromPct(percent: 2)),
-            stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-//            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 3)),
 
             btnUsernameFilled.widthAnchor.constraint(lessThanOrEqualTo: btnRecordCountFilled.widthAnchor)
             ])
         
         
         constraints_NO_VwRegisterButton = [
-            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -3)),
         ]
         constraints_YES_VwRegisterButton = [
-
+            vwRegisterButton.topAnchor.constraint(equalTo: stckVwUser.bottomAnchor, constant: heightFromPct(percent: 2)),
+            vwRegisterButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            vwRegisterButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
+            vwRegisterButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -3)),
         ]
         
-
+//        if userStore.user.email != nil {
+//            vwRegisterButton.removeFromSuperview()
+//            NSLayoutConstraint.activate(constraints_NO_VwRegisterButton)
+//        } else {
+//            setup_vcRegistrationButton()
+//        }
         
-        
+    }
+    
+    func setup_vcRegistrationButton(){
+        vwRegisterButton.accessibilityIdentifier = "vwRegisterButton"
+        vwRegisterButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.deactivate(constraints_NO_VwRegisterButton)
+        self.addSubview(vwRegisterButton)
+        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        NSLayoutConstraint.activate(constraints_YES_VwRegisterButton)
+    }
+    
+    func remove_vcRegistrationButton(){
+        NSLayoutConstraint.deactivate(constraints_YES_VwRegisterButton)
+        vwRegisterButton.removeFromSuperview()
+        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        NSLayoutConstraint.activate(constraints_NO_VwRegisterButton)
     }
     
     
@@ -635,9 +697,9 @@ class UserVcUserStatusView: UIView {
 
 }
 
-
 class UserVcRegisterButton: UIView {
 
+    weak var delegate: UserVcRegisterButtonDelegate?
     
     let lblWhyUsernameTitle = UILabel()
     let lblWhyUsernameDescription = UILabel()
@@ -673,7 +735,7 @@ class UserVcRegisterButton: UIView {
         lblWhyUsernameDescription.numberOfLines=0
         self.addSubview(lblWhyUsernameDescription)
         NSLayoutConstraint.activate([
-            lblWhyUsernameTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblWhyUsernameTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
             lblWhyUsernameTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             lblWhyUsernameTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
@@ -685,15 +747,24 @@ class UserVcRegisterButton: UIView {
     }
     
     private func setup_UserVcRegisterButton(){
-
-        btnRegister.accessibilityIdentifier = "btnRegister"
-        btnRegister.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(btnRegister)
+        
         btnRegister.setTitle("Register", for: .normal)
+        btnRegister.setImage(UIImage(systemName: "person"), for: .normal)
+        btnRegister.tintColor = .white
         btnRegister.layer.borderColor = UIColor.systemBlue.cgColor
         btnRegister.layer.borderWidth = 2
         btnRegister.backgroundColor = .systemBlue
         btnRegister.layer.cornerRadius = 10
+        btnRegister.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnRegister)
+        // Add space between the image and the text
+        btnRegister.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        // Change size of image
+        btnRegister.imageView?.layer.transform = CATransform3DMakeScale(1.5,1.5,1.5)
+        btnRegister.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 27)
+
+        btnRegister.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnRegister.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         
         lblWhyRegisterTitle.accessibilityIdentifier="lblWhyRegisterTitle"
         lblWhyRegisterTitle.translatesAutoresizingMaskIntoConstraints = false
@@ -710,28 +781,206 @@ class UserVcRegisterButton: UIView {
         
         NSLayoutConstraint.activate([
 
-            btnRegister.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
-            btnRegister.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            btnRegister.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            
+            btnRegister.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
+            btnRegister.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            btnRegister.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -3)),
             
             lblWhyRegisterTitle.topAnchor.constraint(equalTo: btnRegister.bottomAnchor, constant: heightFromPct(percent: 5)),
             lblWhyRegisterTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             lblWhyRegisterTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
-            
-            lblWhyRegisterDescription.topAnchor.constraint(equalTo: lblWhyRegisterTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
-            lblWhyRegisterDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            lblWhyRegisterDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            lblWhyRegisterDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -2))
+            lblWhyRegisterDescription.topAnchor.constraint(equalTo: lblWhyRegisterTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
+            lblWhyRegisterDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            lblWhyRegisterDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -1)),
+            lblWhyRegisterDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
             
         ])
         
     }
     
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        delegate?.touchDown(sender)
+    }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        let regModalVC = RegModalVC()
+        // Set the modal presentation style
+        regModalVC.modalPresentationStyle = .overCurrentContext
+        regModalVC.modalTransitionStyle = .crossDissolve
+        self.delegate?.presentNewView(regModalVC)
+        regModalVC.delegate = self.delegate as? any RegModalVcDelegate
+    }
+    
 }
 
+protocol UserVcRegisterButtonDelegate: AnyObject {
+    func removeSpinner()
+    func showSpinner()
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+    func presentAlertController(_ alertController: UIAlertController)
+    func touchDown(_ sender: UIButton)
+    func presentNewView(_ uiViewController: UIViewController)
+}
 
+class UserVcDelete: UIView {
+    weak var delegate: UserVcDeleteDelegate?
+    var showLine:Bool!
+    let vwDeleteLine = UIView()
+    var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
+    let lblDeleteTitle = UILabel()
+    let lblDeleteDescription = UILabel()
+    let btnDelete = UIButton()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.showLine=false
+        setup_UserVcRegisterButtonViewDisclaimer()
+        setup_UserVcRegisterButton()
+    }
+    
+    init(frame: CGRect, showLine: Bool) {
+        self.showLine = showLine
+        super.init(frame: frame)
+        setup_UserVcRegisterButtonViewDisclaimer_with_vwDeleteLine()
+        setup_UserVcRegisterButton()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    func setup_UserVcRegisterButtonViewDisclaimer_with_vwDeleteLine(){
+        vwDeleteLine.accessibilityIdentifier = "vwDeleteLine"
+        vwDeleteLine.translatesAutoresizingMaskIntoConstraints = false
+        vwDeleteLine.backgroundColor = UIColor(named: "lineColor")
+        self.addSubview(vwDeleteLine)
+        NSLayoutConstraint.activate([
+            vwDeleteLine.topAnchor.constraint(equalTo: self.topAnchor, constant:heightFromPct(percent: 1)),
+            vwDeleteLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            vwDeleteLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            vwDeleteLine.heightAnchor.constraint(equalToConstant: 1),
+        ])
+
+        lblDeleteTitle.accessibilityIdentifier="lblDeleteTitle"
+        lblDeleteTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblDeleteTitle.text = "Delete Account"
+        lblDeleteTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
+        lblDeleteTitle.numberOfLines=0
+        self.addSubview(lblDeleteTitle)
+        
+        lblDeleteDescription.accessibilityIdentifier="lblDeleteDescription"
+        lblDeleteDescription.translatesAutoresizingMaskIntoConstraints = false
+        lblDeleteDescription.text = "This will delete your credentials and the data you have linked from your phone."
+        lblDeleteDescription.numberOfLines=0
+        self.addSubview(lblDeleteDescription)
+        
+        if showLine{
+            viewTopAnchor=vwDeleteLine.bottomAnchor
+        } else{
+            viewTopAnchor=self.topAnchor
+        }
+        
+        NSLayoutConstraint.activate([
+            lblDeleteTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
+            lblDeleteTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 2)),
+            lblDeleteTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            lblDeleteDescription.topAnchor.constraint(equalTo: lblDeleteTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
+            lblDeleteDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            lblDeleteDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            ])
+    }
+    
+    private func setup_UserVcRegisterButtonViewDisclaimer(){
+        lblDeleteTitle.accessibilityIdentifier="lblDeleteTitle"
+        lblDeleteTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblDeleteTitle.text = "Delete Account"
+        lblDeleteTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
+        lblDeleteTitle.numberOfLines=0
+        self.addSubview(lblDeleteTitle)
+        
+        lblDeleteDescription.accessibilityIdentifier="lblDeleteDescription"
+        lblDeleteDescription.translatesAutoresizingMaskIntoConstraints = false
+        lblDeleteDescription.text = "This will delete your credentials and the data you have linked from your phone."
+        lblDeleteDescription.numberOfLines=0
+        self.addSubview(lblDeleteDescription)
+        
+        NSLayoutConstraint.activate([
+            lblDeleteTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblDeleteTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblDeleteTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            lblDeleteDescription.topAnchor.constraint(equalTo: lblDeleteTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblDeleteDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblDeleteDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            ])
+    }
+    
+    private func setup_UserVcRegisterButton(){
+
+        btnDelete.accessibilityIdentifier = "btnDelete"
+        btnDelete.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnDelete)
+        btnDelete.setTitle("Delete", for: .normal)
+        btnDelete.layer.borderColor = UIColor.systemRed.cgColor
+        btnDelete.layer.borderWidth = 2
+        btnDelete.backgroundColor = .systemRed
+        btnDelete.layer.cornerRadius = 10
+        
+        btnDelete.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnDelete.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        
+
+        
+        NSLayoutConstraint.activate([
+
+            btnDelete.topAnchor.constraint(equalTo: lblDeleteDescription.bottomAnchor, constant: heightFromPct(percent: 5)),
+            btnDelete.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            btnDelete.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
+            btnDelete.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+            
+        ])
+        
+    }
+    
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        delegate?.touchDown(sender)
+    }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        print("Touch up inside --> vwRegisterButton")
+
+//        let areYouSureVC = AreYouSureModalVC()
+        let areYouSureVC = AreYouSureModalVC(strForBtnTitle: "Yes, let's delete")
+
+        // Set the modal presentation style
+        areYouSureVC.modalPresentationStyle = .overCurrentContext
+        areYouSureVC.modalTransitionStyle = .crossDissolve
+
+        self.delegate?.presentNewView(areYouSureVC)
+        
+    }
+    
+}
+
+protocol UserVcDeleteDelegate: AnyObject {
+    //    func didUpdateWeatherInfo(_ weatherInfo: String)
+    func removeSpinner()
+    func showSpinner()
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+    func presentAlertController(_ alertController: UIAlertController)
+    func touchDown(_ sender: UIButton)
+//    func touchDownProxy(_ sender: UIButton)
+    func presentNewView(_ uiViewController: UIViewController)
+}
 
 

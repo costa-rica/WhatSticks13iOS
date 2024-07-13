@@ -63,90 +63,27 @@ class TemplateVC: UIViewController {
         vwFooter.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         vwFooter.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.0).isActive = true
     }
-    
-//    private func setupViews() {
-//        // Setup vwTopSafeBar
-//        vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
-//        view.addSubview(vwTopSafeBar)
-//        vwTopSafeBar.translatesAutoresizingMaskIntoConstraints = false
-//        vwTopSafeBar.accessibilityIdentifier = "vwTopSafeBar"
-//        vwTopSafeBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-//        vwTopSafeBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-//        vwTopSafeBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05).isActive = true
-////        // Setup vwTopBar
-////        vwTopBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
-////        view.addSubview(vwTopBar)
-////        vwTopBar.translatesAutoresizingMaskIntoConstraints = false
-////        vwTopBar.accessibilityIdentifier = "vwTopBar"
-////        vwTopBar.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor).isActive = true
-////        vwTopBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-////        vwTopBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-////        vwTopBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.10).isActive = true
-//////        if let unwrapped_image = UIImage(named: "wsLogo192") {
-////        if let unwrapped_image = UIImage(named: "wsLogo180noName") {
-////            imgVwLogo.image = unwrapped_image.scaleImage(toSize: CGSize(width: 15, height: 15))
-////        }
-////        // Setup labels and image view
-////        lblScreenName.translatesAutoresizingMaskIntoConstraints=false
-//////        lblUsername.translatesAutoresizingMaskIntoConstraints=false
-////        vwTopBar.addSubview(lblScreenName)
-//////        vwTopBar.addSubview(lblUsername)
-////        lblScreenNameTopAnchor = lblScreenName.topAnchor.constraint(equalTo: vwTopBar.topAnchor,constant: heightFromPct(percent: 1))
-////        lblScreenNameTopAnchor.isActive=true
-////        lblScreenName.centerXAnchor.constraint(equalTo: vwTopBar.centerXAnchor, constant: widthFromPct(percent: 1)).isActive=true
-////
-////        lblUserNameBottomAnchor = lblUsername.bottomAnchor.constraint(equalTo: vwTopBar.bottomAnchor,constant:heightFromPct(percent: -1))
-////        lblUserNameBottomAnchor.isActive=true
-////        lblUsername.centerXAnchor.constraint(equalTo: vwTopBar.centerXAnchor).isActive=true
-////
-////        setScreenNameFontSize()
-//
-//    }
-//
-//    func changeLogoForLoginVC(){
-//        let logoImageName = isInitialViewController ? "wsLogo180" : "wsLogo180noName"
-//        if let unwrapped_image = UIImage(named: logoImageName) {
-//            imgVwLogo.image = unwrapped_image.scaleImage(toSize: CGSize(width: 23, height: 23))
-//        }
-//        imgLogoTrailingAnchor.isActive=false
-//        imgVwLogo.trailingAnchor.constraint(equalTo: vwTopBar.trailingAnchor,constant: widthFromPct(percent: -bodySidePaddingPercentage)).isActive=true
-//    }
-    
-//    func setScreenNameFontSize() {
-//        lblScreenName.font = UIFont(name: "ArialRoundedMTBold", size: 30)
-//        lblUsername.font = UIFont(name: "ArialRoundedMTBold", size: 18)
-//        lblUsername.textColor = .gray
-//        if let unwp_lblScreenNameText = lblScreenName.text{
-//            if unwp_lblScreenNameText.count > 12 {
-//                lblScreenName.numberOfLines = 0
-//                lblScreenName.widthAnchor.constraint(equalToConstant: widthFromPct(percent: 60)).isActive=true
-//                lblScreenName.textAlignment = .center
-//                let lblScreenNameFontSize = -1 * unwp_lblScreenNameText.count + 40// Continuous function to size lblScreenName
-//                lblScreenName.font = UIFont(name: "ArialRoundedMTBold", size: CGFloat(Int(lblScreenNameFontSize)))
-//                lblScreenNameTopAnchor.isActive=false
-//                lblUserNameBottomAnchor.isActive=false
-//                lblScreenName.topAnchor.constraint(equalTo: vwTopBar.topAnchor).isActive=true
-//                lblUsername.bottomAnchor.constraint(equalTo: vwTopBar.bottomAnchor, constant: heightFromPct(percent: -0.25)).isActive=true
-//            }
-//        }
-//    }
+
     @objc func touchDown(_ sender: UIButton) {
         UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseOut], animations: {
             sender.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
         }, completion: nil)
     }
-    func templateAlert(alertTitle:String = "Alert",alertMessage: String,  backScreen: Bool = false) {
+    func templateAlert(alertTitle:String = "Alert",alertMessage: String,  backScreen: Bool = false, dismissView:Bool = false) {
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
         // This is used to go back
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.removeSpinner()
             if backScreen {
                 self.navigationController?.popViewController(animated: true)
+            }  else if dismissView {
+                self.dismiss(animated: true, completion: nil)
             }
         }))
         self.present(alert, animated: true, completion: nil)
     }
     func showSpinner() {
+        print("- TemplateVC showSpinnner - ")
 //        spinnerView = UIView(frame: self.view.bounds)
         spinnerView = UIView()
         spinnerView!.translatesAutoresizingMaskIntoConstraints = false
@@ -210,4 +147,8 @@ class TemplateVC: UIViewController {
     func presentAlertController(_ alertController: UIAlertController) {
         present(alertController, animated: true, completion: nil)
     }
+    func presentNewView(_ uiViewController: UIViewController) {
+        present(uiViewController, animated: true, completion: nil)
+    }
+
 }

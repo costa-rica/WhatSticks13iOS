@@ -101,8 +101,6 @@ class RequestStore {
         request.addValue("application/json",forHTTPHeaderField: "Accept")
         if token {
             request.setValue(self.token, forHTTPHeaderField: "x-access-token")
-        }else{
-            return .failure(RequestStoreError.missingToken)
         }
         
         if let unwp_email = stringDict["email"],
@@ -115,15 +113,13 @@ class RequestStore {
             request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         }
         else{
+            print("- RequestStoreError: missing email or password")
             return .failure(RequestStoreError.missingAuth)
         }
         
-        // Add the JSON body object with the key name "ws_api_password" and value "knock-knock"
-//        var requestBody = body
-//        requestBody["ws_api_password"] = "knock-knock"
         if let unwp_ws_api_password = stringDict["ws_api_password"]{
             do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: unwp_ws_api_password, options: [])
+                request.httpBody = try JSONSerialization.data(withJSONObject: ["ws_api_password":Config.ws_api_password], options: [])
             } catch {
                 print("Error encoding httpBody JSON: \(error)")
                 return .failure(RequestStoreError.encodingFailed)

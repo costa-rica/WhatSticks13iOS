@@ -7,8 +7,9 @@
 
 import UIKit
 
-class TabController: UITabBarController, UITabBarControllerDelegate {
-
+class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
+    
+//    weak var delegate_to_userVc: MainTabBarControllerDelegate?
     var lineSelectedTab = UIView()
     var userStore:UserStore!
     
@@ -56,36 +57,34 @@ class TabController: UITabBarController, UITabBarControllerDelegate {
         }
         if let user_vc = nav_vc.children[0] as? UserVC {
             print("-- TabController UserVC selected < ------ *")
-            print("- user_vc subviews: \(user_vc.view.subviews.count)")
-            print("\(user_vc.view.subviews)")
-            for i in user_vc.view.subviews {
-                print("\(i.accessibilityIdentifier)")
-            }
-            for i in user_vc.scrollView.subviews {
-                print("\(i.accessibilityIdentifier)")
-            }
+//            print("- user_vc subviews: \(user_vc.view.subviews.count)")
+//            print("\(user_vc.view.subviews)")
+//            for i in user_vc.view.subviews {
+//                print("\(i.accessibilityIdentifier)")
+//            }
+//            for i in user_vc.scrollView.subviews {
+//                print("\(i.accessibilityIdentifier)")
+//            }
             // Trigger action for UserVC selection
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
-            print("offline? : \(userStore.isOffline)")
+            print("MainTabBar - isOnline: \(userStore.isOnline)")
             
-            
-            
-            if userStore.isOffline, userStore.user.email == nil {
-
-//                user_vc.vwOffline = UserVcOffline(frame: CGRect.zero)
-                user_vc.vwOffline = UserVcOffline(frame: CGRect.zero,showLine: true)
-                user_vc.setup_vwOffline()
+//            for i in user_vc.view.subviews{
+//                print("- subviews -")
+//                print("\(i.accessibilityIdentifier)")
+//            }
+            if user_vc.view.subviews.count > 0 {
+                if !userStore.isOnline, userStore.user.email == nil {
+                    user_vc.case_option_1_Offline_and_generic_name()
+                }else if userStore.isOnline, userStore.user.email == nil{
+                    print("MainTabBar - initiating case #2 --")
+                    user_vc.case_option_2_Online_and_generic_name()
+                } else if userStore.isOnline, userStore.user.email != nil{
+                    user_vc.case_option_3_Online_and_custom_email()
+                } else if !userStore.isOnline, userStore.user.email != nil {
+                    user_vc.case_option_4_Offline_and_custom_email()
+                }
             }
-            else if !userStore.isOffline{
-
-                user_vc.vwUserStatus = UserVcUserStatusView(frame: CGRect.zero,showLine: true)
-                user_vc.setup_vwUserStatus()
-                user_vc.vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
-                
-//                user_vc.
-                
-            }
-            
             
             
         }
@@ -98,7 +97,23 @@ class TabController: UITabBarController, UITabBarControllerDelegate {
 }
 
 
-
-
+//// Protocol definition
+//protocol MainTabBarControllerDelegate: AnyObject {
+//    func removeSpinner()
+//    func showSpinner()
+//    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool)
+//    func presentAlertController(_ alertController: UIAlertController)
+//    func touchDown(_ sender: UIButton)
+//    var constraints_Offline_NoEmail:[NSLayoutConstraint] {get}
+//    var constraints_Online_NoEmail:[NSLayoutConstraint] {get}
+//    var constraints_Offline_YesEmail:[NSLayoutConstraint] {get}
+//    func case_option_1_Offline_and_generic_name()
+//    func case_option_2_Online_and_generic_name()
+//    func case_option_3_Online_and_custom_email()
+//    func case_option_4_Offline_and_custom_email()
+//    var vwUserStatus:UserVcUserStatusView {get}
+//    func test_delegate_method()
+//}
+//
 
 

@@ -7,43 +7,97 @@
 
 import UIKit
 
-class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
+class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegate, UserVcRegisterButtonDelegate, UserVcDeleteDelegate, RegModalVcDelegate{
 
+    var userStore: UserStore!
+    
     let scrollView = UIScrollView()
     let contentView = UIView()
+        
     let vwFindAppleHealthPermissions = UserVcFindAppleHealthPermissionsView()
-    let vwUserVcLine01=UIView()
-    let vwLocationDayWeather = UserVcLocationDayWeather()
-//    let vwUserVcLine02=UIView()
-    
-    var vwUserStatus:UserVcUserStatusView!
-    var vwOffline:UserVcOffline!
+//    let vwUserVcLine01=UIView()
+    let vwLocationDayWeather = UserVcLocationDayWeather(frame: CGRect.zero, showLine: true)
 
+    let vwOffline = UserVcOffline(frame: CGRect.zero, showLine: true)
+    var constraints_Offline_NoEmail = [NSLayoutConstraint]()
+
+    let vwUserStatus = UserVcUserStatusView(frame: CGRect.zero, showLine: true)
+    var constraints_Online_NoEmail = [NSLayoutConstraint]()
+    
+    
+    let vwUserDeleteAccount = UserVcDelete(frame: CGRect.zero, showLine: true)
+    var constraints_Online_YesEmail = [NSLayoutConstraint]()
+    
+    var constraints_Offline_YesEmail = [NSLayoutConstraint]()
 
     override func viewDidLoad() {
+        print("- in UserVC viewDidLoad -")
         super.viewDidLoad()
-//        name = "UserVC"
-        // Do any additional setup after loading the view.
-        vwLocationDayWeather.delegate = self // Assign the delegate
-//        let userStore = UserStore.shared
+        vwOffline.delegate = self
+        vwUserStatus.vwRegisterButton.delegate = self
+        vwLocationDayWeather.delegate = self
+        vwUserDeleteAccount.delegate = self
+        userStore = UserStore.shared
+
         self.setup_TopSafeBar()
         setupScrollView()
         setupContentView()
         setup_vwFindAppleHealthPermissions()
-        setup_vwUserVcLine01()
-        setup_vwLocationDayWeather()
 
+        constraints_Offline_NoEmail = [
+            vwOffline.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
+            vwOffline.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwOffline.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            vwOffline.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -10)),
+        ]
+        constraints_Online_NoEmail = [
+            vwLocationDayWeather.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
+            vwLocationDayWeather.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwLocationDayWeather.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            vwUserStatus.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
+            vwUserStatus.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwUserStatus.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            vwUserStatus.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -10)),
+        ]
+        constraints_Online_YesEmail = [
+            vwLocationDayWeather.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
+            vwLocationDayWeather.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwLocationDayWeather.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            vwUserStatus.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
+            vwUserStatus.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwUserStatus.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            vwUserDeleteAccount.topAnchor.constraint(equalTo: vwUserStatus.bottomAnchor),
+            vwUserDeleteAccount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwUserDeleteAccount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            vwUserDeleteAccount.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -10)),
+        ]
+        constraints_Offline_YesEmail = [
+            vwUserStatus.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
+            vwUserStatus.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwUserStatus.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            vwOffline.topAnchor.constraint(equalTo: vwUserStatus.bottomAnchor),
+            vwOffline.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vwOffline.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            vwOffline.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -10)),
+        ]
+
+        if !userStore.isOnline, userStore.user.email == nil {
+            case_option_1_Offline_and_generic_name()
+        }else if userStore.isOnline, userStore.user.email == nil{
+            case_option_2_Online_and_generic_name()
+        } else if userStore.isOnline, userStore.user.email != nil{
+            case_option_3_Online_and_custom_email()
+        } else if !userStore.isOnline, userStore.user.email != nil {
+            case_option_4_Offline_and_custom_email()
+        }
     }
-    
-    
-    
     func setupScrollView() {
-        // Set up the scroll view
-        scrollView.accessibilityIdentifier = "scrollView-UserVC"
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
-        
-        // Set up constraints for the scroll view
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -51,15 +105,11 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    
     func setupContentView() {
-        // Set up the content view inside the scroll view
         contentView.accessibilityIdentifier = "contentView"
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
-        
-        // Set up constraints for the content view
-        NSLayoutConstraint.activate([
+         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -72,74 +122,97 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate {
         vwFindAppleHealthPermissions.accessibilityIdentifier = "vwFindAppleHealthPermissions"
         vwFindAppleHealthPermissions.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(vwFindAppleHealthPermissions)
-        
-        // Set up constraints for the test labels view
         NSLayoutConstraint.activate([
             vwFindAppleHealthPermissions.topAnchor.constraint(equalTo: contentView.topAnchor),
             vwFindAppleHealthPermissions.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             vwFindAppleHealthPermissions.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
         ])
     }
-    
-    func setup_vwUserVcLine01(){
-        vwUserVcLine01.accessibilityIdentifier = "vwUserVcLine01"
-        vwUserVcLine01.translatesAutoresizingMaskIntoConstraints = false
-        vwUserVcLine01.backgroundColor = UIColor(named: "lineColor")
-        contentView.addSubview(vwUserVcLine01)
-        NSLayoutConstraint.activate([
-            vwUserVcLine01.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
-            vwUserVcLine01.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            vwUserVcLine01.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            vwUserVcLine01.heightAnchor.constraint(equalToConstant: 1),
-        ])
-    }
-
+//    func setup_vwUserVcLine01(){
+//        vwUserVcLine01.accessibilityIdentifier = "vwUserVcLine01"
+//        vwUserVcLine01.translatesAutoresizingMaskIntoConstraints = false
+//        vwUserVcLine01.backgroundColor = UIColor(named: "lineColor")
+//        contentView.addSubview(vwUserVcLine01)
+//        NSLayoutConstraint.activate([
+//            vwUserVcLine01.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
+//            vwUserVcLine01.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+//            vwUserVcLine01.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+//            vwUserVcLine01.heightAnchor.constraint(equalToConstant: 1),
+//        ])
+//    }
     func setup_vwLocationDayWeather(){
         vwLocationDayWeather.accessibilityIdentifier = "vwLocationDayWeather"
         vwLocationDayWeather.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(vwLocationDayWeather)
-        
-        // Set up constraints for the test labels view
-        NSLayoutConstraint.activate([
-            vwLocationDayWeather.topAnchor.constraint(equalTo: vwUserVcLine01.topAnchor),
-            vwLocationDayWeather.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            vwLocationDayWeather.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-        ])
+
     }
-       
-    
-    func setup_vwUserStatus(){
-        vwUserStatus.accessibilityIdentifier = "vwUserStatus"
-        vwUserStatus.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(vwUserStatus)
-        
-        // Set up constraints for the test labels view
-        NSLayoutConstraint.activate([
-            vwUserStatus.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
-            vwUserStatus.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            vwUserStatus.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            vwUserStatus.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-        ])
-    }
-    
     func setup_vwOffline(){
+        print("-- adding vwOffline")
         vwOffline.accessibilityIdentifier = "vwOffline"
         vwOffline.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(vwOffline)
-        
-        // Set up constraints for the test labels view
-        NSLayoutConstraint.activate([
-            vwOffline.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
-            vwOffline.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            vwOffline.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            vwOffline.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -100),
-        ])
+    }
+
+    func setup_vwUserStatus(){
+        print("-- adding vwUserStatus")
+        vwUserStatus.accessibilityIdentifier = "vwUserStatus"
+        vwUserStatus.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(vwUserStatus)
     }
     
-
-
+    func setup_vwUserDeleteAccount(){
+        print("-- adding vwUserStatus")
+        vwUserDeleteAccount.accessibilityIdentifier = "vwUserDeleteAccount"
+        vwUserDeleteAccount.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(vwUserDeleteAccount)
+    }
+    
+    func remove_optionalViews(){
+        NSLayoutConstraint.deactivate(constraints_Offline_NoEmail)
+        NSLayoutConstraint.deactivate(constraints_Online_NoEmail)
+        NSLayoutConstraint.deactivate(constraints_Offline_YesEmail)
+        NSLayoutConstraint.deactivate(constraints_Online_YesEmail)
+        vwLocationDayWeather.removeFromSuperview()
+        vwOffline.removeFromSuperview()
+        vwUserStatus.removeFromSuperview()
+        vwUserDeleteAccount.removeFromSuperview()
+        print("--- finished remove_optionalViews -")
+    }
+    func case_option_1_Offline_and_generic_name(){
+        remove_optionalViews()
+        setup_vwOffline()
+        NSLayoutConstraint.activate(constraints_Offline_NoEmail)
+    }
+    func case_option_2_Online_and_generic_name(){
+        remove_optionalViews()
+        setup_vwLocationDayWeather()
+        setup_vwUserStatus()
+        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        NSLayoutConstraint.deactivate(vwUserStatus.constraints_NO_VwRegisterButton)
+        vwUserStatus.setup_vcRegistrationButton()
+        NSLayoutConstraint.activate(vwUserStatus.constraints_YES_VwRegisterButton)
+        NSLayoutConstraint.activate(constraints_Online_NoEmail)
+    }
+    func case_option_3_Online_and_custom_email(){
+        remove_optionalViews()
+        setup_vwLocationDayWeather()
+        setup_vwUserStatus()
+        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        NSLayoutConstraint.deactivate(vwUserStatus.constraints_YES_VwRegisterButton)
+        vwUserStatus.vwRegisterButton.removeFromSuperview()
+        NSLayoutConstraint.activate(vwUserStatus.constraints_NO_VwRegisterButton)
+        
+        setup_vwUserDeleteAccount()
+        NSLayoutConstraint.activate(constraints_Online_YesEmail)
+    }
+    func case_option_4_Offline_and_custom_email(){
+        remove_optionalViews()
+        setup_vwUserStatus()
+        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        setup_vwOffline()
+        NSLayoutConstraint.activate(constraints_Offline_YesEmail)
+    }
+    
     
 }
 
