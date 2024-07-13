@@ -10,9 +10,11 @@ import UIKit
 class TabController: UITabBarController, UITabBarControllerDelegate {
 
     var lineSelectedTab = UIView()
+    var userStore:UserStore!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        userStore = UserStore.shared
         print("- in TabController -")
         self.setupTabs()
         self.tabBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
@@ -53,10 +55,40 @@ class TabController: UITabBarController, UITabBarControllerDelegate {
             return
         }
         if let user_vc = nav_vc.children[0] as? UserVC {
+            print("-- TabController UserVC selected < ------ *")
+            print("- user_vc subviews: \(user_vc.view.subviews.count)")
+            print("\(user_vc.view.subviews)")
+            for i in user_vc.view.subviews {
+                print("\(i.accessibilityIdentifier)")
+            }
+            for i in user_vc.scrollView.subviews {
+                print("\(i.accessibilityIdentifier)")
+            }
             // Trigger action for UserVC selection
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
+            print("offline? : \(userStore.isOffline)")
+            
+            
+            
+            if userStore.isOffline, userStore.user.email == nil {
 
-        } 
+//                user_vc.vwOffline = UserVcOffline(frame: CGRect.zero)
+                user_vc.vwOffline = UserVcOffline(frame: CGRect.zero,showLine: true)
+                user_vc.setup_vwOffline()
+            }
+            else if !userStore.isOffline{
+
+                user_vc.vwUserStatus = UserVcUserStatusView(frame: CGRect.zero,showLine: true)
+                user_vc.setup_vwUserStatus()
+                user_vc.vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+                
+//                user_vc.
+                
+            }
+            
+            
+            
+        }
 //        if let home_vc = nav_vc.children[0] as? HomeVC {
 //            // Trigger action for HomeVC selection
 //

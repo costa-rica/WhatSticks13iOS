@@ -115,9 +115,6 @@ class HomeVC: TemplateVC {
             self.templateAlert(alertTitle: "", alertMessage: "No location")
         }
 
-        
-        
-
     }
     
     

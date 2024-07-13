@@ -58,7 +58,6 @@ class UserVcFindAppleHealthPermissionsView: UIView {
     
 }
 
-
 class UserVcLocationDayWeather: UIView {
     
     weak var delegate: UserVcLocationDayWeatherDelegate?
@@ -220,9 +219,11 @@ class UserVcLocationDayWeather: UIView {
     }
     
     private func sendUpdateDictToApi(updateDict:[String:String]){
+        print("- (in sendUpdateDictToApi) sending user location to api ")
         self.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
             switch resultString{
             case .success(_):
+                print(" (in sendUpdateDictToApi) success")
                 DispatchQueue.main.async{
                     self.delegate?.removeSpinner()
                     self.swtchLocTrackReoccurring.isOn=true
@@ -232,6 +233,7 @@ class UserVcLocationDayWeather: UIView {
                 self.delegate?.templateAlert(alertTitle: "Success!", alertMessage: "", backScreen: false)
                 
             case let .failure(userStoreError):
+                print(" (in sendUpdateDictToApi) fail")
                 switch userStoreError {
                 case .failedToReceiveExpectedResponse:
                     DispatchQueue.main.async{
@@ -347,242 +349,389 @@ protocol UserVcLocationDayWeatherDelegate: AnyObject {
 
 
 
-
-
-
-/* Probably Delete when ready */
-
-class TestViewWithSwitch: UIView {
-    let label1 = UILabel()
-    let label2 = UILabel()
-    let weatherSwitch = UISwitch()
-
+class UserVcOffline: UIView {
+    
+    var showLine:Bool!
+    let vwOfflineLine = UIView()
+    
+    let lblOfflineTitle = UILabel()
+    let btnConnectDevice = UIButton()
+    let lblDescriptionTitle = UILabel()
+    let lblDescription = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        // This triggers as soon as the app starts
+        showLine=false
+        setup_UserVcOfflineViews()
+    }
+    // New initializer
+    init(frame: CGRect, showLine: Bool) {
+        self.showLine = showLine
+        super.init(frame: frame)
+        setup_UserVcOfflineViews_lineOption()
+        setup_UserVcOfflineViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup_UserVcOfflineViews()
+    }
+    
+    private func setup_UserVcOfflineViews_lineOption(){
+        vwOfflineLine.accessibilityIdentifier = "vwOfflineLine"
+        vwOfflineLine.translatesAutoresizingMaskIntoConstraints = false
+        vwOfflineLine.backgroundColor = UIColor(named: "lineColor")
+        self.addSubview(vwOfflineLine)
+        NSLayoutConstraint.activate([
+            vwOfflineLine.topAnchor.constraint(equalTo: self.topAnchor),
+            vwOfflineLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            vwOfflineLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            vwOfflineLine.heightAnchor.constraint(equalToConstant: 1),
+        ])
+    }
+    
+    private func setup_UserVcOfflineViews(){
+        lblOfflineTitle.accessibilityIdentifier="lblOfflineTitle"
+        lblOfflineTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblOfflineTitle.text = "Currently offline"
+        lblOfflineTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+        lblOfflineTitle.numberOfLines=0
+        self.addSubview(lblOfflineTitle)
+        
+        btnConnectDevice.accessibilityIdentifier = "btnConnectDevice"
+        btnConnectDevice.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnConnectDevice)
+        btnConnectDevice.setTitle("Connect device", for: .normal)
+        btnConnectDevice.layer.borderColor = UIColor.systemBlue.cgColor
+        btnConnectDevice.layer.borderWidth = 2
+        btnConnectDevice.backgroundColor = .systemBlue
+        btnConnectDevice.layer.cornerRadius = 10
+        
+        lblDescriptionTitle.accessibilityIdentifier="lblDescriptionTitle"
+        lblDescriptionTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblDescriptionTitle.text = "Why do I want to connect device?"
+        lblDescriptionTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
+        lblDescriptionTitle.numberOfLines=0
+        self.addSubview(lblDescriptionTitle)
+        
+        lblDescription.accessibilityIdentifier="lblDescription"
+        lblDescription.translatesAutoresizingMaskIntoConstraints = false
+        lblDescription.text = "If you would like to see your dashboard you will need to connect your device so your data can be processed."
+        lblDescription.numberOfLines=0
+        self.addSubview(lblDescription)
+        
+        if showLine{
+            lblOfflineTitle.topAnchor.constraint(equalTo: vwOfflineLine.bottomAnchor, constant: heightFromPct(percent: 5)).isActive=true
+        } else {
+            lblOfflineTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)).isActive=true
+        }
+        
+        NSLayoutConstraint.activate([
+//            lblOfflineTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblOfflineTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblOfflineTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            btnConnectDevice.topAnchor.constraint(equalTo: lblOfflineTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+            btnConnectDevice.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            btnConnectDevice.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            
+            lblDescriptionTitle.topAnchor.constraint(equalTo: btnConnectDevice.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblDescriptionTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblDescriptionTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            
+            lblDescription.topAnchor.constraint(equalTo: lblDescriptionTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            lblDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -2))
+            
+        ])
+        
+    }
+    
+}
+
+
+class UserVcUserStatusView: UIView {
+
+    var showLine:Bool!
+    let vwUserStatusLine = UIView()
+    
+    var userStore: UserStore!
+    let lblTitleUserStatus = UILabel()
+
+    let stckVwUser = UIStackView()
+
+    let stckVwUsername = UIStackView()
+    let lblUsername = UILabel()
+    let btnUsernameFilled = UIButton()
+    
+    let stckVwRecordCount = UIStackView()
+    let lblRecordCount = UILabel()
+    let btnRecordCountFilled = UIButton()
+    
+    var constraints_NO_VwRegisterButton = [NSLayoutConstraint]()
+    
+    let vwRegisterButton = UserVcRegisterButton()
+    var constraints_YES_VwRegisterButton = [NSLayoutConstraint]()
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // This triggers as soon as the app starts
+        self.showLine = false
+        setup_UserVcAccountView()
+    }
+    init(frame: CGRect, showLine: Bool) {
+        self.showLine = showLine
+        super.init(frame: frame)
+        setup_UserVcAccountView_lineOption()
+        setup_UserVcAccountView()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupView()
+        setup_UserVcAccountView()
     }
-
-    func setupView() {
-        weatherSwitch.translatesAutoresizingMaskIntoConstraints = false
-        weatherSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
-        self.addSubview(weatherSwitch)
+    
+    private func setup_UserVcAccountView_lineOption(){
+        vwUserStatusLine.accessibilityIdentifier = "vwUserStatusLine"
+        vwUserStatusLine.translatesAutoresizingMaskIntoConstraints = false
+        vwUserStatusLine.backgroundColor = UIColor(named: "lineColor")
+        self.addSubview(vwUserStatusLine)
         NSLayoutConstraint.activate([
-            weatherSwitch.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            weatherSwitch.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            vwUserStatusLine.topAnchor.constraint(equalTo: self.topAnchor),
+            vwUserStatusLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            vwUserStatusLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            vwUserStatusLine.heightAnchor.constraint(equalToConstant: 1),
         ])
     }
     
-    @objc private func switchValueChanged(_ sender: UISwitch) {
-        print("Switch value changed: \(sender.isOn)")
+
+    private func setup_UserVcAccountView(){
+        userStore = UserStore.shared
+
+        lblTitleUserStatus.accessibilityIdentifier="lblTitleUserStatus"
+        lblTitleUserStatus.text = "Current account status"
+        lblTitleUserStatus.translatesAutoresizingMaskIntoConstraints=false
+        lblTitleUserStatus.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+        lblTitleUserStatus.numberOfLines = 0
+        self.addSubview(lblTitleUserStatus)
+
+        stckVwUser.accessibilityIdentifier = "stckVwUser"
+        stckVwUser.translatesAutoresizingMaskIntoConstraints=false
+
+        stckVwUser.axis = .vertical
+        stckVwUser.alignment = .fill
+        stckVwUser.distribution = .fillEqually
+        stckVwUser.spacing = 10
+
+        stckVwUsername.accessibilityIdentifier = "stckVwUser"
+        stckVwUsername.translatesAutoresizingMaskIntoConstraints=false
+        stckVwUsername.axis = .horizontal
+        stckVwUsername.alignment = .fill
+        stckVwUsername.distribution = .fill
+        stckVwUsername.spacing = 10
+
+        stckVwRecordCount.accessibilityIdentifier = "stckVwRecordCount"
+        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
+        stckVwRecordCount.axis = .horizontal
+        stckVwRecordCount.alignment = .fill
+        stckVwRecordCount.distribution = .fill
+        stckVwRecordCount.spacing = 10
+
+        lblUsername.accessibilityIdentifier="lblUsername"
+        lblUsername.text = "username"
+        lblUsername.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblUsername.translatesAutoresizingMaskIntoConstraints=false
+        lblUsername.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
+        /* there is also setContentCompressionResistancePriority */
+
+        btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
+        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
+            btnUsernameFilled.titleLabel?.font = font
+        }
+        btnUsernameFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
+        btnUsernameFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
+        btnUsernameFilled.layer.borderWidth = 1
+        btnUsernameFilled.layer.cornerRadius = 5
+        btnUsernameFilled.translatesAutoresizingMaskIntoConstraints = false
+        btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
+
+        stckVwUsername.addArrangedSubview(lblUsername)
+        stckVwUsername.addArrangedSubview(btnUsernameFilled)
+
+        stckVwRecordCount.accessibilityIdentifier = "stckVwUser"
+        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
+
+        lblRecordCount.accessibilityIdentifier="lblRecordCount"
+        lblRecordCount.text = "record count"
+        lblRecordCount.font = UIFont(name: "ArialRoundedMTBold", size: 15)
+        lblRecordCount.translatesAutoresizingMaskIntoConstraints=false
+        lblRecordCount.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
+
+
+        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
+        btnRecordCountFilled.setTitle("0", for: .normal)
+        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
+            btnRecordCountFilled.titleLabel?.font = font
+        }
+        btnRecordCountFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
+        btnRecordCountFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
+        btnRecordCountFilled.layer.borderWidth = 1
+        btnRecordCountFilled.layer.cornerRadius = 5
+        btnRecordCountFilled.translatesAutoresizingMaskIntoConstraints = false
+        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
+
+        stckVwRecordCount.addArrangedSubview(lblRecordCount)
+        stckVwRecordCount.addArrangedSubview(btnRecordCountFilled)
+
+        stckVwUser.addArrangedSubview(stckVwUsername)
+        stckVwUser.addArrangedSubview(stckVwRecordCount)
+
+        self.addSubview(stckVwUser)
+
+        
+        if showLine{
+            lblTitleUserStatus.topAnchor.constraint(equalTo: vwUserStatusLine.bottomAnchor, constant: heightFromPct(percent: 5)).isActive=true
+        } else {
+            lblTitleUserStatus.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)).isActive=true
+        }
+        
+        
+        NSLayoutConstraint.activate([
+
+//            lblTitleUserStatus.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblTitleUserStatus.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: 2)),
+            lblTitleUserStatus.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+
+
+            stckVwUser.topAnchor.constraint(equalTo: lblTitleUserStatus.bottomAnchor,constant: heightFromPct(percent: 2)),
+            stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+//            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+
+            btnUsernameFilled.widthAnchor.constraint(lessThanOrEqualTo: btnRecordCountFilled.widthAnchor)
+            ])
+        
+        
+        constraints_NO_VwRegisterButton = [
+            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+        ]
+        constraints_YES_VwRegisterButton = [
+
+        ]
+        
+
+        
+        
     }
+    
+    
+    
+
 }
 
 
+class UserVcRegisterButton: UIView {
+
+    
+    let lblWhyUsernameTitle = UILabel()
+    let lblWhyUsernameDescription = UILabel()
+    
+    let btnRegister = UIButton()
+    
+    let lblWhyRegisterTitle = UILabel()
+    let lblWhyRegisterDescription = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // This triggers as soon as the app starts
+        setup_UserVcRegisterButton()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup_UserVcRegisterButton()
+    }
+    
+    
+    private func setup_UserVcRegisterButtonViewDisclaimer(){
+        lblWhyUsernameTitle.accessibilityIdentifier="lblWhyUsernameTitle"
+        lblWhyUsernameTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblWhyUsernameTitle.text = "Why do I have a username?"
+        lblWhyUsernameTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
+        lblWhyUsernameTitle.numberOfLines=0
+        self.addSubview(lblWhyUsernameTitle)
+        
+        lblWhyUsernameDescription.accessibilityIdentifier="lblWhyUsernameDescription"
+        lblWhyUsernameDescription.translatesAutoresizingMaskIntoConstraints = false
+        lblWhyUsernameDescription.text = "This ID is used to keep track of the analyzed data. It does not have any personal information."
+        lblWhyUsernameDescription.numberOfLines=0
+        self.addSubview(lblWhyUsernameDescription)
+        NSLayoutConstraint.activate([
+            lblWhyUsernameTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            lblWhyUsernameTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblWhyUsernameTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            lblWhyUsernameDescription.topAnchor.constraint(equalTo: lblWhyUsernameTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblWhyUsernameDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblWhyUsernameDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            ])
+    }
+    
+    private func setup_UserVcRegisterButton(){
+
+        btnRegister.accessibilityIdentifier = "btnRegister"
+        btnRegister.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnRegister)
+        btnRegister.setTitle("Register", for: .normal)
+        btnRegister.layer.borderColor = UIColor.systemBlue.cgColor
+        btnRegister.layer.borderWidth = 2
+        btnRegister.backgroundColor = .systemBlue
+        btnRegister.layer.cornerRadius = 10
+        
+        lblWhyRegisterTitle.accessibilityIdentifier="lblWhyRegisterTitle"
+        lblWhyRegisterTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblWhyRegisterTitle.text = "Why Register?"
+        lblWhyRegisterTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
+        lblWhyRegisterTitle.numberOfLines=0
+        self.addSubview(lblWhyRegisterTitle)
+        
+        lblWhyRegisterDescription.accessibilityIdentifier="lblWhyRegisterDescription"
+        lblWhyRegisterDescription.translatesAutoresizingMaskIntoConstraints = false
+        lblWhyRegisterDescription.text = "Creating an account will allow you to access your user page on the what-sticks.com website where you can download files with the daily values for each variable used to calculate your correlations."
+        lblWhyRegisterDescription.numberOfLines=0
+        self.addSubview(lblWhyRegisterDescription)
+        
+        NSLayoutConstraint.activate([
+
+            btnRegister.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
+            btnRegister.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            btnRegister.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            
+            lblWhyRegisterTitle.topAnchor.constraint(equalTo: btnRegister.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblWhyRegisterTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblWhyRegisterTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            
+            
+            lblWhyRegisterDescription.topAnchor.constraint(equalTo: lblWhyRegisterTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
+            lblWhyRegisterDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lblWhyRegisterDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            lblWhyRegisterDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -2))
+            
+        ])
+        
+    }
+    
+}
 
 
-//
-//class UserVcAccountView: UIView {
-//    let lblRegisterUser = UILabel()
-//    let stckVwUser = UIStackView()
-//    let stckVwUsername = UIStackView()
-//    let stckVwRecordCount = UIStackView()
-//    let lblUsername = UILabel()
-////    let lblUsernameFilled = UILabel()
-//    let btnUsernameFilled = UIButton()
-//    let lblRecordCount = UILabel()
-//    let btnRecordCountFilled = UIButton()
-////    let lblRecordCountFilled = UILabel()
-//    var userStore: UserStore!
-//    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        // This triggers as soon as the app starts
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//        
-//        setup_views()
-//    }
-//    
-//    func setup_views(){
-//        userStore = UserStore.shared
-//        
-//        
-//        lblRegisterUser.accessibilityIdentifier="lblRegisterUser"
-//        lblRegisterUser.text = "Register an account"
-//        lblRegisterUser.translatesAutoresizingMaskIntoConstraints=false
-//        lblRegisterUser.font = UIFont(name: "ArialRoundedMTBold", size: 25)
-//        lblRegisterUser.numberOfLines = 0
-//        self.addSubview(lblRegisterUser)
-//        
-//        
-//        
-//        stckVwUser.accessibilityIdentifier = "stckVwUser"
-//        stckVwUser.translatesAutoresizingMaskIntoConstraints=false
-//        
-//        stckVwUser.axis = .vertical
-//        stckVwUser.alignment = .fill
-//        stckVwUser.distribution = .fillEqually
-//        stckVwUser.spacing = 10
-//        
-//        stckVwUsername.accessibilityIdentifier = "stckVwUser"
-//        stckVwUsername.translatesAutoresizingMaskIntoConstraints=false
-//        stckVwUsername.axis = .horizontal
-//        stckVwUsername.alignment = .fill
-//        stckVwUsername.distribution = .fill
-//        stckVwUsername.spacing = 10
-//        
-//        stckVwRecordCount.accessibilityIdentifier = "stckVwRecordCount"
-//        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
-//        stckVwRecordCount.axis = .horizontal
-//        stckVwRecordCount.alignment = .fill
-//        stckVwRecordCount.distribution = .fill
-//        stckVwRecordCount.spacing = 10
-//        
-//        
-//        lblUsername.accessibilityIdentifier="lblUsername"
-//        lblUsername.text = "username"
-//        lblUsername.font = UIFont(name: "ArialRoundedMTBold", size: 15)
-//        lblUsername.translatesAutoresizingMaskIntoConstraints=false
-//        lblUsername.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
-//        /* there is also setContentCompressionResistancePriority */
-//        
-//        btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
-//        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
-//        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
-//            btnUsernameFilled.titleLabel?.font = font
-//        }
-//        btnUsernameFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
-//        btnUsernameFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
-//        btnUsernameFilled.layer.borderWidth = 1
-//        btnUsernameFilled.layer.cornerRadius = 5
-//        btnUsernameFilled.translatesAutoresizingMaskIntoConstraints = false
-//        btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
-//        
-//        
-//        stckVwUsername.addArrangedSubview(lblUsername)
-//        stckVwUsername.addArrangedSubview(btnUsernameFilled)
-//        
-//        
-//        
-//        stckVwRecordCount.accessibilityIdentifier = "stckVwUser"
-//        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
-//        
-//        lblRecordCount.accessibilityIdentifier="lblRecordCount"
-//        lblRecordCount.text = "record count"
-//        lblRecordCount.font = UIFont(name: "ArialRoundedMTBold", size: 15)
-//        lblRecordCount.translatesAutoresizingMaskIntoConstraints=false
-//        lblRecordCount.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
-//        
-//        
-//        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
-//        btnRecordCountFilled.setTitle("0", for: .normal)
-//        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
-//            btnRecordCountFilled.titleLabel?.font = font
-//        }
-//        btnRecordCountFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
-//        btnRecordCountFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
-//        btnRecordCountFilled.layer.borderWidth = 1
-//        btnRecordCountFilled.layer.cornerRadius = 5
-//        btnRecordCountFilled.translatesAutoresizingMaskIntoConstraints = false
-//        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
-//        
-//
-//        stckVwRecordCount.addArrangedSubview(lblRecordCount)
-//        stckVwRecordCount.addArrangedSubview(btnRecordCountFilled)
-//        
-//        
-//        stckVwUser.addArrangedSubview(stckVwUsername)
-//        stckVwUser.addArrangedSubview(stckVwRecordCount)
-//        
-//        self.addSubview(stckVwUser)
-//
-//        
-//        
-//        NSLayoutConstraint.activate([
-//            
-//            lblRegisterUser.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
-//            lblRegisterUser.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: 2)),
-//            lblRegisterUser.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-//            
-//            
-//            stckVwUser.topAnchor.constraint(equalTo: self.topAnchor),
-//            stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-//            stckVwUser.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-//            stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-//            
-//            btnUsernameFilled.widthAnchor.constraint(lessThanOrEqualTo: btnRecordCountFilled.widthAnchor)
-//            ])
-//        
-//
-//        
-//    }
-//    
-//}
-//
-//class UserVcCurrentlyOfflineView: UIView {
-//    
-//    var userStore: UserStore!
-//    let vwLine = UIView()
-//    let lblTitle = UILabel()
-//    let lblDescription = UILabel()
-//    
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        // This triggers as soon as the app starts
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//        setup_labels()
-//    }
-//    func setup_labels(){
-// 
-//        setup_vwLine()
-//        lblTitle.accessibilityIdentifier="lblTitle"
-//        lblTitle.translatesAutoresizingMaskIntoConstraints = false
-//        lblTitle.text = "Apple Health Permissions"
-//        lblTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
-//        lblTitle.numberOfLines=0
-//        self.addSubview(lblTitle)
-//        
-//        lblDescription.accessibilityIdentifier="lblDescription"
-//        lblDescription.translatesAutoresizingMaskIntoConstraints=false
-//        let text_for_message = "Go to Settings > Health > Data Access & Devices > WhatSticks to grant access.\n\nFor this app to work properly please make sure all data types are allowed."
-//        lblDescription.text = text_for_message
-//        lblDescription.numberOfLines = 0
-//        self.addSubview(lblDescription)
-//        
-//        NSLayoutConstraint.activate([
-//            lblTitle.topAnchor.constraint(equalTo: vwLine.bottomAnchor, constant: heightFromPct(percent: 3)),
-//            lblTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
-//            lblTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-//            
-//            lblDescription.topAnchor.constraint(equalTo: lblTitle.bottomAnchor, constant: heightFromPct(percent: 5)),
-//            lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
-//            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-//        ])
-//    }
-//    
-//    func setup_vwLine(){
-//        vwLine.backgroundColor = UIColor(named: "lineColor")
-//        self.addSubview(vwLine)
-//        vwLine.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            vwLine.bottomAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 5)),
-//            vwLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-//            vwLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-//            vwLine.heightAnchor.constraint(equalToConstant: 1), // Set line thickness
-//            ])
-//    }
-//    
-//}
 
 
 
