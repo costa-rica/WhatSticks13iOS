@@ -9,17 +9,13 @@ import UIKit
 
 enum APIBase:String, CaseIterable {
     case local = "localhost"
-    case dev_10 = "dev_10"
     case dev = "dev"
-    case prod_10 = "prod_10"
     case prod = "prod"
     var urlString:String {
         switch self{
         case .local: return "http://127.0.0.1:5001/"
-        case .dev_10: return "https://dev.api10.what-sticks.com/"
-        case .dev: return "https://dev.api11.what-sticks.com/"
-        case .prod_10: return "https://api10.what-sticks.com/"
-        case .prod: return "https://api11.what-sticks.com/"
+        case .dev: return "https://dev.api13.what-sticks.com/"
+        case .prod: return "https://api13.what-sticks.com/"
         }
     }
 }

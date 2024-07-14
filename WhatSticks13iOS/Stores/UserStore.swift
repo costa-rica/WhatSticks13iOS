@@ -86,6 +86,22 @@ class UserStore {
 //        userDefaults.staset(now, forKey: "lastUpdateTimestamp")
     }
     
+    func assignArryDataSourceObjects(jsonResponse:[String:Any]){
+        print("---- in assignArryDataSourceObjects() ")
+        do {
+            if let jsonData = try? JSONSerialization.data(withJSONObject: jsonResponse["arryDataSourceObjects"] ?? [:], options: []) {
+                print("--- successfully decodeed jsonData")
+                let decoder = JSONDecoder()
+                let array_data_source_obj = try decoder.decode([DataSourceObject].self, from: jsonData)
+                self.arryDataSourceObjects = array_data_source_obj
+                print("--- successfully decodeed arryDataSourceObjects")
+            }
+            }
+            catch {
+                print("failed")
+            }
+        }
+    
     func assignUser(dictUser:[String:Any]){
         print("---- in assignUser() ")
         do {
@@ -436,6 +452,7 @@ class UserStore {
                             }
                         }
                         self.assignUser(dictUser: jsonResult)
+                        self.assignArryDataSourceObjects(jsonResponse: jsonResult)
                         
                         // Ensure completion handler is called on the main queue.
                         DispatchQueue.main.async {

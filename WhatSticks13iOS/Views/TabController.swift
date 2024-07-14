@@ -29,13 +29,15 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     private func setupTabs(){
         let home = self.createNav(with: "Home", and: UIImage(systemName: "house"), vc: HomeVC())
         let dash = self.createNav(with: "Dashboard", and: UIImage(systemName: "clock"), vc: DashboardVC())
+        let manage_data = self.createNav(with: "Manage Data", and: UIImage(systemName: "square.and.arrow.up"), vc: ManageDataVC())
         let user = self.createNav(with: "Manage User", and: UIImage(systemName: "person"), vc: UserVC())
+
         home.tabBarItem.tag = 0
         dash.tabBarItem.tag = 1
-        user.tabBarItem.tag = 2
-//        let user = self.createNav(with: "Manage User", and: UIImage(systemName: "person"), vc: ScrollViewControllerModified02())
-
-        self.setViewControllers([home,dash, user], animated: true)
+        manage_data.tabBarItem.tag = 2
+        user.tabBarItem.tag = 3
+        
+        self.setViewControllers([home,dash, manage_data, user], animated: true)
     }
     
     private func createNav(with title: String, and image: UIImage?, vc: UIViewController) -> UINavigationController{
@@ -92,6 +94,13 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 //            // Trigger action for HomeVC selection
 //
 //        }
+        if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {
+            let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
+            let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
+            manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)
+            manage_data_vc.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
+
+        }
     }
 
 }

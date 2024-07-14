@@ -8,12 +8,19 @@
 import UIKit
 
 class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
+    
+
+    
     var imgLogo:UIImage?
     let imgVwLogo = UIImageView()
     let lblWhatSticks = UILabel()
     let lblDescription = UILabel()
     
-    let vwStatusTemporary = UserStatusTemporaryView(frame: CGRect.zero, showLine: true)
+    let vwHomeVcLine = UIView()
+    let scrollView = UIScrollView()
+    let contentView = UIView()
+    
+    let vwStatusTemporary = UserStatusTemporaryView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +48,10 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
             print("user locations: \(userLocationArray)")
         }
+        
+        setup_vwHomeVcLine()
+        setupScrollView()
+        setupContentView()
         setup_vwStatusTemporary()
     }
 
@@ -66,7 +77,8 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         view.addSubview(lblWhatSticks)
         lblWhatSticks.accessibilityIdentifier="lblWhatSticks"
         NSLayoutConstraint.activate([
-            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor, constant: 20),
+            lblWhatSticks.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 1)),
+            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor, constant: widthFromPct(percent: -1)),
             lblWhatSticks.topAnchor.constraint(equalTo: imgVwLogo.bottomAnchor, constant: -20)
         ])
         lblDescription.text = "The app designed to use data already being collected by your devices and other apps to help you understand your tendencies and habits."
@@ -81,18 +93,53 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
             lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: 10)
         ])
     }
+    private func setup_vwHomeVcLine(){
+        vwHomeVcLine.accessibilityIdentifier = "vwHomeVcLine"
+        vwHomeVcLine.translatesAutoresizingMaskIntoConstraints = false
+        vwHomeVcLine.backgroundColor = UIColor(named: "lineColor")
+        view.addSubview(vwHomeVcLine)
+        NSLayoutConstraint.activate([
+            vwHomeVcLine.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 3)),
+            vwHomeVcLine.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            vwHomeVcLine.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            vwHomeVcLine.heightAnchor.constraint(equalToConstant: 1),
+        ])
+    }
+    func setupScrollView() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: vwHomeVcLine.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    func setupContentView() {
+        contentView.accessibilityIdentifier = "contentView"
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+         NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor) // This ensures vertical scrolling
+        ])
+    }
+
     
     func setup_vwStatusTemporary(){
         print("-- adding vwOffline")
         vwStatusTemporary.accessibilityIdentifier = "vwStatusTemporary"
         vwStatusTemporary.translatesAutoresizingMaskIntoConstraints = false
-//        vwStatusTemporary.backgroundColor = .green
-        view.addSubview(vwStatusTemporary)
+//        vwStatusTemporary.backgroundColor = .purple
+        contentView.addSubview(vwStatusTemporary)
         NSLayoutConstraint.activate([
-            vwStatusTemporary.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 3)),
-            vwStatusTemporary.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
-            vwStatusTemporary.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-//            vw
+            vwStatusTemporary.topAnchor.constraint(equalTo: contentView.topAnchor, constant: heightFromPct(percent: 3)),
+            vwStatusTemporary.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            vwStatusTemporary.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            vwStatusTemporary.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -5))
             ])
     }
     

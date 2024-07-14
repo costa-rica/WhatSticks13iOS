@@ -40,7 +40,7 @@ class UserVcFindAppleHealthPermissionsView: UIView {
             lblTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
             lblTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
             lblTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-    
+            
             lblDescription.topAnchor.constraint(equalTo: lblTitle.bottomAnchor, constant: heightFromPct(percent: 2)),
             lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
             lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 3)),
@@ -63,7 +63,7 @@ class UserVcLocationDayWeather: UIView {
     let stckVwLocTrackReoccurring=UIStackView()
     let lblLocTrackReoccurringSwitch=UILabel()
     let swtchLocTrackReoccurring = UISwitch()
-        
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
@@ -145,7 +145,7 @@ class UserVcLocationDayWeather: UIView {
             stckVwLocTrackReoccurring.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: heightFromPct(percent: -2))
         ])
     }
-
+    
     
     private func manageLocationCollection(){
         print("- accessed manageLocationCollection")
@@ -206,11 +206,11 @@ class UserVcLocationDayWeather: UIView {
             print("* No userStore.user.location_permission_device")
             return
         }
-
+        
         print("--- location_permission_device: \(location_permission_device)")
         print("--- location_permission_ws: \(location_permission_ws)")
-
-
+        
+        
         swtchLocTrackReoccurring.isOn = location_permission_ws
         if swtchLocTrackReoccurring.isOn{
             if locationFetcher.userLocationManagerAuthStatus == "Authorized Always"{
@@ -339,7 +339,7 @@ class UserVcLocationDayWeather: UIView {
                         let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
                         self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
                     }
-
+                    
                 }
             }
         }
@@ -353,7 +353,7 @@ class UserVcLocationDayWeather: UIView {
         alertController.addAction(noAction)
         self.delegate?.presentAlertController(alertController)
     }
-
+    
 }
 
 protocol UserVcLocationDayWeatherDelegate: AnyObject {
@@ -442,7 +442,7 @@ class UserVcOffline: UIView {
         } else {
             viewTopAnchor = self.topAnchor
         }
-
+        
         NSLayoutConstraint.activate([
             lblOfflineTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
             lblOfflineTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
@@ -491,7 +491,7 @@ class UserVcOffline: UIView {
                 self.delegate?.removeSpinner()
             }
         }
-
+        
     }
     
 }
@@ -509,16 +509,16 @@ protocol UserVcOfflineDelegate: AnyObject {
 }
 
 class UserVcUserStatusView: UIView {
-
+    
     var showLine:Bool!
     let vwUserStatusLine = UIView()
     var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
-
+    
     var userStore: UserStore!
     let lblTitleUserStatus = UILabel()
-
+    
     let stckVwUser = UIStackView()
-
+    
     let stckVwUsername = UIStackView()
     let lblUsername = UILabel()
     let btnUsernameFilled = UIButton()
@@ -560,49 +560,49 @@ class UserVcUserStatusView: UIView {
             vwUserStatusLine.heightAnchor.constraint(equalToConstant: 1),
         ])
     }
-
+    
     private func setup_UserVcAccountView(){
         userStore = UserStore.shared
-
+        
         lblTitleUserStatus.accessibilityIdentifier="lblTitleUserStatus"
         lblTitleUserStatus.text = "Current account status"
         lblTitleUserStatus.translatesAutoresizingMaskIntoConstraints=false
         lblTitleUserStatus.font = UIFont(name: "ArialRoundedMTBold", size: 25)
         lblTitleUserStatus.numberOfLines = 0
         self.addSubview(lblTitleUserStatus)
-
+        
         stckVwUser.accessibilityIdentifier = "stckVwUser"
         stckVwUser.translatesAutoresizingMaskIntoConstraints=false
-
+        
         stckVwUser.axis = .vertical
         stckVwUser.alignment = .fill
         stckVwUser.distribution = .fillEqually
         stckVwUser.spacing = 10
-
+        
         stckVwUsername.accessibilityIdentifier = "stckVwUser"
         stckVwUsername.translatesAutoresizingMaskIntoConstraints=false
         stckVwUsername.axis = .horizontal
         stckVwUsername.alignment = .fill
         stckVwUsername.distribution = .fill
         stckVwUsername.spacing = 10
-
+        
         stckVwRecordCount.accessibilityIdentifier = "stckVwRecordCount"
         stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
         stckVwRecordCount.axis = .horizontal
         stckVwRecordCount.alignment = .fill
         stckVwRecordCount.distribution = .fill
         stckVwRecordCount.spacing = 10
-
+        
         lblUsername.accessibilityIdentifier="lblUsername"
         lblUsername.text = "username"
         lblUsername.font = UIFont(name: "ArialRoundedMTBold", size: 15)
         lblUsername.translatesAutoresizingMaskIntoConstraints=false
         lblUsername.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
         /* there is also setContentCompressionResistancePriority */
-
+        
         btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
-//        print("?????? 2 --- > \(userStore.user.username)")
-//        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        //        print("?????? 2 --- > \(userStore.user.username)")
+        //        btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
         if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
             btnUsernameFilled.titleLabel?.font = font
         }
@@ -612,19 +612,19 @@ class UserVcUserStatusView: UIView {
         btnUsernameFilled.layer.cornerRadius = 5
         btnUsernameFilled.translatesAutoresizingMaskIntoConstraints = false
         btnUsernameFilled.accessibilityIdentifier="btnUsernameFilled"
-
+        
         stckVwUsername.addArrangedSubview(lblUsername)
         stckVwUsername.addArrangedSubview(btnUsernameFilled)
-
+        
         stckVwRecordCount.accessibilityIdentifier = "stckVwUser"
         stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
-
+        
         lblRecordCount.accessibilityIdentifier="lblRecordCount"
         lblRecordCount.text = "record count"
         lblRecordCount.font = UIFont(name: "ArialRoundedMTBold", size: 15)
         lblRecordCount.translatesAutoresizingMaskIntoConstraints=false
         lblRecordCount.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
-
+        
         btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
         btnRecordCountFilled.setTitle("0", for: .normal)
         if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
@@ -636,15 +636,15 @@ class UserVcUserStatusView: UIView {
         btnRecordCountFilled.layer.cornerRadius = 5
         btnRecordCountFilled.translatesAutoresizingMaskIntoConstraints = false
         btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
-
+        
         stckVwRecordCount.addArrangedSubview(lblRecordCount)
         stckVwRecordCount.addArrangedSubview(btnRecordCountFilled)
-
+        
         stckVwUser.addArrangedSubview(stckVwUsername)
         stckVwUser.addArrangedSubview(stckVwRecordCount)
-
+        
         self.addSubview(stckVwUser)
-
+        
         if showLine{
             viewTopAnchor = vwUserStatusLine.bottomAnchor
         } else {
@@ -655,13 +655,13 @@ class UserVcUserStatusView: UIView {
             lblTitleUserStatus.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
             lblTitleUserStatus.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: 2)),
             lblTitleUserStatus.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
-
+            
             stckVwUser.topAnchor.constraint(equalTo: lblTitleUserStatus.bottomAnchor,constant: heightFromPct(percent: 2)),
             stckVwUser.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
             stckVwUser.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 3)),
-
+            
             btnUsernameFilled.widthAnchor.constraint(lessThanOrEqualTo: btnRecordCountFilled.widthAnchor)
-            ])
+        ])
         
         
         constraints_NO_VwRegisterButton = [
@@ -674,12 +674,12 @@ class UserVcUserStatusView: UIView {
             vwRegisterButton.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -3)),
         ]
         
-//        if userStore.user.email != nil {
-//            vwRegisterButton.removeFromSuperview()
-//            NSLayoutConstraint.activate(constraints_NO_VwRegisterButton)
-//        } else {
-//            setup_vcRegistrationButton()
-//        }
+        //        if userStore.user.email != nil {
+        //            vwRegisterButton.removeFromSuperview()
+        //            NSLayoutConstraint.activate(constraints_NO_VwRegisterButton)
+        //        } else {
+        //            setup_vcRegistrationButton()
+        //        }
         
     }
     
@@ -701,11 +701,11 @@ class UserVcUserStatusView: UIView {
     
     
     
-
+    
 }
 
 class UserVcRegisterButton: UIView {
-
+    
     weak var delegate: UserVcRegisterButtonDelegate?
     
     let lblWhyUsernameTitle = UILabel()
@@ -750,7 +750,7 @@ class UserVcRegisterButton: UIView {
             lblWhyUsernameDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             lblWhyUsernameDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
-            ])
+        ])
     }
     
     private func setup_UserVcRegisterButton(){
@@ -769,7 +769,7 @@ class UserVcRegisterButton: UIView {
         // Change size of image
         btnRegister.imageView?.layer.transform = CATransform3DMakeScale(1.5,1.5,1.5)
         btnRegister.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 27)
-
+        
         btnRegister.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnRegister.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         
@@ -787,7 +787,7 @@ class UserVcRegisterButton: UIView {
         self.addSubview(lblWhyRegisterDescription)
         
         NSLayoutConstraint.activate([
-
+            
             btnRegister.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
             btnRegister.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
             btnRegister.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -3)),
@@ -841,7 +841,7 @@ class UserVcDelete: UIView {
     let lblDeleteTitle = UILabel()
     let lblDeleteDescription = UILabel()
     let btnDelete = UIButton()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.showLine=false
@@ -855,7 +855,7 @@ class UserVcDelete: UIView {
         setup_UserVcRegisterButtonViewDisclaimer_with_vwDeleteLine()
         setup_UserVcRegisterButton()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
@@ -871,7 +871,7 @@ class UserVcDelete: UIView {
             vwDeleteLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             vwDeleteLine.heightAnchor.constraint(equalToConstant: 1),
         ])
-
+        
         lblDeleteTitle.accessibilityIdentifier="lblDeleteTitle"
         lblDeleteTitle.translatesAutoresizingMaskIntoConstraints = false
         lblDeleteTitle.text = "Delete Account"
@@ -899,7 +899,7 @@ class UserVcDelete: UIView {
             lblDeleteDescription.topAnchor.constraint(equalTo: lblDeleteTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
             lblDeleteDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
             lblDeleteDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            ])
+        ])
     }
     
     private func setup_UserVcRegisterButtonViewDisclaimer(){
@@ -925,11 +925,11 @@ class UserVcDelete: UIView {
             lblDeleteDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             lblDeleteDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             
-            ])
+        ])
     }
     
     private func setup_UserVcRegisterButton(){
-
+        
         btnDelete.accessibilityIdentifier = "btnDelete"
         btnDelete.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(btnDelete)
@@ -942,10 +942,10 @@ class UserVcDelete: UIView {
         btnDelete.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnDelete.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         
-
+        
         
         NSLayoutConstraint.activate([
-
+            
             btnDelete.topAnchor.constraint(equalTo: lblDeleteDescription.bottomAnchor, constant: heightFromPct(percent: 5)),
             btnDelete.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
             btnDelete.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
@@ -965,10 +965,10 @@ class UserVcDelete: UIView {
         }, completion: nil)
         
         print("Touch up inside --> vwRegisterButton")
-
-//        let areYouSureVC = AreYouSureModalVC()
+        
+        //        let areYouSureVC = AreYouSureModalVC()
         let areYouSureVC = AreYouSureModalVC(strForBtnTitle: "Yes, let's delete")
-
+        
         // Set the modal presentation style
         areYouSureVC.modalPresentationStyle = .overCurrentContext
         areYouSureVC.modalTransitionStyle = .crossDissolve
@@ -986,7 +986,7 @@ protocol UserVcDeleteDelegate: AnyObject {
     func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
     func presentAlertController(_ alertController: UIAlertController)
     func touchDown(_ sender: UIButton)
-//    func touchDownProxy(_ sender: UIButton)
+    //    func touchDownProxy(_ sender: UIButton)
     func presentNewView(_ uiViewController: UIViewController)
 }
 
@@ -1002,17 +1002,18 @@ class UserStatusTemporaryView: UIView {
     let vwUserStatusTemporaryLine = UIView()
     var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
     let lblUserStatusTemporaryViewTitle = UILabel()
-    let btnUserStatusTemporaryView = UIButton()
     
-    // News feed
+    let btnUserStatusTemporaryView = UIButton()
     let btnCheckUserDefaultUserLocation = UIButton()
-
+    let btnCheckArryDataSourceObjects = UIButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
         self.showLine = false
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
+        setup_btnCheckArryDataSourceObjects()
     }
     init(frame: CGRect, showLine: Bool) {
         self.showLine = showLine
@@ -1020,11 +1021,13 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView_lineOption()
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
+        setup_btnCheckArryDataSourceObjects()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
+        setup_btnCheckArryDataSourceObjects()
     }
     
     private func setup_UserStatusTemporaryView_lineOption(){
@@ -1039,8 +1042,6 @@ class UserStatusTemporaryView: UIView {
             vwUserStatusTemporaryLine.heightAnchor.constraint(equalToConstant: 1),
         ])
     }
-    
-    
     private func setup_UserStatusTemporaryView(){
         lblUserStatusTemporaryViewTitle.accessibilityIdentifier="lblUserStatusTemporaryViewTitle"
         lblUserStatusTemporaryViewTitle.translatesAutoresizingMaskIntoConstraints = false
@@ -1051,22 +1052,23 @@ class UserStatusTemporaryView: UIView {
         
         btnUserStatusTemporaryView.accessibilityIdentifier = "btnUserStatusTemporaryView"
         btnUserStatusTemporaryView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(btnUserStatusTemporaryView)
         btnUserStatusTemporaryView.setTitle("User values", for: .normal)
-        btnUserStatusTemporaryView.layer.borderColor = UIColor.systemOrange.cgColor
+        let ui_color_btnTmpVw = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
+        btnUserStatusTemporaryView.layer.borderColor = ui_color_btnTmpVw.cgColor
         btnUserStatusTemporaryView.layer.borderWidth = 2
-        btnUserStatusTemporaryView.backgroundColor = .systemOrange
+        btnUserStatusTemporaryView.backgroundColor = ui_color_btnTmpVw
         btnUserStatusTemporaryView.layer.cornerRadius = 10
+        self.addSubview(btnUserStatusTemporaryView)
         
         btnUserStatusTemporaryView.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
-        btnUserStatusTemporaryView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        btnUserStatusTemporaryView.addTarget(self, action: #selector(touchUpInside_User(_:)), for: .touchUpInside)
         
         if showLine{
             viewTopAnchor = vwUserStatusTemporaryLine.bottomAnchor
         } else {
             viewTopAnchor = self.topAnchor
         }
-
+        
         NSLayoutConstraint.activate([
             lblUserStatusTemporaryViewTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
             lblUserStatusTemporaryViewTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
@@ -1076,33 +1078,100 @@ class UserStatusTemporaryView: UIView {
             btnUserStatusTemporaryView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
             btnUserStatusTemporaryView.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
             
-            
         ])
         
     }
-    
-    
-    func setup_btnCheckUserDeafultUserLocaiton(){
+    private func setup_btnCheckUserDeafultUserLocaiton(){
         btnCheckUserDefaultUserLocation.accessibilityIdentifier = "btnCheckUserDefaultUserLocation"
         btnCheckUserDefaultUserLocation.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(btnCheckUserDefaultUserLocation)
         btnCheckUserDefaultUserLocation.setTitle("User Location", for: .normal)
-        btnCheckUserDefaultUserLocation.layer.borderColor = UIColor.systemBlue.cgColor
+        let ui_color_btnUserLoc = UIColor(red: 0.8, green: 0.5, blue: 0.5, alpha: 1.0)
+        btnCheckUserDefaultUserLocation.layer.borderColor = ui_color_btnUserLoc.cgColor
         btnCheckUserDefaultUserLocation.layer.borderWidth = 2
-        btnCheckUserDefaultUserLocation.backgroundColor = .systemBlue
+        btnCheckUserDefaultUserLocation.backgroundColor = ui_color_btnUserLoc
         btnCheckUserDefaultUserLocation.layer.cornerRadius = 10
         
         NSLayoutConstraint.activate([
-//            lblDescription
-            btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: btnUserStatusTemporaryView.bottomAnchor, constant: heightFromPct(percent: 5)),
+            btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: btnUserStatusTemporaryView.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnCheckUserDefaultUserLocation.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnCheckUserDefaultUserLocation.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
-            btnCheckUserDefaultUserLocation.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+//            btnCheckUserDefaultUserLocation.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
         ])
-        
-        
         btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(buttonTouchDown(_:)), for: .touchDown)
         btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchUpInside_location(_:)), for: .touchUpInside)
+    }
+    private func setup_btnCheckArryDataSourceObjects(){
+        btnCheckArryDataSourceObjects.accessibilityIdentifier = "btnCheckArryDataSourceObjects"
+        btnCheckArryDataSourceObjects.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnCheckArryDataSourceObjects)
+        btnCheckArryDataSourceObjects.setTitle("Data Source Objects", for: .normal)
+        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.8, blue: 0.5, alpha: 1.0)
+        btnCheckArryDataSourceObjects.layer.borderColor = ui_color_btnDataSourceObj.cgColor
+        btnCheckArryDataSourceObjects.layer.borderWidth = 2
+        btnCheckArryDataSourceObjects.backgroundColor = ui_color_btnDataSourceObj
+        btnCheckArryDataSourceObjects.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+            btnCheckArryDataSourceObjects.topAnchor.constraint(equalTo: btnCheckUserDefaultUserLocation.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnCheckArryDataSourceObjects.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnCheckArryDataSourceObjects.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            btnCheckArryDataSourceObjects.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+        ])
+        btnCheckArryDataSourceObjects.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnCheckArryDataSourceObjects.addTarget(self, action: #selector(touchUpInside_DataSourceObj(_:)), for: .touchUpInside)
+    }
+    /* user Button */
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        delegate?.touchDown(sender)
+    }
+    
+    @objc func touchUpInside_User(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        let email = userStore.user.email ?? "nil"
+        let username = userStore.user.username ?? "nil"
+        let id = userStore.user.id ?? "nil"
+        let token = userStore.user.token ?? "nil"
+        let adminPermission = userStore.user.admin_permission ?? false
+        let locationPermissionDevice = userStore.user.location_permission_device ?? false
+        let locationPermissionWS = userStore.user.location_permission_ws ?? false
+
+        let concatenatedString = """
+        ---- UserStore.user ----
+        email: \(email)
+        username: \(username)
+        id: \(id)
+        token: \(token)
+        admin_permission: \(adminPermission)
+        location_permission_device: \(locationPermissionDevice)
+        location_permission_ws: \(locationPermissionWS)
+        """
+
+        print(concatenatedString)
+
+        let email_ud = UserDefaults.standard.string(forKey: "email") ?? "nil"
+        let userName_ud = UserDefaults.standard.string(forKey: "userName") ?? "nil"
+        let id_ud = UserDefaults.standard.string(forKey: "id") ?? "nil"
+        let token_ud = UserDefaults.standard.string(forKey: "token") ?? "nil"
+        let adminPermission_ud = UserDefaults.standard.string(forKey: "admin_permission") ?? "nil"
+        let locationPermissionDevice_ud = UserDefaults.standard.string(forKey: "location_permission_device") ?? "nil"
+        let locationPermissionWS_ud = UserDefaults.standard.string(forKey: "location_permission_ws") ?? "nil"
+
+        let concatenatedString_ud = """
+        ---- UserDefaults ----
+        email_ud: \(email_ud)
+        userName_ud: \(userName_ud)
+        id_ud: \(id_ud)
+        token_ud: \(token_ud)
+        admin_permission_ud: \(adminPermission_ud)
+        location_permission_device_ud: \(locationPermissionDevice_ud)
+        location_permission_ws_ud: \(locationPermissionWS_ud)
+        """
+        print(concatenatedString_ud)
+        self.delegate?.templateAlert(alertTitle: "User i:", alertMessage: "\(concatenatedString) \n\n\n\n \(concatenatedString_ud) ",backScreen: false,dismissView: false)
         
     }
     
@@ -1118,48 +1187,36 @@ class UserStatusTemporaryView: UIView {
         } else {
             self.delegate?.templateAlert(alertTitle: "", alertMessage: "No location",backScreen: false,dismissView: false)
         }
-
-    }
-    /* user Button */
-    @objc private func buttonTouchDown(_ sender: UIButton) {
-        delegate?.touchDown(sender)
+        
     }
     
-    @objc func touchUpInside(_ sender: UIButton) {
+    
+    
+    /* Location Button */
+    @objc func touchUpInside_DataSourceObj(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
         }, completion: nil)
-        print("---- user is ?: ")
-        print("email: \(userStore.user.email)")
-        print("username: \(userStore.user.username)")
-        print("id: \(userStore.user.id)")
-        print("token: \(userStore.user.token)")
-        print("admin_permission: \(userStore.user.admin_permission)")
-        print("location_permission_device: \(userStore.user.location_permission_device)")
-        print("location_permission_ws: \(userStore.user.location_permission_ws)")
         
-        print("---- UserDefaults are ----")
-        print("email: \(UserDefaults.standard.string(forKey: "email"))")
-        print("userName: \(UserDefaults.standard.string(forKey: "userName"))")
-        print("id: \(UserDefaults.standard.string(forKey: "id"))")
-        print("token: \(UserDefaults.standard.string(forKey: "token"))")
-        print("admin_permission: \(UserDefaults.standard.string(forKey: "admin_permission"))")
-        print("location_permission_device: \(UserDefaults.standard.string(forKey: "location_permission_device"))")
-        print("location_permission_ws: \(UserDefaults.standard.string(forKey: "location_permission_ws"))")
-
-
+        let name_dso = userStore.arryDataSourceObjects?[0].name ?? "nil"
+        let recordCount_dso = userStore.arryDataSourceObjects?[0].recordCount ?? "nil"
+        let earliestRecordDate_dso = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "nil"
+        
+        let concatenatedString_dso = "name: \(name_dso) \n" + "recordCount: \(recordCount_dso) \n" + "earliestRecorededDate: \(earliestRecordDate_dso)"
+        print("data source object: \(concatenatedString_dso)")
+        
+        self.delegate?.templateAlert(alertTitle: "Data Source Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
+        
     }
     
 }
 
 protocol UserStatusTemporaryViewDelegate: AnyObject {
-    //    func didUpdateWeatherInfo(_ weatherInfo: String)
     func removeSpinner()
     func showSpinner()
     func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
     func presentAlertController(_ alertController: UIAlertController)
     func touchDown(_ sender: UIButton)
-//    func touchDownProxy(_ sender: UIButton)
     func presentNewView(_ uiViewController: UIViewController)
 }
 

@@ -12,7 +12,7 @@ class TemplateVC: UIViewController {
     let vwTopSafeBar = UIView()
     let vwTopBar = UIView()
     let lblScreenName = UILabel()
-    let lblUsername = UILabel()
+//    let lblUsername = UILabel()
 //    let imgVwLogo = UIImageView()
     let vwFooter = UIView()
     var bodySidePaddingPercentage = Float(5.0)
@@ -22,9 +22,9 @@ class TemplateVC: UIViewController {
     var spinnerView: UIView?
     var activityIndicator:UIActivityIndicatorView!
     var lblMessage = UILabel()
-    var imgLogoTrailingAnchor: NSLayoutConstraint!
-    var lblScreenNameTopAnchor: NSLayoutConstraint!
-    var lblUserNameBottomAnchor: NSLayoutConstraint!
+//    var imgLogoTrailingAnchor: NSLayoutConstraint!
+//    var lblScreenNameTopAnchor: NSLayoutConstraint!
+//    var lblUserNameBottomAnchor: NSLayoutConstraint!
     
     var isInitialViewController: Bool = false
      
