@@ -5,6 +5,9 @@
 //  Created by Nick Rodriguez on 31/01/2024.
 //
 
+// To recreated a user location:
+// [["20240713-0624", "37.785834", "-122.406417"], ["20240714-0702", "37.785834", "-122.406417"]]
+
 import Foundation
 import CoreLocation
 
@@ -78,6 +81,8 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         print("-----------------------------------")
     }
     
+    
+    // --- > made edits here 2024-07-14
     func fetchLocation(completion: @escaping (Bool) -> Void) {
         DispatchQueue.global().async {
             if CLLocationManager.locationServicesEnabled() {
@@ -86,7 +91,15 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
                     self.locationFetchCompletion = completion // Store the completion handler
                     self.locationManager.requestLocation() // Asynchronously updates location
                     print("locationFetcher.fetchLocation: case .authorizedAlways, .authorizedWhenInUse:")
-
+                    // --- > made edits here 2024-07-14
+                    /// not sure how the completion handler is working here ??????
+                    if let unwp_locationArray = self.arryHistUserLocation{
+                        print("location: \(unwp_locationArray)")
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
+                    
                 default:
                     completion(false)
                 }
@@ -122,10 +135,11 @@ extension LocationFetcher {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("- acccessed locationManager(didUpdateLocations) ")
         guard let lastLocation = locations.last else {
+            print("- we got past the locationFetchCompletion step 0001")
             locationFetchCompletion?(true) // Call completion with true since location is updated
             locationFetchCompletion = nil // Clear the stored completion handler
             return }
-
+        print("- we got past the locationFetchCompletion step 0002")
         currentLocation = lastLocation.coordinate
         let lastUpdateTimestamp = userDefaults.double(forKey: "lastUpdateTimestamp")
         let now = Date().timeIntervalSince1970
@@ -134,10 +148,12 @@ extension LocationFetcher {
             appendLocationToUserDefaultArryHistUserLocation(lastLocation: lastLocation)
             // Update the timestamp of the last processed update
             userDefaults.set(now, forKey: "lastUpdateTimestamp")
-        } 
+            print("- we got past the locationFetchCompletion step 0003")
+        }
         else{
             locationFetchCompletion?(true) // Call completion with true since location is updated
             locationFetchCompletion = nil // Clear the stored completion handler
+            print("- we got past the locationFetchCompletion step 0004")
         }
     }
     

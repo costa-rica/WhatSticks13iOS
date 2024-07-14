@@ -81,6 +81,9 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "admin_permission")
         UserDefaults.standard.removeObject(forKey: "location_permission_device")
         UserDefaults.standard.removeObject(forKey: "location_permission_ws")
+        UserDefaults.standard.removeObject(forKey: "user_location")
+        UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
+//        userDefaults.staset(now, forKey: "lastUpdateTimestamp")
     }
     
     func assignUser(dictUser:[String:Any]){
@@ -99,7 +102,6 @@ class UserStore {
                     UserDefaults.standard.set(unwp_email, forKey: "email")
                     print("--- successfully decodeed step 3")
                 }
-
                 if let unwp_id = self.user.id {
                     UserDefaults.standard.set(unwp_id, forKey: "id")
                     print("id saved as: \(unwp_id) -- step 5")
@@ -115,6 +117,11 @@ class UserStore {
                 if let unwp_location_permission_ws = self.user.location_permission_ws {
                     UserDefaults.standard.set(unwp_location_permission_ws, forKey: "location_permission_ws")
                     print("unwp_location_permission_ws saved as: \(unwp_location_permission_ws) -- step 8")
+                }
+                if let unwp_token = self.user.token {
+                    UserDefaults.standard.set(unwp_token, forKey: "token")
+                    self.requestStore.token = unwp_token
+                    print("unwp_token saved as: \(unwp_token) -- step 9")
                 }
             }
         }
@@ -191,7 +198,7 @@ class UserStore {
             print("---- Login with email and password ---")
             callLogin(user: self.user) { result_dict_or_error in
                 switch result_dict_or_error {
-                case let .success(jsonDict):
+                case .success(_):
                     self.isOnline=true
                     completion()
                 case let .failure(error):
@@ -481,10 +488,11 @@ class UserStore {
                 return
             }
             do {
-                if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
+                if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
                     DispatchQueue.main.async {
                         self.deleteUserDefaults_User()
-                        completion(.success(jsonResult))
+                        self.assignUser(dictUser: jsonResult)
+                        completion(.success(["alert_message":"successfully deleted"]))
                         print("- callDeleteUser: Successful response: \(jsonResult)")
                     }
                 } else {

@@ -144,7 +144,7 @@ class RegModalVC: TemplateVC {
                     switch result_StringDict_or_error {
                     case let .success(dictString):
                         print("successful response: \(dictString)")
-                        print("? 1 ----> username: \(self.userStore.user.username)")
+//                        print("? 1 ----> username: \(self.userStore.user.username)")
 //                        if let unwp_password = self.user.password{
                         UserDefaults.standard.set(password, forKey: "password")
                         self.userStore.user.password = password
@@ -152,6 +152,24 @@ class RegModalVC: TemplateVC {
 //                        }
                         self.delegate?.vwUserStatus.btnUsernameFilled.setTitle(self.userStore.user.username, for: .normal)
 
+                        OperationQueue.main.addOperation {
+                            if !self.userStore.isOnline, self.userStore.user.email == nil {
+                                self.delegate?.case_option_1_Offline_and_generic_name()
+                                self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                            }else if self.userStore.isOnline, self.userStore.user.email == nil{
+                                print("UserVC offline connected!!! --")
+                                self.delegate?.case_option_2_Online_and_generic_name()
+                            } else if self.userStore.isOnline, self.userStore.user.email != nil{
+                                self.delegate?.case_option_3_Online_and_custom_email()
+                            } else if !self.userStore.isOnline, self.userStore.user.email != nil {
+                                self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                                self.delegate?.case_option_4_Offline_and_custom_email()
+                            }
+                            self.delegate?.removeSpinner()
+                        }
+                        
+                        
+                        
                         self.templateAlert(alertTitle: "Success!", alertMessage: "",dismissView: true)
                     case let .failure(error):
                         self.templateAlert(alertTitle: "Unsuccsessful :/", alertMessage: "\(error.localizedDescription)")
@@ -202,11 +220,15 @@ protocol RegModalVcDelegate: AnyObject {
     func touchDown(_ sender: UIButton)
     func presentNewView(_ uiViewController: UIViewController)
     var vwUserStatus: UserVcUserStatusView {get}
+    func case_option_1_Offline_and_generic_name()
+    func case_option_2_Online_and_generic_name()
+    func case_option_3_Online_and_custom_email()
+    func case_option_4_Offline_and_custom_email()
 }
 
 
 class AreYouSureModalVC: TemplateVC {
-//    weak var delegate: AreYouSureModalVcDelegate?
+    weak var delegate: AreYouSureModalVcDelegate?
     let userStore = UserStore.shared
     
     var vwAreYouSureModalVC = UIView()
@@ -255,12 +277,12 @@ class AreYouSureModalVC: TemplateVC {
         vwAreYouSureModalVC .centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive=true
         vwAreYouSureModalVC .centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive=true
         vwAreYouSureModalVC.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.90).isActive=true
-        vwAreYouSureModalVC.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4).isActive=true
+        vwAreYouSureModalVC.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3).isActive=true
     }
 
     func setup_lblRegister(){
         lblAreYouSureTitle.text = "Are you sure?"
-        lblAreYouSureTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
+        lblAreYouSureTitle.font = UIFont(name: "ArialRoundedMTBold", size: 35)
         lblAreYouSureTitle.numberOfLines = 0
         lblAreYouSureTitle.translatesAutoresizingMaskIntoConstraints=false
         vwAreYouSureModalVC.addSubview(lblAreYouSureTitle)
@@ -273,17 +295,19 @@ class AreYouSureModalVC: TemplateVC {
     }
     
     func setup_btnRegister(){
-        btnAreYouSure.layer.borderColor = UIColor.systemBlue.cgColor
+        btnAreYouSure.layer.borderColor = UIColor.systemRed.cgColor
         btnAreYouSure.layer.borderWidth = 2
         btnAreYouSure.backgroundColor = .systemRed
         btnAreYouSure.layer.cornerRadius = 10
         btnAreYouSure.translatesAutoresizingMaskIntoConstraints = false
         btnAreYouSure.accessibilityIdentifier="btnAreYouSure"
         vwAreYouSureModalVC.addSubview(btnAreYouSure)
-        
-        btnAreYouSure.bottomAnchor.constraint(equalTo: vwAreYouSureModalVC.bottomAnchor, constant: -20).isActive=true
-        btnAreYouSure.centerXAnchor.constraint(equalTo: vwAreYouSureModalVC.centerXAnchor).isActive=true
-        btnAreYouSure.widthAnchor.constraint(equalToConstant: widthFromPct(percent: 80)).isActive=true
+        NSLayoutConstraint.activate([
+//        btnAreYouSure.bottomAnchor.constraint(equalTo: vwAreYouSureModalVC.bottomAnchor, constant: -20),
+        btnAreYouSure.centerYAnchor.constraint(equalTo: vwAreYouSureModalVC.centerYAnchor),
+        btnAreYouSure.centerXAnchor.constraint(equalTo: vwAreYouSureModalVC.centerXAnchor),
+        btnAreYouSure.widthAnchor.constraint(equalToConstant: widthFromPct(percent: 80)),
+        ])
         
         btnAreYouSure.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
         btnAreYouSure.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
@@ -296,14 +320,41 @@ class AreYouSureModalVC: TemplateVC {
         }, completion: nil)
 
             print("Delete account")
-//        userStore.callDeleteUser { result_dictString_or_error in
-//            switch result_dictString_or_error{
-//            case .success(let dictString):
-//                print("string dict: \(dictString)")
-//            case .failure(let error):
-//                print("error: \(error)")
-//            }
-//        }
+        showSpinner()
+        userStore.callDeleteUser { result_dictString_or_error in
+            switch result_dictString_or_error{
+            case .success(let dictString):
+                print("string dict: \(dictString)")
+                self.delegate?.vwUserStatus.btnUsernameFilled.setTitle(self.userStore.user.username, for: .normal)
+                self.delegate?.vwLocationDayWeather.swtchLocTrackReoccurring.isOn = false
+                self.delegate?.vwLocationDayWeather.setLocationSwitchLabelText()
+                OperationQueue.main.addOperation {
+                    if !self.userStore.isOnline, self.userStore.user.email == nil {
+                        self.delegate?.case_option_1_Offline_and_generic_name()
+                        self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                    }else if self.userStore.isOnline, self.userStore.user.email == nil{
+                        print("UserVC offline connected!!! --")
+                        self.delegate?.case_option_2_Online_and_generic_name()
+                        self.delegate?.vwUserStatus.btnUsernameFilled.setTitle(self.userStore.user.username, for: .normal)
+                    } else if self.userStore.isOnline, self.userStore.user.email != nil{
+                        self.delegate?.case_option_3_Online_and_custom_email()
+                        self.delegate?.vwUserStatus.btnUsernameFilled.setTitle(self.userStore.user.username, for: .normal)
+                    } else if !self.userStore.isOnline, self.userStore.user.email != nil {
+                        self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                        self.delegate?.case_option_4_Offline_and_custom_email()
+                    }
+                    self.delegate?.removeSpinner()
+                }
+                
+                
+                
+                self.templateAlert(alertTitle: "Successfully deleted user", alertMessage: "Your app's generic username has no data associated with it.",dismissView: true)
+            case .failure(let error):
+                print("error: \(error)")
+                self.templateAlert(alertTitle: "Failed to delete", alertMessage: "")
+            }
+            self.removeSpinner()
+        }
 
     }
     
@@ -332,14 +383,19 @@ class AreYouSureModalVC: TemplateVC {
 }
 
 
-//protocol AreYouSureModalVcDelegate: AnyObject {
-//    func removeSpinner()
-//    func showSpinner()
-//    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
-//    func presentAlertController(_ alertController: UIAlertController)
-//    func touchDown(_ sender: UIButton)
-//    func presentNewView(_ uiViewController: UIViewController)
-//    var vwUserStatus: UserVcUserStatusView {get}
-//}
+protocol AreYouSureModalVcDelegate: AnyObject {
+    func removeSpinner()
+    func showSpinner()
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+    func presentAlertController(_ alertController: UIAlertController)
+    func touchDown(_ sender: UIButton)
+    func presentNewView(_ uiViewController: UIViewController)
+    var vwUserStatus: UserVcUserStatusView {get}
+    var vwLocationDayWeather: UserVcLocationDayWeather {get}
+    func case_option_1_Offline_and_generic_name()
+    func case_option_2_Online_and_generic_name()
+    func case_option_3_Online_and_custom_email()
+    func case_option_4_Offline_and_custom_email()
+}
 
 

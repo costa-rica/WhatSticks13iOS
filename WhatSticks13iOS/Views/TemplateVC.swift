@@ -84,11 +84,10 @@ class TemplateVC: UIViewController {
     }
     func showSpinner() {
         print("- TemplateVC showSpinnner - ")
-//        spinnerView = UIView(frame: self.view.bounds)
         spinnerView = UIView()
         spinnerView!.translatesAutoresizingMaskIntoConstraints = false
         spinnerView!.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        spinnerView!.accessibilityIdentifier = "spinnerView"
+        spinnerView!.accessibilityIdentifier = "spinnerView-TemplateVC"
         self.view.addSubview(spinnerView!)
         
         activityIndicator = UIActivityIndicatorView(style: .large)

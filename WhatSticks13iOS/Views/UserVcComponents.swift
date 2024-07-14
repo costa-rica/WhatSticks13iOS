@@ -293,6 +293,8 @@ class UserVcLocationDayWeather: UIView {
             print("-- turned off")
             // Are you sure alert; if yes, then sends notification to WSAPI
             alertTurnOffLocationTrackingConfirmation()
+            UserDefaults.standard.removeObject(forKey: "user_location")
+            UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
         }
     }
     
@@ -471,17 +473,22 @@ class UserVcOffline: UIView {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
         }, completion: nil)
-        
+        delegate?.showSpinner()
         userStore.connectDevice {
-            if !self.userStore.isOnline, self.userStore.user.email == nil {
-                self.delegate?.case_option_1_Offline_and_generic_name()
-            }else if self.userStore.isOnline, self.userStore.user.email == nil{
-                print("UserVC offline connected!!! --")
-                self.delegate?.case_option_2_Online_and_generic_name()
-            } else if self.userStore.isOnline, self.userStore.user.email != nil{
-                self.delegate?.case_option_3_Online_and_custom_email()
-            } else if !self.userStore.isOnline, self.userStore.user.email != nil {
-                self.delegate?.case_option_4_Offline_and_custom_email()
+            OperationQueue.main.addOperation {
+                if !self.userStore.isOnline, self.userStore.user.email == nil {
+                    self.delegate?.case_option_1_Offline_and_generic_name()
+                    self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                }else if self.userStore.isOnline, self.userStore.user.email == nil{
+                    print("UserVC offline connected!!! --")
+                    self.delegate?.case_option_2_Online_and_generic_name()
+                } else if self.userStore.isOnline, self.userStore.user.email != nil{
+                    self.delegate?.case_option_3_Online_and_custom_email()
+                } else if !self.userStore.isOnline, self.userStore.user.email != nil {
+                    self.delegate?.templateAlert(alertTitle: "No connection", alertMessage: "", backScreen: false, dismissView: false)
+                    self.delegate?.case_option_4_Offline_and_custom_email()
+                }
+                self.delegate?.removeSpinner()
             }
         }
 
@@ -965,7 +972,7 @@ class UserVcDelete: UIView {
         // Set the modal presentation style
         areYouSureVC.modalPresentationStyle = .overCurrentContext
         areYouSureVC.modalTransitionStyle = .crossDissolve
-
+        areYouSureVC.delegate = self.delegate as? any AreYouSureModalVcDelegate
         self.delegate?.presentNewView(areYouSureVC)
         
     }
@@ -973,6 +980,179 @@ class UserVcDelete: UIView {
 }
 
 protocol UserVcDeleteDelegate: AnyObject {
+    //    func didUpdateWeatherInfo(_ weatherInfo: String)
+    func removeSpinner()
+    func showSpinner()
+    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+    func presentAlertController(_ alertController: UIAlertController)
+    func touchDown(_ sender: UIButton)
+//    func touchDownProxy(_ sender: UIButton)
+    func presentNewView(_ uiViewController: UIViewController)
+}
+
+
+
+
+/* Maintanence -- for delete */
+
+class UserStatusTemporaryView: UIView {
+    weak var delegate: UserStatusTemporaryViewDelegate?
+    let userStore = UserStore.shared
+    var showLine:Bool!
+    let vwUserStatusTemporaryLine = UIView()
+    var viewTopAnchor:NSLayoutAnchor<NSLayoutYAxisAnchor>!
+    let lblUserStatusTemporaryViewTitle = UILabel()
+    let btnUserStatusTemporaryView = UIButton()
+    
+    // News feed
+    let btnCheckUserDefaultUserLocation = UIButton()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // This triggers as soon as the app starts
+        self.showLine = false
+        setup_UserStatusTemporaryView()
+        setup_btnCheckUserDeafultUserLocaiton()
+    }
+    init(frame: CGRect, showLine: Bool) {
+        self.showLine = showLine
+        super.init(frame: frame)
+        setup_UserStatusTemporaryView_lineOption()
+        setup_UserStatusTemporaryView()
+        setup_btnCheckUserDeafultUserLocaiton()
+    }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup_UserStatusTemporaryView()
+        setup_btnCheckUserDeafultUserLocaiton()
+    }
+    
+    private func setup_UserStatusTemporaryView_lineOption(){
+        vwUserStatusTemporaryLine.accessibilityIdentifier = "vwUserStatusTemporaryLine"
+        vwUserStatusTemporaryLine.translatesAutoresizingMaskIntoConstraints = false
+        vwUserStatusTemporaryLine.backgroundColor = UIColor(named: "lineColor")
+        self.addSubview(vwUserStatusTemporaryLine)
+        NSLayoutConstraint.activate([
+            vwUserStatusTemporaryLine.topAnchor.constraint(equalTo: self.topAnchor),
+            vwUserStatusTemporaryLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            vwUserStatusTemporaryLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            vwUserStatusTemporaryLine.heightAnchor.constraint(equalToConstant: 1),
+        ])
+    }
+    
+    
+    private func setup_UserStatusTemporaryView(){
+        lblUserStatusTemporaryViewTitle.accessibilityIdentifier="lblUserStatusTemporaryViewTitle"
+        lblUserStatusTemporaryViewTitle.translatesAutoresizingMaskIntoConstraints = false
+        lblUserStatusTemporaryViewTitle.text = "Print User To Terminal"
+        lblUserStatusTemporaryViewTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+        lblUserStatusTemporaryViewTitle.numberOfLines=0
+        self.addSubview(lblUserStatusTemporaryViewTitle)
+        
+        btnUserStatusTemporaryView.accessibilityIdentifier = "btnUserStatusTemporaryView"
+        btnUserStatusTemporaryView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnUserStatusTemporaryView)
+        btnUserStatusTemporaryView.setTitle("User values", for: .normal)
+        btnUserStatusTemporaryView.layer.borderColor = UIColor.systemOrange.cgColor
+        btnUserStatusTemporaryView.layer.borderWidth = 2
+        btnUserStatusTemporaryView.backgroundColor = .systemOrange
+        btnUserStatusTemporaryView.layer.cornerRadius = 10
+        
+        btnUserStatusTemporaryView.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnUserStatusTemporaryView.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        
+        if showLine{
+            viewTopAnchor = vwUserStatusTemporaryLine.bottomAnchor
+        } else {
+            viewTopAnchor = self.topAnchor
+        }
+
+        NSLayoutConstraint.activate([
+            lblUserStatusTemporaryViewTitle.topAnchor.constraint(equalTo: viewTopAnchor, constant: heightFromPct(percent: 3)),
+            lblUserStatusTemporaryViewTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            lblUserStatusTemporaryViewTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            
+            btnUserStatusTemporaryView.topAnchor.constraint(equalTo: lblUserStatusTemporaryViewTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnUserStatusTemporaryView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
+            btnUserStatusTemporaryView.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
+            
+            
+        ])
+        
+    }
+    
+    
+    func setup_btnCheckUserDeafultUserLocaiton(){
+        btnCheckUserDefaultUserLocation.accessibilityIdentifier = "btnCheckUserDefaultUserLocation"
+        btnCheckUserDefaultUserLocation.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnCheckUserDefaultUserLocation)
+        btnCheckUserDefaultUserLocation.setTitle("User Location", for: .normal)
+        btnCheckUserDefaultUserLocation.layer.borderColor = UIColor.systemBlue.cgColor
+        btnCheckUserDefaultUserLocation.layer.borderWidth = 2
+        btnCheckUserDefaultUserLocation.backgroundColor = .systemBlue
+        btnCheckUserDefaultUserLocation.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+//            lblDescription
+            btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: btnUserStatusTemporaryView.bottomAnchor, constant: heightFromPct(percent: 5)),
+            btnCheckUserDefaultUserLocation.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnCheckUserDefaultUserLocation.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            btnCheckUserDefaultUserLocation.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+        ])
+        
+        
+        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(buttonTouchDown(_:)), for: .touchDown)
+        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchUpInside_location(_:)), for: .touchUpInside)
+        
+    }
+    
+    /* Location Button */
+    @objc func touchUpInside_location(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+            print(userLocationArray)
+            self.delegate?.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)",backScreen: false,dismissView: false)
+        } else {
+            self.delegate?.templateAlert(alertTitle: "", alertMessage: "No location",backScreen: false,dismissView: false)
+        }
+
+    }
+    /* user Button */
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        delegate?.touchDown(sender)
+    }
+    
+    @objc func touchUpInside(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        print("---- user is ?: ")
+        print("email: \(userStore.user.email)")
+        print("username: \(userStore.user.username)")
+        print("id: \(userStore.user.id)")
+        print("token: \(userStore.user.token)")
+        print("admin_permission: \(userStore.user.admin_permission)")
+        print("location_permission_device: \(userStore.user.location_permission_device)")
+        print("location_permission_ws: \(userStore.user.location_permission_ws)")
+        
+        print("---- UserDefaults are ----")
+        print("email: \(UserDefaults.standard.string(forKey: "email"))")
+        print("userName: \(UserDefaults.standard.string(forKey: "userName"))")
+        print("id: \(UserDefaults.standard.string(forKey: "id"))")
+        print("token: \(UserDefaults.standard.string(forKey: "token"))")
+        print("admin_permission: \(UserDefaults.standard.string(forKey: "admin_permission"))")
+        print("location_permission_device: \(UserDefaults.standard.string(forKey: "location_permission_device"))")
+        print("location_permission_ws: \(UserDefaults.standard.string(forKey: "location_permission_ws"))")
+
+
+    }
+    
+}
+
+protocol UserStatusTemporaryViewDelegate: AnyObject {
     //    func didUpdateWeatherInfo(_ weatherInfo: String)
     func removeSpinner()
     func showSpinner()

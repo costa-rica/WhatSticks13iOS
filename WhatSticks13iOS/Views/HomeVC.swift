@@ -7,14 +7,13 @@
 
 import UIKit
 
-class HomeVC: TemplateVC {
+class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
     var imgLogo:UIImage?
     let imgVwLogo = UIImageView()
     let lblWhatSticks = UILabel()
     let lblDescription = UILabel()
     
-    // News feed
-    let btnCheckUserDefaultUserLocation = UIButton()
+    let vwStatusTemporary = UserStatusTemporaryView(frame: CGRect.zero, showLine: true)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +24,7 @@ class HomeVC: TemplateVC {
         locationFetcher.requestLocationPermission()
         let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
-//        userStore.connectDevice()
-        
-        
+        vwStatusTemporary.delegate = self
         
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
@@ -36,14 +33,15 @@ class HomeVC: TemplateVC {
         self.showSpinner()
         userStore.connectDevice {
             print("- finiehd connecting device")
-            self.removeSpinner()
+            OperationQueue.main.addOperation {
+                self.removeSpinner()
+            }
         }
         print("user name is \(userStore.user.username!)")
         if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
             print("user locations: \(userLocationArray)")
         }
-        setup_btnCheckUserDeafultUserLocaiton()
-
+        setup_vwStatusTemporary()
     }
 
     func setup_HomeScreen(){
@@ -52,7 +50,6 @@ class HomeVC: TemplateVC {
             return
         }
         imgVwLogo.image = imgLogo.scaleImage(toSize: CGSize(width: 50, height: 50))
-//        imgVwLogo.image = imgLogo
         imgVwLogo.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imgVwLogo)
         imgVwLogo.accessibilityIdentifier = "imgVwLogo"
@@ -75,54 +72,32 @@ class HomeVC: TemplateVC {
         lblDescription.text = "The app designed to use data already being collected by your devices and other apps to help you understand your tendencies and habits."
 //        lblDescription.font = UIFont(name: "ArialRoundedMT", size: 17)
         lblDescription.numberOfLines = 0
-//        lblDescription.lin
         lblDescription.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(lblDescription)
         lblDescription.accessibilityIdentifier="lblDescription"
         NSLayoutConstraint.activate([
-//            lblDescription.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor, constant: 20),
             lblDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
             lblDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: 10)
         ])
     }
     
-    func setup_btnCheckUserDeafultUserLocaiton(){
-        btnCheckUserDefaultUserLocation.accessibilityIdentifier = "btnCheckUserDefaultUserLocation"
-        btnCheckUserDefaultUserLocation.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(btnCheckUserDefaultUserLocation)
-        btnCheckUserDefaultUserLocation.setTitle("User Location", for: .normal)
-        btnCheckUserDefaultUserLocation.layer.borderColor = UIColor.systemBlue.cgColor
-        btnCheckUserDefaultUserLocation.layer.borderWidth = 2
-        btnCheckUserDefaultUserLocation.backgroundColor = .systemBlue
-        btnCheckUserDefaultUserLocation.layer.cornerRadius = 10
-        
+    func setup_vwStatusTemporary(){
+        print("-- adding vwOffline")
+        vwStatusTemporary.accessibilityIdentifier = "vwStatusTemporary"
+        vwStatusTemporary.translatesAutoresizingMaskIntoConstraints = false
+//        vwStatusTemporary.backgroundColor = .green
+        view.addSubview(vwStatusTemporary)
         NSLayoutConstraint.activate([
-//            lblDescription
-            btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 5)),
-            btnCheckUserDefaultUserLocation.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            btnCheckUserDefaultUserLocation.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
-        
-        
-        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        
+            vwStatusTemporary.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 3)),
+            vwStatusTemporary.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            vwStatusTemporary.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+//            vw
+            ])
     }
     
-    @objc func touchUpInside(_ sender: UIButton) {
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
-            sender.transform = .identity
-        }, completion: nil)
-        
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
-            print(userLocationArray)
-            self.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)")
-        } else {
-            self.templateAlert(alertTitle: "", alertMessage: "No location")
-        }
-
-    }
+    
+    
     
     
 }

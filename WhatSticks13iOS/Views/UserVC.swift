@@ -7,7 +7,7 @@
 
 import UIKit
 
-class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegate, UserVcRegisterButtonDelegate, UserVcDeleteDelegate, RegModalVcDelegate{
+class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegate, UserVcRegisterButtonDelegate, UserVcDeleteDelegate, RegModalVcDelegate, AreYouSureModalVcDelegate{
 
     var userStore: UserStore!
     
@@ -75,7 +75,7 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
             vwUserDeleteAccount.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -10)),
         ]
         constraints_Offline_YesEmail = [
-            vwUserStatus.topAnchor.constraint(equalTo: vwLocationDayWeather.bottomAnchor),
+            vwUserStatus.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
             vwUserStatus.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             vwUserStatus.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
@@ -117,7 +117,6 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor) // This ensures vertical scrolling
         ])
     }
-    
     func setup_vwFindAppleHealthPermissions(){
         vwFindAppleHealthPermissions.accessibilityIdentifier = "vwFindAppleHealthPermissions"
         vwFindAppleHealthPermissions.translatesAutoresizingMaskIntoConstraints = false
@@ -128,23 +127,10 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
             vwFindAppleHealthPermissions.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
-//    func setup_vwUserVcLine01(){
-//        vwUserVcLine01.accessibilityIdentifier = "vwUserVcLine01"
-//        vwUserVcLine01.translatesAutoresizingMaskIntoConstraints = false
-//        vwUserVcLine01.backgroundColor = UIColor(named: "lineColor")
-//        contentView.addSubview(vwUserVcLine01)
-//        NSLayoutConstraint.activate([
-//            vwUserVcLine01.topAnchor.constraint(equalTo: vwFindAppleHealthPermissions.bottomAnchor),
-//            vwUserVcLine01.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-//            vwUserVcLine01.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-//            vwUserVcLine01.heightAnchor.constraint(equalToConstant: 1),
-//        ])
-//    }
     func setup_vwLocationDayWeather(){
         vwLocationDayWeather.accessibilityIdentifier = "vwLocationDayWeather"
         vwLocationDayWeather.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(vwLocationDayWeather)
-
     }
     func setup_vwOffline(){
         print("-- adding vwOffline")
@@ -208,6 +194,7 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
     func case_option_4_Offline_and_custom_email(){
         remove_optionalViews()
         setup_vwUserStatus()
+        vwUserStatus.remove_vcRegistrationButton()
         vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
         setup_vwOffline()
         NSLayoutConstraint.activate(constraints_Offline_YesEmail)
