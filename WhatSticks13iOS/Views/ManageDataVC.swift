@@ -9,6 +9,8 @@ import UIKit
 
 class ManageDataVC: TemplateVC {
     var userStore: UserStore!
+    var appleHealthDataFetcher:AppleHealthDataFetcher!
+    var healthDataStore: HealthDataStore!
     let lblManageDataVcTitle = UILabel()
     
     let stckVwManageData = UIStackView()
@@ -57,9 +59,13 @@ class ManageDataVC: TemplateVC {
     }
     
     
-    
+    var strStatusMessage=String()
     
     override func viewDidLoad() {
+        userStore = UserStore.shared
+        appleHealthDataFetcher = AppleHealthDataFetcher.shared
+        healthDataStore = HealthDataStore.shared
+        
         setup_TopSafeBar()
         setup_ManageDataVc()
         setup_UserVcAccountView()
@@ -232,9 +238,9 @@ class ManageDataVC: TemplateVC {
 extension ManageDataVC{
     @objc func actionGetStepsData() {
 
-        if swtchAllHistoryIsOn {
-            dtUserHistory = nil
-        } else {
+//        if swtchAllHistoryIsOn {
+//            dtUserHistory = nil
+//        } else {
             dtUserHistory = datePicker.date
             
             let calendar = Calendar.current
@@ -246,7 +252,7 @@ extension ManageDataVC{
                 self.templateAlert(alertMessage: "You must pick a day in the past.")
                 return
             }
-        }
+//        }
         self.showSpinner()
         self.appleHealthDataFetcher.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .stepCount, startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{

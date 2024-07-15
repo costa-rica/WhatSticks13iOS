@@ -38,8 +38,8 @@ class RequestStore {
 //        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         self.urlStore=URLStore()
         //        self.urlStore.apiBase = APIBase.prod
-//                self.urlStore.apiBase = APIBase.dev
-        self.urlStore.apiBase = APIBase.local
+                self.urlStore.apiBase = APIBase.dev
+//        self.urlStore.apiBase = APIBase.local
     }
     
     

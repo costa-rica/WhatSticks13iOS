@@ -1006,6 +1006,7 @@ class UserStatusTemporaryView: UIView {
     let btnUserStatusTemporaryView = UIButton()
     let btnCheckUserDefaultUserLocation = UIButton()
     let btnCheckArryDataSourceObjects = UIButton()
+    let btnDeleteUserDefaults = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -1014,6 +1015,7 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnDeleteUserDefaults()
     }
     init(frame: CGRect, showLine: Bool) {
         self.showLine = showLine
@@ -1022,12 +1024,14 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnDeleteUserDefaults()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnDeleteUserDefaults()
     }
     
     private func setup_UserStatusTemporaryView_lineOption(){
@@ -1045,8 +1049,8 @@ class UserStatusTemporaryView: UIView {
     private func setup_UserStatusTemporaryView(){
         lblUserStatusTemporaryViewTitle.accessibilityIdentifier="lblUserStatusTemporaryViewTitle"
         lblUserStatusTemporaryViewTitle.translatesAutoresizingMaskIntoConstraints = false
-        lblUserStatusTemporaryViewTitle.text = "Print User To Terminal"
-        lblUserStatusTemporaryViewTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+        lblUserStatusTemporaryViewTitle.text = "🚧 For Development Testing 🚧"
+        lblUserStatusTemporaryViewTitle.font = UIFont(name: "ArialRoundedMTBold", size: 20)
         lblUserStatusTemporaryViewTitle.numberOfLines=0
         self.addSubview(lblUserStatusTemporaryViewTitle)
         
@@ -1116,11 +1120,35 @@ class UserStatusTemporaryView: UIView {
             btnCheckArryDataSourceObjects.topAnchor.constraint(equalTo: btnCheckUserDefaultUserLocation.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnCheckArryDataSourceObjects.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnCheckArryDataSourceObjects.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
-            btnCheckArryDataSourceObjects.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+//            btnCheckArryDataSourceObjects.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
         ])
         btnCheckArryDataSourceObjects.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnCheckArryDataSourceObjects.addTarget(self, action: #selector(touchUpInside_DataSourceObj(_:)), for: .touchUpInside)
     }
+    private func setup_btnDeleteUserDefaults(){
+        btnDeleteUserDefaults.accessibilityIdentifier = "btnDeleteUserDefaults"
+        btnDeleteUserDefaults.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnDeleteUserDefaults)
+        btnDeleteUserDefaults.setTitle("Clear UserDefaults", for: .normal)
+        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
+        btnDeleteUserDefaults.layer.borderColor = ui_color_btnDataSourceObj.cgColor
+        btnDeleteUserDefaults.layer.borderWidth = 2
+        btnDeleteUserDefaults.backgroundColor = ui_color_btnDataSourceObj
+        btnDeleteUserDefaults.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+            btnDeleteUserDefaults.topAnchor.constraint(equalTo: btnCheckArryDataSourceObjects.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnDeleteUserDefaults.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnDeleteUserDefaults.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            btnDeleteUserDefaults.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+        ])
+        btnDeleteUserDefaults.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnDeleteUserDefaults.addTarget(self, action: #selector(touchUpInside_DeleteUserDefaults(_:)), for: .touchUpInside)
+    }
+    
+    
+    
+    
     /* user Button */
     @objc private func buttonTouchDown(_ sender: UIButton) {
         delegate?.touchDown(sender)
@@ -1175,7 +1203,6 @@ class UserStatusTemporaryView: UIView {
         
     }
     
-    /* Location Button */
     @objc func touchUpInside_location(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
@@ -1190,9 +1217,6 @@ class UserStatusTemporaryView: UIView {
         
     }
     
-    
-    
-    /* Location Button */
     @objc func touchUpInside_DataSourceObj(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
@@ -1206,6 +1230,17 @@ class UserStatusTemporaryView: UIView {
         print("data source object: \(concatenatedString_dso)")
         
         self.delegate?.templateAlert(alertTitle: "Data Source Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
+        
+    }
+    
+    @objc func touchUpInside_DeleteUserDefaults(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        userStore.deleteUserDefaults_User()
+        
+        self.delegate?.templateAlert(alertTitle: "Deleted UserDefault Values", alertMessage: "",backScreen: false,dismissView: false)
         
     }
     

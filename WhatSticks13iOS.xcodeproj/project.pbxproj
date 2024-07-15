@@ -28,6 +28,7 @@
 		01FF77232C3A99C200D3E93E /* UserVcComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77222C3A99C100D3E93E /* UserVcComponents.swift */; };
 		01FF77CA2C43F4DB00D3E93E /* ManageDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */; };
 		01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */; };
+		01FF77CE2C441F2200D3E93E /* AppleHealthDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CD2C441F2200D3E93E /* AppleHealthDataFetcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		01FF77242C3AA42200D3E93E /* WhatSticks13iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatSticks13iOS.entitlements; sourceTree = "<group>"; };
 		01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageDataVC.swift; sourceTree = "<group>"; };
 		01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
+		01FF77CD2C441F2200D3E93E /* AppleHealthDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleHealthDataFetcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 		01312BE12C30326B0089F9C0 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				01FF77CD2C441F2200D3E93E /* AppleHealthDataFetcher.swift */,
 				01312BE22C3032730089F9C0 /* LocationFetcher.swift */,
 				01312BCF2C2EC4C10089F9C0 /* MiscUtils.swift */,
 			);
@@ -226,6 +229,7 @@
 			files = (
 				01312BB92C2EC1C20089F9C0 /* HomeVC.swift in Sources */,
 				01312BCE2C2EC4B90089F9C0 /* UserVC.swift in Sources */,
+				01FF77CE2C441F2200D3E93E /* AppleHealthDataFetcher.swift in Sources */,
 				01312BE32C3032730089F9C0 /* LocationFetcher.swift in Sources */,
 				01312BCA2C2EC2370089F9C0 /* TabController.swift in Sources */,
 				01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */,

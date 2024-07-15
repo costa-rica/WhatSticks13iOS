@@ -24,10 +24,9 @@ enum HealthDataStoreError: Error {
 }
 
 class HealthDataStore {
-//    var user:User!
+    static let shared = HealthDataStore()
     var requestStore:RequestStore!
     
-//    func callRecieveAppleHealthData(arryAppleHealthData:[[String:String]], completion: @escaping (Result<[String: String], Error>) -> Void) {
     func callReceiveAppleHealthData(dateStringTimeStamp: String, lastChunk: String, arryAppleHealthData: [AppleHealthQuantityCategory], completion: @escaping (Result<[String: String], Error>) -> Void) {
         print("- in callRecieveAppleHealthData")
         let receiveAppleHealthObject = RecieveAppleHealthObject()
@@ -35,163 +34,123 @@ class HealthDataStore {
         receiveAppleHealthObject.dateStringTimeStamp = dateStringTimeStamp
         receiveAppleHealthObject.last_chunk = lastChunk
         receiveAppleHealthObject.arryAppleHealthQuantityCategory = arryAppleHealthData
-        let request = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_qty_cat_data, body: receiveAppleHealthObject)
-        let task = requestStore.session.dataTask(with: request) { data, response, error in
-            // Handle potential error from the data task
-            if let error = error {
-                print("HealthDataStore.callRecieveAppleHealthData received an error. Error: \(error)")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-                return
-            }
-//            guard let unwrapped_data = data else {
-//                // No data scenario
-//                DispatchQueue.main.async {
-//                    completion(.failure(URLError(.badServerResponse)))
-//                    print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-//                }
-//                return
-//            }
-//            do {
-//                if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
-//                    
-//                    DispatchQueue.main.async {
-//                        completion(.success(jsonResult))
-//                    }
-//                } else {
-//                    // Data is not in the expected format
-//                    DispatchQueue.main.async {
-//                        completion(.failure(URLError(.cannotParseResponse)))
-//                        print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
-//                    }
-//                }
-            guard let unwrappedData = data else {
-                // No data scenario
-                DispatchQueue.main.async {
-                    completion(.failure(URLError(.badServerResponse)))
-                    print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-                }
-                return
-            }
-            // Decode the JSON data
-            do {
-                // Modify the JSON data by replacing two spaces with no space
-                guard var modifiedData = String(data: unwrappedData, encoding: .utf8) else {
-                    throw HealthDataStoreError.unknownServerResponse
-                }
-                modifiedData = modifiedData.replacingOccurrences(of: "{\\n  ", with: "{\\n")
-                print("modifiedData: \(modifiedData)")
-                if let jsonResult = try JSONSerialization.jsonObject(with: modifiedData.data(using: .utf8)!, options: []) as? [String: String] {
+        let result = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_qty_cat_data, token: true, body: receiveAppleHealthObject)
+        switch result {
+        case .success(let request):
+            let task = requestStore.session.dataTask(with: request) { data, response, error in
+                // Handle potential error from the data task
+                if let error = error {
+                    print("HealthDataStore.callRecieveAppleHealthData received an error. Error: \(error)")
                     DispatchQueue.main.async {
-                        completion(.success(jsonResult))
-                        print("*** successfully decode QTY and CAT response ****")
+                        completion(.failure(error))
+                    }
+                    return
+                }
+                guard let unwrappedData = data else {
+                    // No data scenario
+                    DispatchQueue.main.async {
+                        completion(.failure(URLError(.badServerResponse)))
+                        print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
+                    }
+                    return
+                }
+                // Decode the JSON data
+                do {
+                    // Modify the JSON data by replacing two spaces with no space
+                    guard var modifiedData = String(data: unwrappedData, encoding: .utf8) else {
+                        throw HealthDataStoreError.unknownServerResponse
+                    }
+                    modifiedData = modifiedData.replacingOccurrences(of: "{\\n  ", with: "{\\n")
+                    print("modifiedData: \(modifiedData)")
+                    if let jsonResult = try JSONSerialization.jsonObject(with: modifiedData.data(using: .utf8)!, options: []) as? [String: String] {
+                        DispatchQueue.main.async {
+                            completion(.success(jsonResult))
+                            print("*** successfully decode QTY and CAT response ****")
+                        }
+                    }
+                } catch {
+                    // Data parsing error
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                        print("HealthDataStore.callRecieveAppleHealthData produced an error while parsing. Error: \(error)")
                     }
                 }
-            } catch {
-                // Data parsing error
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                    print("HealthDataStore.callRecieveAppleHealthData produced an error while parsing. Error: \(error)")
-                }
             }
+            task.resume()
+        case .failure(let error):
+            print("error: \(error.localizedDescription)")
         }
-        task.resume()
     }
     
     func callReceiveAppleWorkoutsData(userId: String,dateStringTimeStamp:String, arryAppleWorkouts:[AppleHealthWorkout], completion: @escaping(Result<[String:String],Error>) -> Void){
         
         print("- in callReceiveAppleWorkoutsData -")
-        
-//        let filename = "AppleWorkouts-user_id\(userId)-\(dateStringTimeStamp).json"
-//        print("filename: \(filename)")
+        //        let filename = "AppleWorkouts-user_id\(userId)-\(dateStringTimeStamp).json"
         
         let receiveAppleWorkoutObject = RecieveAppleWorkout()
-//        receiveAppleWorkoutObject.filename = filename
         receiveAppleWorkoutObject.dateStringTimeStamp = dateStringTimeStamp
         receiveAppleWorkoutObject.arryAppleHealthWorkout = arryAppleWorkouts
-        let request = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_workouts_data, body: receiveAppleWorkoutObject)
-        
-        let task = requestStore.session.dataTask(with: request) { data, response, error in
-            print("task sent")
-            // Handle potential error from the data task
-            if let error = error {
-                print("HealthDataStore.callRecieveAppleHealthData received an error. Error: \(error)")
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-                return
-            }
-            // Print response headers
-            if let httpResponse = response as? HTTPURLResponse {
-                print("Response Headers:\n\(httpResponse.allHeaderFields)")
-                
-                /*
-                 Maestro and Venturer:
-                 Response Headers:
-                 [AnyHashable("Content-Type"): application/json, AnyHashable("Date"): Thu, 28 Mar 2024 10:17:04 GMT, AnyHashable("Server"): nginx/1.18.0 (Ubuntu), AnyHashable("Content-Length"): 60, AnyHashable("Connection"): keep-alive]
-                 */
-            }
-//            guard let unwrapped_data = data else {
-//                // No data scenario
-//                DispatchQueue.main.async {
-//                    completion(.failure(URLError(.badServerResponse)))
-//                    print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-//                }
-//                return
-//            }
-//            do {
-//                if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
-//                    
-//                    DispatchQueue.main.async {
-//                        completion(.success(jsonResult))
-//                    }
-//                } else {
-//                    // Data is not in the expected format
-//                    DispatchQueue.main.async {
-//                        completion(.failure(URLError(.cannotParseResponse)))
-//                        print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
-//                    }
-//                }
-            guard let unwrappedData = data else {
-                // No data scenario
-                DispatchQueue.main.async {
-                    completion(.failure(URLError(.badServerResponse)))
-                    print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-                }
-                return
-            }
-            // Decode the JSON data
-            do {
-                // Modify the JSON data by replacing two spaces with no space
-                guard var modifiedData = String(data: unwrappedData, encoding: .utf8) else {
-                    throw HealthDataStoreError.unknownServerResponse
-                }
-                modifiedData = modifiedData.replacingOccurrences(of: "{\\n  ", with: "{\\n")
-                
-                if let jsonResult = try JSONSerialization.jsonObject(with: modifiedData.data(using: .utf8)!, options: []) as? [String: String] {
+        let result = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_workouts_data, token: true, body: receiveAppleWorkoutObject)
+        switch result {
+        case .success(let request):
+            let task = requestStore.session.dataTask(with: request) { data, response, error in
+                print("task sent")
+                // Handle potential error from the data task
+                if let error = error {
+                    print("HealthDataStore.callRecieveAppleHealthData received an error. Error: \(error)")
                     DispatchQueue.main.async {
-                        completion(.success(jsonResult))
-                        print("--> successfully decode workouts response ---")
+                        completion(.failure(error))
                     }
-                } else {
-                    // Data is not in the expected format
+                    return
+                }
+                // Print response headers
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("Response Headers:\n\(httpResponse.allHeaderFields)")
+                    
+                    
+                }
+                
+                guard let unwrappedData = data else {
+                    // No data scenario
                     DispatchQueue.main.async {
-                        completion(.failure(URLError(.cannotParseResponse)))
-                        print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
+                        completion(.failure(URLError(.badServerResponse)))
+                        print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
+                    }
+                    return
+                }
+                // Decode the JSON data
+                do {
+                    // Modify the JSON data by replacing two spaces with no space
+                    guard var modifiedData = String(data: unwrappedData, encoding: .utf8) else {
+                        throw HealthDataStoreError.unknownServerResponse
+                    }
+                    modifiedData = modifiedData.replacingOccurrences(of: "{\\n  ", with: "{\\n")
+                    
+                    if let jsonResult = try JSONSerialization.jsonObject(with: modifiedData.data(using: .utf8)!, options: []) as? [String: String] {
+                        DispatchQueue.main.async {
+                            completion(.success(jsonResult))
+                            print("--> successfully decode workouts response ---")
+                        }
+                    } else {
+                        // Data is not in the expected format
+                        DispatchQueue.main.async {
+                            completion(.failure(URLError(.cannotParseResponse)))
+                            print("HealthDataStore.callRecieveAppleHealthData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
+                        }
+                    }
+                } catch {
+                    // Data parsing error
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                        print("HealthDataStore.callRecieveAppleHealthData produced an error while parsing. Error: \(error)")
                     }
                 }
-            } catch {
-                // Data parsing error
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                    print("HealthDataStore.callRecieveAppleHealthData produced an error while parsing. Error: \(error)")
-                }
             }
+            task.resume()
+        case .failure(let error):
+            print("error with receiveAppleWorkoutObject, error: \(error.localizedDescription)")
         }
-        task.resume()
     }
-    
     
     
 }

@@ -78,6 +78,7 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "email")
         UserDefaults.standard.removeObject(forKey: "password")
         UserDefaults.standard.removeObject(forKey: "id")
+        UserDefaults.standard.removeObject(forKey: "token")// <- keep this?
         UserDefaults.standard.removeObject(forKey: "admin_permission")
         UserDefaults.standard.removeObject(forKey: "location_permission_device")
         UserDefaults.standard.removeObject(forKey: "location_permission_ws")

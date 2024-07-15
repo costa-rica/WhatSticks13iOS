@@ -31,6 +31,10 @@ enum EndPoint: String {
     case update_user_location_with_lat_lon = "update_user_location_with_lat_lon"
     case get_reset_password_token = "get_reset_password_token"
 
+    case receive_apple_qty_cat_data = "receive_apple_qty_cat_data"
+    case receive_apple_workouts_data = "receive_apple_workouts_data"
+    case delete_apple_health_for_user = "delete_apple_health_for_user"
+    
 }
 
 class URLStore {

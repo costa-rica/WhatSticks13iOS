@@ -32,6 +32,8 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
         vwStatusTemporary.delegate = self
+        let healthDataStore = HealthDataStore.shared
+        healthDataStore.requestStore = parentRequestStore
         
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
@@ -71,15 +73,15 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         ])
 
         lblWhatSticks.text = "What Sticks"
-        lblWhatSticks.font = UIFont(name: "ArialRoundedMTBold", size: 45)
-        lblWhatSticks.numberOfLines = 0
+        lblWhatSticks.font = UIFont(name: "ArialRoundedMTBold", size: 30)
+//        lblWhatSticks.numberOfLines = 0
         lblWhatSticks.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(lblWhatSticks)
         lblWhatSticks.accessibilityIdentifier="lblWhatSticks"
         NSLayoutConstraint.activate([
             lblWhatSticks.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 1)),
-            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor, constant: widthFromPct(percent: -1)),
-            lblWhatSticks.topAnchor.constraint(equalTo: imgVwLogo.bottomAnchor, constant: -20)
+//            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor),
+            lblWhatSticks.topAnchor.constraint(equalTo: imgVwLogo.bottomAnchor,constant: heightFromPct(percent: -3))
         ])
         lblDescription.text = "The app designed to use data already being collected by your devices and other apps to help you understand your tendencies and habits."
 //        lblDescription.font = UIFont(name: "ArialRoundedMT", size: 17)
@@ -88,9 +90,9 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         view.addSubview(lblDescription)
         lblDescription.accessibilityIdentifier="lblDescription"
         NSLayoutConstraint.activate([
-            lblDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
-            lblDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-            lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: 10)
+            lblDescription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
+            lblDescription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -1)),
+            lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: widthFromPct(percent: 3))
         ])
     }
     private func setup_vwHomeVcLine(){
