@@ -29,7 +29,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     private func setupTabs(){
         let home = self.createNav(with: "Home", and: UIImage(systemName: "house"), vc: HomeVC())
         let dash = self.createNav(with: "Dashboard", and: UIImage(systemName: "clock"), vc: DashboardVC())
-        let manage_data = self.createNav(with: "Manage Data", and: UIImage(systemName: "square.and.arrow.up"), vc: ManageDataVC())
+        let manage_data = self.createNav(with: "Manage Data", and: UIImage(systemName: "square.and.arrow.up"), vc: ManageDataVC())// <--- altered for TEST DAta
         let user = self.createNav(with: "Manage User", and: UIImage(systemName: "person"), vc: UserVC())
 
         home.tabBarItem.tag = 0
@@ -94,7 +94,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 //            // Trigger action for HomeVC selection
 //
 //        }
-        if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {
+        if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {// <--- altered for TEST DAta
             let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
             let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
             manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)

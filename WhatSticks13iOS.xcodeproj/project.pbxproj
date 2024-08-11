@@ -146,8 +146,8 @@
 			isa = PBXGroup;
 			children = (
 				01312BCB2C2EC49B0089F9C0 /* TemplateVC.swift */,
-				01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */,
 				01312BC92C2EC2370089F9C0 /* TabController.swift */,
+				01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */,
 				01312BB82C2EC1C20089F9C0 /* HomeVC.swift */,
 				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
 				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
@@ -389,12 +389,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WhatSticks13iOS/WhatSticks13iOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GL5QL25H5M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WhatSticks13iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What Sticks";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Allow What Sticks to collect Health Data for analysis.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Allow What Sticks to collect Health Data for analysis.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Turning on location services allows us to add weather related correlations to your dashboards.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Turning on location services allows us to add weather related correlations to your dashboards.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -409,6 +412,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.what-sticks.WhatSticks13iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -421,12 +425,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WhatSticks13iOS/WhatSticks13iOS.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GL5QL25H5M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WhatSticks13iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What Sticks";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Allow What Sticks to collect Health Data for analysis.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Allow What Sticks to collect Health Data for analysis.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Turning on location services allows us to add weather related correlations to your dashboards.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Turning on location services allows us to add weather related correlations to your dashboards.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -441,6 +448,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.what-sticks.WhatSticks13iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

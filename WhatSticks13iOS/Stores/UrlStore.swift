@@ -35,6 +35,8 @@ enum EndPoint: String {
     case receive_apple_workouts_data = "receive_apple_workouts_data"
     case delete_apple_health_for_user = "delete_apple_health_for_user"
     
+    case send_data_source_objects = "send_data_source_objects"
+    case send_dashboard_table_objects = "send_dashboard_table_objects"
 }
 
 class URLStore {

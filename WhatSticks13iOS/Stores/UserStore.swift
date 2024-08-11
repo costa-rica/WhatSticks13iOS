@@ -652,7 +652,37 @@ extension UserStore {
         
     }
     
-    
+}
+
+/* Receive Apple Health Statistics from API */
+extension UserStore {
+    func callSendDataSourceObjects(completion:@escaping (Result<Bool,Error>) -> Void){
+        let request = requestStore.createRequestWithToken(endpoint: .send_data_source_objects)
+        let task = requestStore.session.dataTask(with: request) { data, urlResponse, error in
+            guard let unwrapped_data = data else {
+                OperationQueue.main.addOperation {
+                    completion(.failure(UserStoreError.failedToReceiveServerResponse))
+                }
+                return
+            }
+            do {
+                let jsonDecoder = JSONDecoder()
+                let jsonArryDataSourceObj = try jsonDecoder.decode([DataSourceObject].self, from: unwrapped_data)
+                OperationQueue.main.addOperation {
+//                    self.writeObjectToJsonFile(object: jsonArryDataSourceObj, filename: "arryDataSourceObjects.json")
+                    UserDefaults.standard.set(jsonArryDataSourceObj, forKey: "UsersDataSources")
+//                    self.updateDataSourceObject(arry: jsonArryDataSourceObj)
+                    completion(.success(true))
+                }
+            } catch {
+                print("did not get expected response from WSAPI - probably no file for user")
+                OperationQueue.main.addOperation {
+                    completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
+                }
+            }
+        }
+        task.resume()
+    }
 }
 
 /* OBE */

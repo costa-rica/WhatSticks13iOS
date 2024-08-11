@@ -30,7 +30,6 @@ class ManageDataVC: TemplateVC {
     
     var arryStepsDict = [AppleHealthQuantityCategory](){
         didSet{
-//            arryStepsDict = [AppleHealthQuantityCategory]()
             actionGetSleepData()
         }
     }
@@ -53,11 +52,9 @@ class ManageDataVC: TemplateVC {
     }
     var arryWorkoutDict = [AppleHealthWorkout](){
         didSet{
-//            necessaryDataCollected()
             sendAppleWorkouts()
         }
     }
-    
     
     var strStatusMessage=String()
     
@@ -65,14 +62,15 @@ class ManageDataVC: TemplateVC {
         userStore = UserStore.shared
         appleHealthDataFetcher = AppleHealthDataFetcher.shared
         healthDataStore = HealthDataStore.shared
+        appleHealthDataFetcher.authorizeHealthKit()
         
         setup_TopSafeBar()
         setup_ManageDataVc()
         setup_UserVcAccountView()
         setupDatePicker()
         setup_btnSendData()
+        
     }
-    
     
     private func setup_ManageDataVc(){
         lblManageDataVcTitle.accessibilityIdentifier="lblManageDataVcTitle"
@@ -81,9 +79,7 @@ class ManageDataVC: TemplateVC {
         lblManageDataVcTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
         lblManageDataVcTitle.numberOfLines=0
         view.addSubview(lblManageDataVcTitle)
-        
-
-        
+                
         NSLayoutConstraint.activate([
             lblManageDataVcTitle.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 3)),
             lblManageDataVcTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
@@ -94,8 +90,6 @@ class ManageDataVC: TemplateVC {
     
     private func setup_UserVcAccountView(){
         userStore = UserStore.shared
-
-
 
         stckVwManageData.accessibilityIdentifier = "stckVwManageData"
         stckVwManageData.translatesAutoresizingMaskIntoConstraints=false
@@ -120,7 +114,7 @@ class ManageDataVC: TemplateVC {
         stckVwEarliestDate.spacing = 10
 
         lblRecordCountFilled.accessibilityIdentifier="lblRecordCountFilled"
-        lblRecordCountFilled.text = "record count:"
+        lblRecordCountFilled.text = "Record count:"
         lblRecordCountFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
         lblRecordCountFilled.translatesAutoresizingMaskIntoConstraints=false
         lblRecordCountFilled.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
@@ -144,7 +138,7 @@ class ManageDataVC: TemplateVC {
         stckVwEarliestDate.translatesAutoresizingMaskIntoConstraints=false
 
         lblEarliestDateFilled.accessibilityIdentifier="lblEarliestDateFilled"
-        lblEarliestDateFilled.text = "earliest date:"
+        lblEarliestDateFilled.text = "Earliest date:"
         lblEarliestDateFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
         lblEarliestDateFilled.translatesAutoresizingMaskIntoConstraints=false
         lblEarliestDateFilled.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
@@ -181,7 +175,6 @@ class ManageDataVC: TemplateVC {
             ])
     }
     
-    
     private func setupDatePicker() {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
@@ -202,7 +195,7 @@ class ManageDataVC: TemplateVC {
         btnConnectData.layer.cornerRadius = 10
         
         btnConnectData.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        btnConnectData.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        btnConnectData.addTarget(self, action: #selector(touchUpInsideStartCollectingAppleHealth(_:)), for: .touchUpInside)
         NSLayoutConstraint.activate([
             btnConnectData.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: heightFromPct(percent: 2)),
             btnConnectData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
@@ -210,12 +203,10 @@ class ManageDataVC: TemplateVC {
         ])
     }
     
-    
-    @objc func touchUpInside(_ sender: UIButton) {
+    @objc func touchUpInsideStartCollectingAppleHealth(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
         }, completion: nil)
-//        showSpinner()
         print(" send data")
         dtUserHistory = datePicker.date
         
@@ -228,7 +219,8 @@ class ManageDataVC: TemplateVC {
             self.templateAlert(alertMessage: "You must pick a day in the past.")
             return
         }
-        self.templateAlert(alertMessage: "\(dtUserHistory)")
+//        self.templateAlert(alertMessage: "\(dtUserHistory)")
+        actionGetStepsData()
     }
 }
 
