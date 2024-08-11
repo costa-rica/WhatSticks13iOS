@@ -99,7 +99,12 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
             manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)
             manage_data_vc.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
-
+            if userStore.isOnline{
+                manage_data_vc.setup_manageDataVcOnline()
+            }
+            else if !userStore.isOnline{
+                manage_data_vc.setup_manageDataVcOffline()
+            }
         }
     }
 

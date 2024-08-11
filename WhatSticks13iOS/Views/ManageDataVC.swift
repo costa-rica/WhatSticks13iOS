@@ -65,14 +65,14 @@ class ManageDataVC: TemplateVC {
         appleHealthDataFetcher.authorizeHealthKit()
         
         setup_TopSafeBar()
-        setup_ManageDataVc()
+        setup_ManageDataVcTitle()
         setup_UserVcAccountView()
-        setupDatePicker()
-        setup_btnSendData()
+//        setupDatePicker()
+//        setup_btnConnectData()
         
     }
     
-    private func setup_ManageDataVc(){
+    private func setup_ManageDataVcTitle(){
         lblManageDataVcTitle.accessibilityIdentifier="lblManageDataVcTitle"
         lblManageDataVcTitle.translatesAutoresizingMaskIntoConstraints = false
         lblManageDataVcTitle.text = "Manage Data"
@@ -175,7 +175,7 @@ class ManageDataVC: TemplateVC {
             ])
     }
     
-    private func setupDatePicker() {
+    func setupDatePicker() {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -184,7 +184,7 @@ class ManageDataVC: TemplateVC {
         datePicker.topAnchor.constraint(equalTo: stckVwManageData.bottomAnchor, constant: heightFromPct(percent: 2)).isActive = true
     }
     
-    func setup_btnSendData(){
+    func setup_btnConnectData(){
         btnConnectData.accessibilityIdentifier = "btnConnectData"
         btnConnectData.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(btnConnectData)
@@ -201,6 +201,15 @@ class ManageDataVC: TemplateVC {
             btnConnectData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
             btnConnectData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -3))
         ])
+    }
+    
+    func setup_manageDataVcOffline(){
+        datePicker.removeFromSuperview()
+        btnConnectData.removeFromSuperview()
+    }
+    func setup_manageDataVcOnline(){
+        setupDatePicker()
+        setup_btnConnectData()
     }
     
     @objc func touchUpInsideStartCollectingAppleHealth(_ sender: UIButton) {

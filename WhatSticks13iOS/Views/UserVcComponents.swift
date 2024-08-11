@@ -1006,6 +1006,7 @@ class UserStatusTemporaryView: UIView {
     let btnUserStatusTemporaryView = UIButton()
     let btnCheckUserDefaultUserLocation = UIButton()
     let btnCheckArryDataSourceObjects = UIButton()
+    let btnCheckArryDashboardTableObjects = UIButton()
     let btnDeleteUserDefaults = UIButton()
     
     override init(frame: CGRect) {
@@ -1015,6 +1016,7 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
     }
     init(frame: CGRect, showLine: Bool) {
@@ -1024,6 +1026,7 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
     }
     required init?(coder: NSCoder) {
@@ -1031,6 +1034,7 @@ class UserStatusTemporaryView: UIView {
         setup_UserStatusTemporaryView()
         setup_btnCheckUserDeafultUserLocaiton()
         setup_btnCheckArryDataSourceObjects()
+        setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
     }
     
@@ -1081,9 +1085,7 @@ class UserStatusTemporaryView: UIView {
             btnUserStatusTemporaryView.topAnchor.constraint(equalTo: lblUserStatusTemporaryViewTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnUserStatusTemporaryView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: widthFromPct(percent: 3)),
             btnUserStatusTemporaryView.trailingAnchor.constraint(equalTo: self.trailingAnchor,constant: widthFromPct(percent: -3)),
-            
         ])
-        
     }
     private func setup_btnCheckUserDeafultUserLocaiton(){
         btnCheckUserDefaultUserLocation.accessibilityIdentifier = "btnCheckUserDefaultUserLocation"
@@ -1100,7 +1102,6 @@ class UserStatusTemporaryView: UIView {
             btnCheckUserDefaultUserLocation.topAnchor.constraint(equalTo: btnUserStatusTemporaryView.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnCheckUserDefaultUserLocation.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnCheckUserDefaultUserLocation.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
-//            btnCheckUserDefaultUserLocation.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
         ])
         btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(buttonTouchDown(_:)), for: .touchDown)
         btnCheckUserDefaultUserLocation.addTarget(self, action: #selector(touchUpInside_location(_:)), for: .touchUpInside)
@@ -1125,6 +1126,25 @@ class UserStatusTemporaryView: UIView {
         btnCheckArryDataSourceObjects.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnCheckArryDataSourceObjects.addTarget(self, action: #selector(touchUpInside_DataSourceObj(_:)), for: .touchUpInside)
     }
+    private func setup_btnCheckArrayDashboardTableObjects(){
+        btnCheckArryDashboardTableObjects.accessibilityIdentifier = "btnCheckArryDashboardTableObjects"
+        btnCheckArryDashboardTableObjects.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnCheckArryDashboardTableObjects)
+        btnCheckArryDashboardTableObjects.setTitle("Dashboard Table Objects", for: .normal)
+        let ui_color_btnDashTableObj = UIColor(red: 0.8, green: 0.8, blue: 0.6, alpha: 1.0)
+        btnCheckArryDashboardTableObjects.layer.borderColor = ui_color_btnDashTableObj.cgColor
+        btnCheckArryDashboardTableObjects.layer.borderWidth = 2
+        btnCheckArryDashboardTableObjects.backgroundColor = ui_color_btnDashTableObj
+        btnCheckArryDashboardTableObjects.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+            btnCheckArryDashboardTableObjects.topAnchor.constraint(equalTo: btnCheckArryDataSourceObjects.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnCheckArryDashboardTableObjects.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnCheckArryDashboardTableObjects.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+        ])
+        btnCheckArryDashboardTableObjects.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnCheckArryDashboardTableObjects.addTarget(self, action: #selector(touchUpInside_DashTableObj(_:)), for: .touchUpInside)
+    }
     private func setup_btnDeleteUserDefaults(){
         btnDeleteUserDefaults.accessibilityIdentifier = "btnDeleteUserDefaults"
         btnDeleteUserDefaults.translatesAutoresizingMaskIntoConstraints = false
@@ -1137,7 +1157,7 @@ class UserStatusTemporaryView: UIView {
         btnDeleteUserDefaults.layer.cornerRadius = 10
         
         NSLayoutConstraint.activate([
-            btnDeleteUserDefaults.topAnchor.constraint(equalTo: btnCheckArryDataSourceObjects.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnDeleteUserDefaults.topAnchor.constraint(equalTo: btnCheckArryDashboardTableObjects.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnDeleteUserDefaults.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnDeleteUserDefaults.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
             btnDeleteUserDefaults.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
@@ -1230,6 +1250,23 @@ class UserStatusTemporaryView: UIView {
         print("data source object: \(concatenatedString_dso)")
         
         self.delegate?.templateAlert(alertTitle: "Data Source Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
+        
+    }
+    @objc func touchUpInside_DashTableObj(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+        
+        let count_of_obj = userStore.arryDashboardTableObjects.count
+        let firstDepVarNam = userStore.arryDashboardTableObjects[0].dependentVarName ?? "nil"
+        let firstDepVarIndepVarName = userStore.arryDashboardTableObjects[0].arryIndepVarObjects?[0].independentVarName ?? "nil"
+//        let recordCount_dso = userStore.arryDataSourceObjects?[0].recordCount ?? "nil"
+//        let earliestRecordDate_dso = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "nil"
+        
+        let concatenatedString_dso = "count_of_obj: \(count_of_obj) \n" + "firstDepVarNam: \(firstDepVarNam) \n" + "firstDepVarIndepVarName: \(firstDepVarIndepVarName)"
+        print("count_of_obj: \(count_of_obj)")
+        
+        self.delegate?.templateAlert(alertTitle: "Dashboard Table Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
         
     }
     

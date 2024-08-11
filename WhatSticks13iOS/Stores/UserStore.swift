@@ -35,7 +35,7 @@ enum UserStoreError: Error {
 class UserStore {
     
     static let shared = UserStore()
-
+    
     let fileManager:FileManager
     let documentsURL:URL
     var user=User()
@@ -47,7 +47,6 @@ class UserStore {
             guard let unwp_pos = currentDashboardObjPos else {return}
             if arryDashboardTableObjects.count > currentDashboardObjPos{
                 currentDashboardObject = arryDashboardTableObjects[unwp_pos]
-                // error occurs line above. Error: out of range
             }
         }
     }
@@ -64,13 +63,9 @@ class UserStore {
         return URLSession(configuration: config)
     }()
     
-
     init() {
-        //        self.user = User()
         self.fileManager = FileManager.default
         self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        //        checkAndSetDefaultUsername()
-
     }
     
     func deleteUserDefaults_User(){
@@ -84,63 +79,119 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "location_permission_ws")
         UserDefaults.standard.removeObject(forKey: "user_location")
         UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
-//        userDefaults.staset(now, forKey: "lastUpdateTimestamp")
+        UserDefaults.standard.removeObject(forKey: "arryDataSourceObjects")
+        //        userDefaults.staset(now, forKey: "lastUpdateTimestamp")
     }
     
     func assignArryDataSourceObjects(jsonResponse:[String:Any]){
         print("---- in assignArryDataSourceObjects() ")
-        do {
-            if let jsonData = try? JSONSerialization.data(withJSONObject: jsonResponse["arryDataSourceObjects"] ?? [:], options: []) {
-                print("--- successfully decodeed jsonData")
-                let decoder = JSONDecoder()
-                let array_data_source_obj = try decoder.decode([DataSourceObject].self, from: jsonData)
+        
+        if let unwp_array = jsonResponse["arryDataSourceObjects"] as? [[String: Any]] {
+            print("What is unwp_array:")
+            print("\(unwp_array)")
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: unwp_array, options: [])
+                let array_data_source_obj = try JSONDecoder().decode([DataSourceObject].self, from: jsonData)
                 self.arryDataSourceObjects = array_data_source_obj
+                // Encode the array of DataSourceObject into Data
+                let encodedData = try JSONEncoder().encode(self.arryDataSourceObjects)
+                // Store the encoded Data in UserDefaults
+                UserDefaults.standard.set(encodedData, forKey: "arryDataSourceObjects")
                 print("--- successfully decodeed arryDataSourceObjects")
-            }
+                print("self.arryDataSourceObjects:")
+                print(self.arryDataSourceObjects)
             }
             catch {
-                print("failed")
+                print("failed to decode arryDataSourceObjects into [DataSourceObject]")
             }
         }
+    }
+    
+    // offline mode
+    func loadArryDataSourceObjectsFromUserDefaults() {
+        if let encodedData = UserDefaults.standard.data(forKey: "arryDataSourceObjects") {
+            do {
+                let decodedArray = try JSONDecoder().decode([DataSourceObject].self, from: encodedData)
+                self.arryDataSourceObjects = decodedArray
+                print("Successfully loaded arryDataSourceObjects from UserDefaults")
+            } catch {
+                print("Failed to decode DataSourceObject: \(error)")
+            }
+        } else {
+            print("No arryDataSourceObjects found in UserDefaults")
+        }
+    }
+    
+    func assignArryDashboardTableObjects(jsonResponse:[String:Any]){
+        print("---- in assignArryDashboardTableObjects() ")
+        
+        if let unwp_array = jsonResponse["arryDashboardTableObjects"] as? [[String: Any]] {
+            print("What is unwp_array:")
+            print("\(unwp_array)")
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: unwp_array, options: [])
+                let array_dashboard_table_obj = try JSONDecoder().decode([DashboardTableObject].self, from: jsonData)
+                self.arryDashboardTableObjects = array_dashboard_table_obj
+                // Encode the array of DataSourceObject into Data
+                let encodedData = try JSONEncoder().encode(self.arryDashboardTableObjects)
+                // Store the encoded Data in UserDefaults
+                UserDefaults.standard.set(encodedData, forKey: "arryDashboardTableObjects")
+                print("--- successfully decodeed arryDashboardTableObjects")
+                print("self.arryDashboardTableObjects:")
+                print(self.arryDashboardTableObjects)
+            }
+            catch {
+                print("failed to decode arryDashboardTableObjects into [DashboardTableObject]")
+            }
+        }
+    }
+    
+    // offline mode
+    func loadArryDashboardTableFromUserDefaults() {
+        if let encodedData = UserDefaults.standard.data(forKey: "arryDashboardTableObjects") {
+            do {
+                let decodedArray = try JSONDecoder().decode([DashboardTableObject].self, from: encodedData)
+                self.arryDashboardTableObjects = decodedArray
+                print("Successfully loaded arryDashboardTableObjects from UserDefaults")
+            } catch {
+                print("Failed to decode DashboardTableObject: \(error)")
+            }
+        } else {
+            print("No arryDashboardTableObjects found in UserDefaults")
+        }
+    }
     
     func assignUser(dictUser:[String:Any]){
         print("---- in assignUser() ")
         do {
             if let userData = try? JSONSerialization.data(withJSONObject: dictUser["user"] ?? [:], options: []) {
-                print("--- successfully decodeed step 1")
                 let decoder = JSONDecoder()
                 let user = try decoder.decode(User.self, from: userData)
                 self.user = user
                 if let unwp_username = self.user.username{
                     UserDefaults.standard.set(unwp_username, forKey: "userName")
-                    print("--- successfully decodeed step 2")
                 }
                 if let unwp_email = self.user.email{
                     UserDefaults.standard.set(unwp_email, forKey: "email")
-                    print("--- successfully decodeed step 3")
                 }
                 if let unwp_id = self.user.id {
                     UserDefaults.standard.set(unwp_id, forKey: "id")
-                    print("id saved as: \(unwp_id) -- step 5")
                 }
                 if let unwp_admin_permission = self.user.admin_permission {
                     UserDefaults.standard.set(unwp_admin_permission, forKey: "admin_permission")
-                    print("unwp_admin_permission saved as: \(unwp_admin_permission) -- step 6")
                 }
                 if let unwp_location_permission_device = self.user.location_permission_device {
                     UserDefaults.standard.set(unwp_location_permission_device, forKey: "location_permission_device")
-                    print("unwp_location_permission_device saved as: \(unwp_location_permission_device) -- step 7")
                 }
                 if let unwp_location_permission_ws = self.user.location_permission_ws {
                     UserDefaults.standard.set(unwp_location_permission_ws, forKey: "location_permission_ws")
-                    print("unwp_location_permission_ws saved as: \(unwp_location_permission_ws) -- step 8")
                 }
                 if let unwp_token = self.user.token {
                     UserDefaults.standard.set(unwp_token, forKey: "token")
                     self.requestStore.token = unwp_token
-                    print("unwp_token saved as: \(unwp_token) -- step 9")
                 }
             }
+            print("- finished decoding and assigning User")
         }
         catch {
             print("There was an error decoding User in the response")
@@ -164,9 +215,8 @@ class UserStore {
     
     func connectDevice(completion: @escaping () -> Void){
         print("- in connectDevice(completion) ")
-//        deleteUserDefaults_User()
+        //        deleteUserDefaults_User()
         checkUser()
-
         // Condition #1: Register user ambivalent_elf_####
         if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
             callRegisterGenericUser { result_string_string_dict in
@@ -182,11 +232,13 @@ class UserStore {
                     self.isOnline=true
                     completion()
                 case .failure(_):
-                    print("--- Off line mode ")
+                    print("--- Off line mode (Condition #1)")
+                    self.loadArryDataSourceObjectsFromUserDefaults()
+                    self.loadArryDashboardTableFromUserDefaults()
                     completion()
                 }
             }
-        } 
+        }
         // Condition #2: Login with Generic Elf
         else if UserDefaults.standard.string(forKey: "email") == nil  {
             self.user.username  = UserDefaults.standard.string(forKey: "userName")
@@ -201,7 +253,9 @@ class UserStore {
                         self.requestStore.token = self.user.token
                         completion()
                     case .failure(_):
-                        print("--- Off line mode ")
+                        print("--- Off line mode (Condition #2:)")
+                        self.loadArryDataSourceObjectsFromUserDefaults()
+                        self.loadArryDashboardTableFromUserDefaults()
                         completion()
                     }
                 }
@@ -219,13 +273,16 @@ class UserStore {
                     self.isOnline=true
                     completion()
                 case let .failure(error):
+                    print("-offline mode??? (Condition #3)")
                     print("error: \(error)")
+                    self.loadArryDataSourceObjectsFromUserDefaults()
+                    self.loadArryDashboardTableFromUserDefaults()
                     completion()
                 }
             }
         }
     }
-
+    
     func callConvertGenericAccountToCustomAccount(email: String?, username:String?, password: String?, completion: @escaping (Result<[String: String], UserStoreError>) -> Void) {
         var parameters: [String: String] = ["ws_api_password": Config.ws_api_password]
         
@@ -266,7 +323,7 @@ class UserStore {
                         print("JSON serialized well")
                         let keysToExtract = ["alert_title", "alert_message"]
                         var dictModifiedResponse: [String: String] = [:]
-
+                        
                         for key in keysToExtract {
                             if let value = jsonResult[key] as? String {
                                 dictModifiedResponse[key] = value
@@ -303,7 +360,7 @@ class UserStore {
     }
     
     func callRegisterGenericUser(completion: @escaping (Result<[String:Any], Error>) -> Void) {
-
+        
         guard let unwp_email = user.username else {
             completion(.failure(UserStoreError.userHasNoUsername))
             return
@@ -325,13 +382,13 @@ class UserStore {
                 do {
                     if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
                         print("JSON dictionary: \(jsonResult)")
-
+                        
                         self.assignUser(dictUser: jsonResult)
                         OperationQueue.main.addOperation {
                             completion(.success(jsonResult))
                         }
                     }
-
+                    
                 } catch {
                     OperationQueue.main.addOperation {
                         print("--- Failed in callRegisterGenericUser")
@@ -367,37 +424,33 @@ class UserStore {
                 completion(.failure(error))
                 return
             }
-            
             guard let httpResponse = response as? HTTPURLResponse else {
                 print("No data response or invalid response")
                 completion(.failure(UserStoreError.failedToReceiveServerResponse))
                 return
             }
-            
-            // Handle the 400 status code specifically
             if httpResponse.statusCode == 400 {
                 print("Received 400 Bad Request")
                 completion(.failure(UserStoreError.userHasNoUsername))
                 return
             }
-
-            // Ensure data is not nil, otherwise, complete with a custom error.
             guard let unwrapped_data = data else {
                 print("No data response")
                 completion(.failure(UserStoreError.failedToReceiveServerResponse))
                 return
             }
-        
             do {
-                
                 if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
+                    print("--- This should include a ArryDataSourceObjects ----")
                     print("JSON dictionary: \(jsonResult)")
                     self.assignUser(dictUser: jsonResult)
+                    self.assignArryDataSourceObjects(jsonResponse: jsonResult)
+                    self.assignArryDashboardTableObjects(jsonResponse: jsonResult)
                     OperationQueue.main.addOperation {
                         completion(.success(jsonResult))
                     }
                 }
-
+                
             } catch {
                 OperationQueue.main.addOperation {
                     print("Failed to decode user or find a user in API response: \(UserStoreError.failedToLogin)")
@@ -408,7 +461,6 @@ class UserStore {
         }
         task.resume()
     }
-    
     
     func callLogin(user:User, completion: @escaping(Result<[String:Any],UserStoreError>) ->Void){
         print("- in callLoginUser -")
@@ -446,7 +498,7 @@ class UserStore {
                         print("JSON serialized well")
                         let keysToExtract = ["alert_title", "alert_message"]
                         var dictModifiedResponse: [String: String] = [:]
-
+                        
                         for key in keysToExtract {
                             if let value = jsonResult[key] as? String {
                                 dictModifiedResponse[key] = value
@@ -454,7 +506,7 @@ class UserStore {
                         }
                         self.assignUser(dictUser: jsonResult)
                         self.assignArryDataSourceObjects(jsonResponse: jsonResult)
-                        
+                        self.assignArryDashboardTableObjects(jsonResponse: jsonResult)
                         // Ensure completion handler is called on the main queue.
                         DispatchQueue.main.async {
                             completion(.success(dictModifiedResponse))
@@ -499,7 +551,7 @@ class UserStore {
             guard let unwrapped_data = data else {
                 // No data scenario
                 DispatchQueue.main.async {
-//                    completion(.failure(URLError(.badServerResponse)))
+                    //                    completion(.failure(URLError(.badServerResponse)))
                     completion(.failure(UserStoreError.generalError(URLError(.badServerResponse))))
                     print("- callDeleteUser: failure response: \(URLError(.badServerResponse))")
                 }
@@ -516,7 +568,7 @@ class UserStore {
                 } else {
                     // Data is not in the expected format
                     DispatchQueue.main.async {
-//                        completion(.failure(URLError(.cannotParseResponse)))
+                        //                        completion(.failure(URLError(.cannotParseResponse)))
                         completion(.failure(UserStoreError.generalError(URLError(.cannotParseResponse))))
                         print("- callDeleteUser: failure response: \(URLError(.cannotParseResponse))")
                     }
@@ -567,8 +619,6 @@ extension UserStore {
                     completion(.failure(UserStoreError.noApiPasswordIncludedInRequest))
                     return
                 }
-                
-                
                 do {
                     if let jsonResult = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
                         self.assignUser(dictUser: jsonResult)
@@ -625,7 +675,6 @@ extension UserStore {
                             completion(.success(true))
                         }
                         if jsonResult["alert_title"] == "Success!"{
-                            //                        self.deleteJsonFile(filename: "user_location.json")
                             UserDefaults.standard.removeObject(forKey: "user_location")
                         }
                     } else {
@@ -657,6 +706,7 @@ extension UserStore {
 /* Receive Apple Health Statistics from API */
 extension UserStore {
     func callSendDataSourceObjects(completion:@escaping (Result<Bool,Error>) -> Void){
+        print("- in callSendDataSourceObjects")
         let request = requestStore.createRequestWithToken(endpoint: .send_data_source_objects)
         let task = requestStore.session.dataTask(with: request) { data, urlResponse, error in
             guard let unwrapped_data = data else {
@@ -669,9 +719,10 @@ extension UserStore {
                 let jsonDecoder = JSONDecoder()
                 let jsonArryDataSourceObj = try jsonDecoder.decode([DataSourceObject].self, from: unwrapped_data)
                 OperationQueue.main.addOperation {
-//                    self.writeObjectToJsonFile(object: jsonArryDataSourceObj, filename: "arryDataSourceObjects.json")
-                    UserDefaults.standard.set(jsonArryDataSourceObj, forKey: "UsersDataSources")
-//                    self.updateDataSourceObject(arry: jsonArryDataSourceObj)
+                    print("- decoded jsonArryDataSourceObj")
+                    let repackagedJsonResponse = ["arryDataSourceObjects":jsonArryDataSourceObj] as [String:Any]
+                    // MARK: call assingDataSourceObjects
+                    self.assignArryDataSourceObjects(jsonResponse: repackagedJsonResponse)
                     completion(.success(true))
                 }
             } catch {
@@ -689,8 +740,8 @@ extension UserStore {
 extension UserStore {
     func connectDevice(){
         print("- in connectDevice() ")
-
-//        UserDefaults.standard.removeObject(forKey: "userName")
+        
+        //        UserDefaults.standard.removeObject(forKey: "userName")
         deleteUserDefaults_User()
         
         if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
