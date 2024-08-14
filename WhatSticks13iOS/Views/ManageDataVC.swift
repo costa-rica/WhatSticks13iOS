@@ -69,7 +69,7 @@ class ManageDataVC: TemplateVC {
         setup_UserVcAccountView()
 //        setupDatePicker()
 //        setup_btnConnectData()
-        
+        view.backgroundColor = UIColor(named: "ColorAppBackground")
     }
     
     private func setup_ManageDataVcTitle(){

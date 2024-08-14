@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		011673912C6C821A008BF349 /* DashboardVcComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011673902C6C821A008BF349 /* DashboardVcComponents.swift */; };
+		011673932C6C9248008BF349 /* DashboardTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011673922C6C9248008BF349 /* DashboardTableCell.swift */; };
 		01312BB52C2EC1C20089F9C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BB42C2EC1C20089F9C0 /* AppDelegate.swift */; };
 		01312BB72C2EC1C20089F9C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BB62C2EC1C20089F9C0 /* SceneDelegate.swift */; };
 		01312BB92C2EC1C20089F9C0 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BB82C2EC1C20089F9C0 /* HomeVC.swift */; };
@@ -32,6 +34,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		011673902C6C821A008BF349 /* DashboardVcComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardVcComponents.swift; sourceTree = "<group>"; };
+		011673922C6C9248008BF349 /* DashboardTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTableCell.swift; sourceTree = "<group>"; };
 		01312BB12C2EC1C20089F9C0 /* WhatSticks13iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatSticks13iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01312BB42C2EC1C20089F9C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01312BB62C2EC1C20089F9C0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -150,7 +154,9 @@
 				01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */,
 				01312BB82C2EC1C20089F9C0 /* HomeVC.swift */,
 				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
+				011673922C6C9248008BF349 /* DashboardTableCell.swift */,
 				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
+				011673902C6C821A008BF349 /* DashboardVcComponents.swift */,
 				01FF77222C3A99C100D3E93E /* UserVcComponents.swift */,
 				01312BE42C303A230089F9C0 /* RegisterVC.swift */,
 			);
@@ -233,6 +239,7 @@
 				01312BE32C3032730089F9C0 /* LocationFetcher.swift in Sources */,
 				01312BCA2C2EC2370089F9C0 /* TabController.swift in Sources */,
 				01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */,
+				011673912C6C821A008BF349 /* DashboardVcComponents.swift in Sources */,
 				01312BE02C3031860089F9C0 /* Config.swift in Sources */,
 				01312BCC2C2EC49B0089F9C0 /* TemplateVC.swift in Sources */,
 				01312BB52C2EC1C20089F9C0 /* AppDelegate.swift in Sources */,
@@ -241,6 +248,7 @@
 				01312BDE2C302F9D0089F9C0 /* RequestStore.swift in Sources */,
 				01312BE52C303A230089F9C0 /* RegisterVC.swift in Sources */,
 				01312BD52C302F030089F9C0 /* User.swift in Sources */,
+				011673932C6C9248008BF349 /* DashboardTableCell.swift in Sources */,
 				01312BD82C302F500089F9C0 /* UserStore.swift in Sources */,
 				01312BDA2C302F8C0089F9C0 /* DashboardHealthDataObject.swift in Sources */,
 				01FF77232C3A99C200D3E93E /* UserVcComponents.swift in Sources */,
@@ -404,7 +412,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -413,9 +421,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.what-sticks.WhatSticks13iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -440,7 +450,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -449,9 +459,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.what-sticks.WhatSticks13iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

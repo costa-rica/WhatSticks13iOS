@@ -132,6 +132,7 @@ class UserStore {
                 let jsonData = try JSONSerialization.data(withJSONObject: unwp_array, options: [])
                 let array_dashboard_table_obj = try JSONDecoder().decode([DashboardTableObject].self, from: jsonData)
                 self.arryDashboardTableObjects = array_dashboard_table_obj
+                self.currentDashboardObject = self.arryDashboardTableObjects[0]
                 // Encode the array of DataSourceObject into Data
                 let encodedData = try JSONEncoder().encode(self.arryDashboardTableObjects)
                 // Store the encoded Data in UserDefaults
@@ -152,6 +153,7 @@ class UserStore {
             do {
                 let decodedArray = try JSONDecoder().decode([DashboardTableObject].self, from: encodedData)
                 self.arryDashboardTableObjects = decodedArray
+                self.currentDashboardObject = self.arryDashboardTableObjects[0]
                 print("Successfully loaded arryDashboardTableObjects from UserDefaults")
             } catch {
                 print("Failed to decode DashboardTableObject: \(error)")

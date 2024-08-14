@@ -68,6 +68,7 @@ class TemplateVC: UIViewController {
         UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseOut], animations: {
             sender.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
         }, completion: nil)
+        print("in touchDown (TemplateVC)")
     }
     func templateAlert(alertTitle:String = "Alert",alertMessage: String,  backScreen: Bool = false, dismissView:Bool = false) {
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)

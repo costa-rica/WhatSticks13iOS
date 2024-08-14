@@ -106,6 +106,17 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
                 manage_data_vc.setup_manageDataVcOffline()
             }
         }
+        if let dash_vc = nav_vc.children[0] as? DashboardVC {
+            if userStore.arryDashboardTableObjects.count > 0{
+                dash_vc.setupUserHasDashboard()
+                let currentDashboardObjPos = userStore.currentDashboardObjPos ?? 0
+                if let unwp_dashTitle = self.userStore.arryDashboardTableObjects[currentDashboardObjPos].dependentVarName {
+                    let btnTitle = " " + unwp_dashTitle + " "
+                    dash_vc.vwDashboardHeader.btnDashboardNamePicker.setTitle(btnTitle, for: .normal)
+                }
+            }
+            
+        }
     }
 
 }
