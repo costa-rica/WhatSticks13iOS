@@ -63,6 +63,7 @@ class UserVcLocationDayWeather: UIView {
     let stckVwLocTrackReoccurring=UIStackView()
     let lblLocTrackReoccurringSwitch=UILabel()
     let swtchLocTrackReoccurring = UISwitch()
+//    let userLocationDictionary = UpdateUserLocationDetailsDictionary()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -157,21 +158,31 @@ class UserVcLocationDayWeather: UIView {
                 if locationExists{
                     if let unwp_lat = self.locationFetcher.currentLocation?.latitude,
                        let unwp_lon = self.locationFetcher.currentLocation?.longitude{
-                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"True"]
+//                        userLocationDictionary.location_permission_device="True"
+//                        userLocationDictionary.location_permission_ws = "True"
+//                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"True"]
                         print("-Scenario 1: locationExists and there are longitude and latitude; status = Authorized Always")
-                        self.sendUpdateDictToApi(updateDict: updateDict)// <-- start print statements here
+                        //self.sendUpdateDictToApi(updateDict: updateDict)// <-- start print statements here
+                        self.userStore.user.location_permission_ws=true
+                        self.userStore.user.location_permission_device=true
+                        self.sendUpdateLocationDictToApi()
                     }
                     else {
                         print("-Scenario 2: locationExists BUT there are no longitude and latitude; status = Authorized Always ")
-                        let updateDict = ["location_permission_device":"True","location_permission_ws":"True"]
-                        self.sendUpdateDictToApi(updateDict: updateDict)
-                        
+//                        let updateDict = ["location_permission_device":"True","location_permission_ws":"True"]
+//                        self.sendUpdateDictToApi(updateDict: updateDict)
+                        self.userStore.user.location_permission_ws=true
+                        self.userStore.user.location_permission_device=true
+                        self.sendUpdateLocationDictToApi()
                     }
                 }
                 else {
-                    print("-Scenario 3: NO locationExists; status = Authorized Always")
-                    let updateDict = ["location_permission_device":"True","location_permission_ws":"True"]
-                    self.sendUpdateDictToApi(updateDict: updateDict)
+//                    print("-Scenario 3: NO locationExists; status = Authorized Always")
+//                    let updateDict = ["location_permission_device":"True","location_permission_ws":"True"]
+//                    self.sendUpdateDictToApi(updateDict: updateDict)
+                    self.userStore.user.location_permission_ws=true
+                    self.userStore.user.location_permission_device=true
+                    self.sendUpdateLocationDictToApi()
                 }
             }
         }
@@ -180,9 +191,12 @@ class UserVcLocationDayWeather: UIView {
                 if locationExists{
                     if let unwp_lat = self.locationFetcher.currentLocation?.latitude,
                        let unwp_lon = self.locationFetcher.currentLocation?.longitude{
-                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"False"]
+//                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"False"]
+                        self.userStore.user.location_permission_ws=false
+                        self.userStore.user.location_permission_device=true
                         print("-Scenario 4: NO locationExists; status = Authorized When In Use")
-                        self.sendUpdateDictToApi(updateDict: updateDict)
+//                        self.sendUpdateDictToApi(updateDict: updateDict)
+                        self.sendUpdateLocationDictToApi()
                     }
                 }
             }
@@ -233,9 +247,48 @@ class UserVcLocationDayWeather: UIView {
         }
     }
     
-    private func sendUpdateDictToApi(updateDict:[String:String]){
+//    private func sendUpdateDictToApi(updateDict:[String:String]){
+//        print("- (in sendUpdateDictToApi) sending user location to api ")
+//        self.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
+//            switch resultString{
+//            case .success(_):
+//                print(" (in sendUpdateDictToApi) success")
+//                DispatchQueue.main.async{
+//                    self.delegate?.removeSpinner()
+//                    self.swtchLocTrackReoccurring.isOn=true
+//                    self.setLocationSwitchLabelText()
+//                }
+//                
+//                self.delegate?.templateAlert(alertTitle: "Success!", alertMessage: "", backScreen: false, dismissView: false)
+//                
+//            case let .failure(userStoreError):
+//                print(" (in sendUpdateDictToApi) fail")
+//                switch userStoreError {
+//                case .failedToReceiveExpectedResponse:
+//                    DispatchQueue.main.async{
+//                        self.delegate?.removeSpinner()
+//                        self.switchErrorSwitchBack()
+//                        self.delegate?.templateAlert(alertTitle: "Unexpected response", alertMessage: "Restart the app",backScreen: false, dismissView: false)
+//                    }
+//                    print("- UserVcLocationDayWeather failure ok ")
+//                default:
+//                    DispatchQueue.main.async{
+//                        self.delegate?.removeSpinner()
+//                        self.switchErrorSwitchBack()
+//                        self.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: userStoreError.localizedDescription,backScreen: false, dismissView: false)
+//                    }
+//                    print("- UserVcLocationDayWeather failure ok ")
+//                }
+//                print("- step 2")
+//            }
+//            print("- step 3")
+//        }
+//        print("- step 4")
+//    }
+    
+    private func sendUpdateLocationDictToApi(){
         print("- (in sendUpdateDictToApi) sending user location to api ")
-        self.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
+        self.userStore.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: true) { resultString in
             switch resultString{
             case .success(_):
                 print(" (in sendUpdateDictToApi) success")
@@ -271,6 +324,8 @@ class UserVcLocationDayWeather: UIView {
         }
         print("- step 4")
     }
+    
+    
     
     private func switchErrorSwitchBack(){
         if self.swtchLocTrackReoccurring.isOn==true{
@@ -315,9 +370,36 @@ class UserVcLocationDayWeather: UIView {
             }
             // in case we need it here is a sampel of user_locations
             // user locations: [["20240708-1325", "37.785834", "-122.406417"], ["20240709-1345", "37.785834", "-122.406417"]]
-            self!.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
-                switch resultString{
-                case .success(_):
+//            self!.userStore.callUpdateUser(endPoint: .update_user_location_with_lat_lon, updateDict: updateDict) { resultString in
+//                switch resultString{
+//                case .success(_):
+//                    print("-successfully updated")
+//                    DispatchQueue.main.async{
+//                        self?.delegate?.removeSpinner()
+//                        
+//                        self?.swtchLocTrackReoccurring.isOn=false
+//                        // Set Location Label
+//                        let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
+//                        self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+//                    }
+//                case .failure(_):
+//                    print("-failed to update user status")
+//                    DispatchQueue.main.async{
+//                        self?.delegate?.removeSpinner()
+//                        
+//                        self?.delegate?.templateAlert(alertTitle: "Unsuccessful update", alertMessage: "Try again or email nrodrig1@gmail.com.", backScreen: false, dismissView: false)
+//                        
+//                        self?.swtchLocTrackReoccurring.isOn=true
+//                        // Set Location Label
+//                        let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
+//                        self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
+//                    }
+//                    
+//                }
+//            }
+            self?.userStore.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: false, completion: { responesResult in
+                switch responesResult{
+                case  .success(_):
                     print("-successfully updated")
                     DispatchQueue.main.async{
                         self?.delegate?.removeSpinner()
@@ -339,9 +421,8 @@ class UserVcLocationDayWeather: UIView {
                         let initialSwitchStateText = (self?.swtchLocTrackReoccurring.isOn)! ? "on" : "off"
                         self?.lblLocTrackReoccurringSwitch.text = "Track Location (\(initialSwitchStateText)): "
                     }
-                    
                 }
-            }
+            })
         }
         // 'No' action
         let noAction = UIAlertAction(title: "No", style: .cancel) {[weak self] _ in

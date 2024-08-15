@@ -69,3 +69,10 @@ class AppleHealthWorkout:Codable{
     var device:String?
     var UUID:String?
 }
+
+class UpdateUserLocationDetailsDictionary: Codable {
+    var location_permission_device: Bool?
+    var location_permission_ws: Bool?
+    var user_location: [[String]]?
+}
+

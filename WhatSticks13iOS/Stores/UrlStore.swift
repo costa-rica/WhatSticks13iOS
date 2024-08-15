@@ -27,8 +27,9 @@ enum EndPoint: String {
     case register_generic_account = "register_generic_account"
     case convert_generic_account_to_custom_account = "convert_generic_account_to_custom_account"
     case delete_user = "delete_user"
-    case update_user_location_with_user_location_json = "update_user_location_with_user_location_json"
-    case update_user_location_with_lat_lon = "update_user_location_with_lat_lon"
+//    case update_user_location_with_user_location_json = "update_user_location_with_user_location_json"
+//    case update_user_location_with_lat_lon = "update_user_location_with_lat_lon"
+    case update_user_location_details = "update_user_location_details"
     case get_reset_password_token = "get_reset_password_token"
 
     case receive_apple_qty_cat_data = "receive_apple_qty_cat_data"
@@ -37,6 +38,7 @@ enum EndPoint: String {
     
     case send_data_source_objects = "send_data_source_objects"
     case send_dashboard_table_objects = "send_dashboard_table_objects"
+    
 }
 
 class URLStore {

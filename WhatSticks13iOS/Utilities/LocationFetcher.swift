@@ -42,6 +42,7 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
     private let updateInterval: TimeInterval = 86_400 // 24 hours in seconds
     
     override init() {
+
         userLocationManagerAuthStatus = LocationFetcher.string(for: locationManager.authorizationStatus)
         super.init()
         locationManager.delegate = self
@@ -175,10 +176,10 @@ extension LocationFetcher {
 //    var longitude:String?
 //}
 
-class DictSendUserLocation:Codable{
-    var user_location:[[String]]!
-    var timestamp_utc:String!//"yyyyMMdd-HHmm"
-}
+//class DictSendUserLocation:Codable{
+//    var user_location:[[String]]!
+//    var timestamp_utc:String!//"yyyyMMdd-HHmm"
+//}
 
 //class DictUpdate:Codable{
 //    var latitude:String!
