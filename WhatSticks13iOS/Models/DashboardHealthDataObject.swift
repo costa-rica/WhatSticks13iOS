@@ -73,6 +73,12 @@ class AppleHealthWorkout:Codable{
 class UpdateUserLocationDetailsDictionary: Codable {
     var location_permission_device: Bool?
     var location_permission_ws: Bool?
-    var user_location: [[String]]?
+//    var user_location: [[String]]?
+    var user_location: [UserDayLocation]?
 }
 
+class UserDayLocation: Codable {
+    var timestamp: String!
+    var latitude: Double!
+    var longitude: Double!
+}

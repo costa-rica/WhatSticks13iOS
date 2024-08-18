@@ -30,7 +30,8 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?
     private var locationFetchCompletion: ((Bool) -> Void)?
-    var arryHistUserLocation:[[String]]?
+
+    var arryHistUserLocation: [UserDayLocation]?
     var userLocationManagerAuthStatus: String {
         // This computed property returns the string representation of the authorization status
         didSet {
@@ -112,17 +113,21 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         
     func appendLocationToUserDefaultArryHistUserLocation(lastLocation: CLLocation) {
         
-        let arryUserLocation = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
-        if var userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
-            userLocationArray.append(arryUserLocation)
-            UserDefaults.standard.set(userLocationArray, forKey: "user_location")
+//        let arryUserLocation = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
+        let userDayLocation = UserDayLocation()
+        userDayLocation.timestamp = getCurrentUtcDateString()
+        userDayLocation.latitude = lastLocation.coordinate.latitude
+        userDayLocation.longitude = lastLocation.coordinate.longitude
+        if var arryUserLocation = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
+            arryUserLocation.append(userDayLocation)
+            UserDefaults.standard.set(arryUserLocation, forKey: "user_location")
         } else {
-            UserDefaults.standard.set([arryUserLocation], forKey: "user_location")
+            UserDefaults.standard.set([userDayLocation], forKey: "user_location")
         }
     }
 
     func checkUserDefaultUserLocation(){
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation]{
             self.arryHistUserLocation = userLocationArray
         }
     }

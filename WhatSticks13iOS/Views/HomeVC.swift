@@ -47,7 +47,7 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
             }
         }
         print("user name is \(userStore.user.username!)")
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
             print("user locations: \(userLocationArray)")
         }
         

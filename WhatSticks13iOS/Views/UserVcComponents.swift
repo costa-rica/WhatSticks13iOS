@@ -156,8 +156,8 @@ class UserVcLocationDayWeather: UIView {
         if locationFetcher.userLocationManagerAuthStatus == "Authorized Always"{
             locationFetcher.fetchLocation { locationExists in
                 if locationExists{
-                    if let unwp_lat = self.locationFetcher.currentLocation?.latitude,
-                       let unwp_lon = self.locationFetcher.currentLocation?.longitude{
+                    if let _ = self.locationFetcher.currentLocation?.latitude,
+                       let _ = self.locationFetcher.currentLocation?.longitude{
 //                        userLocationDictionary.location_permission_device="True"
 //                        userLocationDictionary.location_permission_ws = "True"
 //                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"True"]
@@ -189,8 +189,8 @@ class UserVcLocationDayWeather: UIView {
         else if locationFetcher.userLocationManagerAuthStatus == "Authorized When In Use" {
             locationFetcher.fetchLocation { locationExists in
                 if locationExists{
-                    if let unwp_lat = self.locationFetcher.currentLocation?.latitude,
-                       let unwp_lon = self.locationFetcher.currentLocation?.longitude{
+                    if let _ = self.locationFetcher.currentLocation?.latitude,
+                       let _ = self.locationFetcher.currentLocation?.longitude{
 //                        let updateDict = ["latitude":String(unwp_lat),"longitude":String(unwp_lon),"location_permission_device":"True","location_permission_ws":"False"]
                         self.userStore.user.location_permission_ws=false
                         self.userStore.user.location_permission_device=true
@@ -1309,7 +1309,7 @@ class UserStatusTemporaryView: UIView {
             sender.transform = .identity
         }, completion: nil)
         
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
+        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
             print(userLocationArray)
             self.delegate?.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)",backScreen: false,dismissView: false)
         } else {

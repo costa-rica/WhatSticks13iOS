@@ -597,126 +597,20 @@ extension UserStore{
 
 /* Good For now */
 extension UserStore {
-//    func callUpdateUser(endPoint: EndPoint, updateDict: [String:String], completion: @escaping (Result<String, UserStoreError>) -> Void) {
-//        var updateDictWithApiPassword = updateDict
-//        updateDictWithApiPassword["ws_api_password"]=Config.ws_api_password
-//        let result = requestStore.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateDictWithApiPassword)
-//        switch result {
-//        case .success(let request):
-//            let task = session.dataTask(with: request) { data, response, error in
-//                guard let unwrappedData = data else {
-//                    print("no data response")
-//                    completion(.failure(UserStoreError.failedToReceiveServerResponse))
-//                    return
-//                }
-//                
-//                guard let httpResponse = response as? HTTPURLResponse else {
-//                    print("No data response or invalid response")
-//                    completion(.failure(UserStoreError.failedToReceiveServerResponse))
-//                    return
-//                }
-//                
-//                // Handle the 400 status code specifically
-//                if httpResponse.statusCode == 400 {
-//                    print("Received 400 Bad Request")
-//                    completion(.failure(UserStoreError.userHasNoUsername))
-//                    return
-//                }
-//                if httpResponse.statusCode == 401 {
-//                    print("Received 401 Bad Request")
-//                    completion(.failure(UserStoreError.noApiPasswordIncludedInRequest))
-//                    return
-//                }
-//                do {
-//                    if let jsonResult = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
-//                        self.assignUser(dictUser: jsonResult)
-//                        
-//                        if let message = jsonResult["alert_message"] as? String {
-//                            OperationQueue.main.addOperation {
-//                                print("--> successful callUpdateUser api response")
-//                                completion(.success(message))
-//                            }
-//                        }
-//                        
-//                    } else {
-//                        throw UserStoreError.failedDecode
-//                    }
-//                } catch {
-//                    print("---- UserStore.failedToUpdateUser: Failed to read response")
-//                    completion(.failure(UserStoreError.failedDecode))
-//                }
-//            }
-//            task.resume()
-//        case .failure(let error):
-//            print("Failed to make request: \(error)")
-//            completion(.failure(UserStoreError.requestStoreError))
-//        }
-//    }
-//    
-//    func callSendUserLocation(dictSendUserLocation:DictSendUserLocation, completion: @escaping(Result<Bool,Error>) ->Void) -> Void{
-//        
-//        let result = requestStore.createRequestWithTokenAndBody(endPoint: .update_user_location_with_user_location_json, token: true, body: dictSendUserLocation)
-//        
-//        switch result {
-//        case .success(let request):
-//            let task = session.dataTask(with: request) { data, response, error in
-//                if let error = error {
-//                    print("UserStore.callSendUserLocationJsonData received an error. Error: \(error)")
-//                    DispatchQueue.main.async {
-//                        completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
-//                    }
-//                    return
-//                }
-//                guard let unwrapped_data = data else {
-//                    // No data scenario
-//                    DispatchQueue.main.async {
-//                        completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
-//                        print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.badServerResponse): \(URLError(.badServerResponse))")
-//                    }
-//                    return
-//                }
-//                do {
-//                    if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: String] {
-//                        print("-- successful send of user_location.json data --")
-//                        print(jsonResult)
-//                        DispatchQueue.main.async {
-//                            completion(.success(true))
-//                        }
-//                        if jsonResult["alert_title"] == "Success!"{
-//                            UserDefaults.standard.removeObject(forKey: "user_location")
-//                        }
-//                    } else {
-//                        // Data is not in the expected format
-//                        DispatchQueue.main.async {
-//                            completion(.failure(UserStoreError.failedToReceiveExpectedResponse))
-//                            print("UserStore.callSendUserLocationJsonData received unexpected json response from WSAPI. URLError(.cannotParseResponse): \(URLError(.cannotParseResponse))")
-//                        }
-//                    }
-//                } catch {
-//                    // Data parsing error
-//                    DispatchQueue.main.async {
-//                        completion(.failure(UserStoreError.failedDecode))
-//                        print("UserStore.callSendUserLocationJsonData produced an error while parsing. Error: \(error)")
-//                    }
-//                }
-//            }
-//            
-//            task.resume()
-//        case .failure(let error):
-//            print("Failed to make request: \(error)")
-//            
-//        }
-//        
-//    }
-//    
+
     func callUpdateUserLocationDetails(endPoint: EndPoint, sendUserLocations:Bool, completion: @escaping (Result<String,UserStoreError>) -> Void){
         print("in UserStore.callUpdateUserLocationDetails()")
         let updateUserLocDict = UpdateUserLocationDetailsDictionary()
         updateUserLocDict.location_permission_device = self.user.location_permission_device
         updateUserLocDict.location_permission_ws = self.user.location_permission_ws
         if sendUserLocations{
-            if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [[String]] {
-                updateUserLocDict.user_location = userLocationArray
+            
+            if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
+//                do {
+//                    let decoder = JSONDecoder()
+//                    let userDayLocations = try decoder.decode([UserDayLocation].self, from: userLocationArray)
+                    updateUserLocDict.user_location = userLocationArray
+//                }
             } else {
                 print("There as a problem reading the UserDefaults.standard.array(forKey: user_location) in UserStore.callUpdateUserLocationDetails()")
             }
