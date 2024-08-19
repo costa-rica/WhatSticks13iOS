@@ -157,6 +157,7 @@ class UserVcLocationDayWeather: UIView {
             UserStore.shared.user.location_permission_ws = true
             LocationFetcher.shared.fetchLocationOnce { clLocation in
                 if let unwp_clLocation = clLocation{
+                    UserStore.shared.user.location_permission_device = true // This is for good measure, because if ever a CLLocation object is recieved that means the device has granted WS permission.
                     LocationFetcher.shared.appendLocationToArryHistUserLocation(lastLocation: unwp_clLocation)
                     UserStore.shared.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: true) { resultStringOrError in
                         switch resultStringOrError {
@@ -188,10 +189,10 @@ class UserVcLocationDayWeather: UIView {
             UserStore.shared.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: false) { resultStringOrError in
                 switch resultStringOrError{
                 case .success(_):
-                    self.delegate?.templateAlert(alertTitle: "", alertMessage: "What Sticks will not collect anymore location, but Location Tracking on the iOS device will stay on until you turn it off from your Settings > What Sticks > location. Current status is: \(LocationFetcher.shared.locationManager.authorizationStatus)", completion: {
-                        LocationFetcher.shared.locationManager.stopMonitoringSignificantLocationChanges()
-                        self.delegate?.removeSpinner()
-                    })
+                    self.setLocationSwitchLabelText()
+                    LocationFetcher.shared.locationManager.stopMonitoringSignificantLocationChanges()
+                    self.delegate?.removeSpinner()
+                    
                 default:
                     self.delegate?.templateAlert(alertTitle: "Failure", alertMessage: "Probably a problem connecting to What Sticks Servers. Try again later or contact what-sticks.com@gmail.com", completion: {
                         self.switchErrorSwitchBack()
@@ -207,7 +208,7 @@ class UserVcLocationDayWeather: UIView {
 protocol UserVcLocationDayWeatherDelegate: AnyObject {
     func removeSpinner()
     func showSpinner()
-    func templateAlert(alertTitle:String?,alertMessage: String?, completion:@escaping()->Void)
+    func templateAlert(alertTitle:String?,alertMessage: String?, completion:(()->Void)?)
 }
 
 

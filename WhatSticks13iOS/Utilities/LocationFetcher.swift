@@ -52,7 +52,8 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         }
     }
     var completionCLLocation: ((CLLocation?) -> Void)?
-    private let updateInterval: TimeInterval = 86_400 // 24 hours in seconds
+//    private let updateInterval: TimeInterval = 86_400 // 24 hours in seconds
+    let updateInterval: TimeInterval = 1 // 24 hours in seconds
     
     override init() {
         super.init()
@@ -61,6 +62,7 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         locationManager.allowsBackgroundLocationUpdates = true // Enable background location updates
         locationManager.pausesLocationUpdatesAutomatically = false // Prevent automatic pausing
         loadLocationFetcherUserDefaults()
+        setUserStoreUserLocationPermissionDevice()
     }
     
     
@@ -96,19 +98,27 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         userLocation.longitude = lastLocation.coordinate.longitude
         arryUserLocation.append(userLocation)
     }
-    
+    func setUserStoreUserLocationPermissionDevice(){
+        switch locationManager.authorizationStatus{
+//        case .notDetermined, .restricted, .denied:
+//            UserStore.shared.user.location_permission_device = false
+//            UserDefaults.standard.set(false, forKey: "location_permission_device")
+        case .authorizedAlways, .authorizedWhenInUse:
+            UserStore.shared.user.location_permission_device = true
+            UserDefaults.standard.set(true, forKey: "location_permission_device")
+//            print("*** assigned UserStore.shared.user.location_permission_device = true ")
+        default:
+            UserStore.shared.user.location_permission_device = false
+            UserDefaults.standard.set(false, forKey: "location_permission_device")
+//            print("*** assigned UserStore.shared.user.location_permission_device = false ")
+        }
+    }
     
     /* delegate methods */
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus{
-        case .notDetermined, .restricted, .denied:
-            UserStore.shared.user.location_permission_device = false
-        case .authorizedAlways, .authorizedWhenInUse:
-            UserStore.shared.user.location_permission_device = true
-        @unknown default:
-            UserStore.shared.user.location_permission_device = false
-        }
+        setUserStoreUserLocationPermissionDevice()
     }
+
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let lastLocation = locations.last else {

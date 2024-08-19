@@ -9,6 +9,7 @@ import UIKit
 
 class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegate, UserVcRegisterButtonDelegate, UserVcDeleteDelegate, RegModalVcDelegate, AreYouSureModalVcDelegate{
 
+
     var userStore: UserStore!
     
     let scrollView = UIScrollView()

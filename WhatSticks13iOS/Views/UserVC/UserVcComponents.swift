@@ -244,7 +244,7 @@ class UserStatusTemporaryView: UIView {
         let id = userStore.user.id ?? "nil"
         let token = userStore.user.token ?? "nil"
         let adminPermission = userStore.user.admin_permission ?? false
-        let locationPermissionDevice = userStore.user.location_permission_device ?? false
+        let locationPermissionDevice = userStore.user.location_permission_device
         let locationPermissionWS = userStore.user.location_permission_ws ?? false
 
         let concatenatedString = """
@@ -279,7 +279,9 @@ class UserStatusTemporaryView: UIView {
         location_permission_ws_ud: \(locationPermissionWS_ud)
         """
         print(concatenatedString_ud)
-        self.delegate?.templateAlert(alertTitle: "User i:", alertMessage: "\(concatenatedString) \n\n\n\n \(concatenatedString_ud) ",backScreen: false,dismissView: false)
+//        self.delegate?.templateAlert(alertTitle: "User i:", alertMessage: "\(concatenatedString) \n\n\n\n \(concatenatedString_ud) ",backScreen: false,dismissView: false)
+        
+        self.delegate?.templateAlert(alertTitle: "User i:", alertMessage: "\(concatenatedString) \n\n\n\n \(concatenatedString_ud) ", completion: nil)
         
     }
     
@@ -288,13 +290,16 @@ class UserStatusTemporaryView: UIView {
             sender.transform = .identity
         }, completion: nil)
         
-        if let userLocationArray = UserDefaults.standard.array(forKey: "arryUserLocation") as? [UserLocation] {
-            print(userLocationArray)
-            self.delegate?.templateAlert(alertTitle: "We have Locations!!", alertMessage: "\(userLocationArray)",backScreen: false,dismissView: false)
-        } else {
-            self.delegate?.templateAlert(alertTitle: "", alertMessage: "No location",backScreen: false,dismissView: false)
-        }
         
+        if let encodedData = UserDefaults.standard.data(forKey: "arryUserLocation") {
+            do {
+                let decodedArray = try JSONDecoder().decode([UserLocation].self, from: encodedData)
+                self.delegate?.templateAlert(alertTitle: "User Location Array", alertMessage: "\(decodedArray)", completion: nil)
+            } catch {
+                print("*** (1) This should occur on first Launch: \(error) ***")
+                self.delegate?.templateAlert(alertTitle: "NO User Location Array", alertMessage: "", completion: nil)
+            }
+        }
     }
     
     @objc func touchUpInside_DataSourceObj(_ sender: UIButton) {
@@ -309,7 +314,7 @@ class UserStatusTemporaryView: UIView {
         let concatenatedString_dso = "name: \(name_dso) \n" + "recordCount: \(recordCount_dso) \n" + "earliestRecorededDate: \(earliestRecordDate_dso)"
         print("data source object: \(concatenatedString_dso)")
         
-        self.delegate?.templateAlert(alertTitle: "Data Source Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
+        self.delegate?.templateAlert(alertTitle: "Data Source Objects", alertMessage: concatenatedString_dso, completion: nil)
         
     }
     @objc func touchUpInside_DashTableObj(_ sender: UIButton) {
@@ -320,25 +325,28 @@ class UserStatusTemporaryView: UIView {
         let count_of_obj = userStore.arryDashboardTableObjects.count
         let firstDepVarNam = userStore.arryDashboardTableObjects[0].dependentVarName ?? "nil"
         let firstDepVarIndepVarName = userStore.arryDashboardTableObjects[0].arryIndepVarObjects?[0].independentVarName ?? "nil"
-//        let recordCount_dso = userStore.arryDataSourceObjects?[0].recordCount ?? "nil"
-//        let earliestRecordDate_dso = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "nil"
+
         
         let concatenatedString_dso = "count_of_obj: \(count_of_obj) \n" + "firstDepVarNam: \(firstDepVarNam) \n" + "firstDepVarIndepVarName: \(firstDepVarIndepVarName)"
         print("count_of_obj: \(count_of_obj)")
-        
-        self.delegate?.templateAlert(alertTitle: "Dashboard Table Objects", alertMessage: concatenatedString_dso,backScreen: false,dismissView: false)
-        
+
+        self.delegate?.templateAlert(alertTitle: "Dashboard Table Objects", alertMessage: concatenatedString_dso, completion: nil)
     }
     
     @objc func touchUpInside_DeleteUserDefaults(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
             sender.transform = .identity
         }, completion: nil)
-        
-        userStore.deleteUserDefaults_User()
-        
-        self.delegate?.templateAlert(alertTitle: "Deleted UserDefault Values", alertMessage: "",backScreen: false,dismissView: false)
-        
+
+        self.delegate?.templateAlertMultipleChoice(alertTitle: "Are you sure you want to delete all UserDefaults?", alertMessage: "", choiceOne: "Yes", choiceTwo: "No", completion: { responseYesNo in
+            switch responseYesNo {
+            case "Yes":
+                UserStore.shared.deleteUserDefaults_User()
+                self.delegate?.templateAlert(alertTitle: "Deleted UserDefaults", alertMessage: nil, completion: nil)
+            default:
+                print("")
+            }
+        })
     }
     
 }
@@ -346,10 +354,12 @@ class UserStatusTemporaryView: UIView {
 protocol UserStatusTemporaryViewDelegate: AnyObject {
     func removeSpinner()
     func showSpinner()
-    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
-    func presentAlertController(_ alertController: UIAlertController)
+//    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)
+//    func presentAlertController(_ alertController: UIAlertController)
     func touchDown(_ sender: UIButton)
     func presentNewView(_ uiViewController: UIViewController)
+    func templateAlert(alertTitle:String?,alertMessage:String?,completion: (() ->Void)?)
+    func templateAlertMultipleChoice(alertTitle:String,alertMessage:String,choiceOne:String,choiceTwo:String, completion: ((String) -> Void)?)
 }
 
 

@@ -9,7 +9,7 @@ import UIKit
 
 class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
     
-
+    
     
     var imgLogo:UIImage?
     let imgVwLogo = UIImageView()
@@ -37,15 +37,13 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         self.setup_TopSafeBar()
         setup_HomeScreen()
         self.showSpinner()
-        userStore.connectDevice {
+        UserStore.shared.connectDevice {
             print("- finiehd connecting device")
             OperationQueue.main.addOperation {
                 self.removeSpinner()
             }
         }
-
         
-
         templateAlertMultipleChoice(alertTitle: "Select environment:", alertMessage: "", choiceOne: "Production", choiceTwo: "Development") { stringResponse in
             switch stringResponse{
             case "Development":
@@ -60,7 +58,7 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
             }
         }
     }
-//    override func view
+    //    override func view
     func setup_HomeScreen(){
         guard let imgLogo = UIImage(named: "logo") else {
             print("Missing logo")
@@ -75,20 +73,20 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
             imgVwLogo.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 5)),
             imgVwLogo.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: widthFromPct(percent: -1))
         ])
-
+        
         lblWhatSticks.text = "What Sticks"
         lblWhatSticks.font = UIFont(name: "ArialRoundedMTBold", size: 30)
-//        lblWhatSticks.numberOfLines = 0
+        //        lblWhatSticks.numberOfLines = 0
         lblWhatSticks.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(lblWhatSticks)
         lblWhatSticks.accessibilityIdentifier="lblWhatSticks"
         NSLayoutConstraint.activate([
             lblWhatSticks.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 1)),
-//            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor),
+            //            lblWhatSticks.trailingAnchor.constraint(equalTo: imgVwLogo.leadingAnchor),
             lblWhatSticks.topAnchor.constraint(equalTo: imgVwLogo.bottomAnchor,constant: heightFromPct(percent: -3))
         ])
         lblDescription.text = "The app designed to use data already being collected by your devices and other apps to help you understand your tendencies and habits."
-//        lblDescription.font = UIFont(name: "ArialRoundedMT", size: 17)
+        //        lblDescription.font = UIFont(name: "ArialRoundedMT", size: 17)
         lblDescription.numberOfLines = 0
         lblDescription.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(lblDescription)
@@ -125,7 +123,7 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         contentView.accessibilityIdentifier = "contentView"
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
-         NSLayoutConstraint.activate([
+        NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -133,25 +131,19 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor) // This ensures vertical scrolling
         ])
     }
-
+    
     
     func setup_vwStatusTemporary(){
         print("-- adding vwOffline")
         vwStatusTemporary.accessibilityIdentifier = "vwStatusTemporary"
         vwStatusTemporary.translatesAutoresizingMaskIntoConstraints = false
-//        vwStatusTemporary.backgroundColor = .purple
         contentView.addSubview(vwStatusTemporary)
         NSLayoutConstraint.activate([
             vwStatusTemporary.topAnchor.constraint(equalTo: contentView.topAnchor, constant: heightFromPct(percent: 3)),
             vwStatusTemporary.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
             vwStatusTemporary.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             vwStatusTemporary.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: heightFromPct(percent: -5))
-            ])
+        ])
     }
-    
-    
-    
-    
-    
 }
 

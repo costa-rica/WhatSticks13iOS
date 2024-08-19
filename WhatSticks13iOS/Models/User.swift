@@ -27,7 +27,12 @@ class User: Codable {
     var longitude: String?
     var timezone: String?
     var location_permission_device: Bool?/* was location_permission */
-    var location_permission_ws:Bool? /* was location_reoccuring_permission */
+    //var location_permission_ws:Bool? /* was location_reoccuring_permission */
+    var location_permission_ws:Bool = false {
+        didSet{
+            UserDefaults.standard.set(location_permission_ws, forKey: "location_permission_ws")
+        }
+    }
     var last_location_date: String?
     var notifications:Bool?
 }

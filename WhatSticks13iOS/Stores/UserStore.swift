@@ -167,9 +167,12 @@ class UserStore {
         print("---- in assignUser() ")
         do {
             if let userData = try? JSONSerialization.data(withJSONObject: dictUser["user"] ?? [:], options: []) {
+                
                 let decoder = JSONDecoder()
                 let user = try decoder.decode(User.self, from: userData)
                 self.user = user
+                LocationFetcher.shared.setUserStoreUserLocationPermissionDevice()// set the correct user.location_permission_device i.e. the device dictates what this is, not the WS app.
+                UserDefaults.standard.set(self.user.location_permission_ws, forKey: "location_permission_ws")
                 if let unwp_username = self.user.username{
                     UserDefaults.standard.set(unwp_username, forKey: "userName")
                 }
@@ -182,12 +185,12 @@ class UserStore {
                 if let unwp_admin_permission = self.user.admin_permission {
                     UserDefaults.standard.set(unwp_admin_permission, forKey: "admin_permission")
                 }
-                if let unwp_location_permission_device = self.user.location_permission_device {
-                    UserDefaults.standard.set(unwp_location_permission_device, forKey: "location_permission_device")
-                }
-                if let unwp_location_permission_ws = self.user.location_permission_ws {
-                    UserDefaults.standard.set(unwp_location_permission_ws, forKey: "location_permission_ws")
-                }
+//                if let unwp_location_permission_device = self.user.location_permission_device {
+//                    UserDefaults.standard.set(unwp_location_permission_device, forKey: "location_permission_device")
+//                }
+//                if let unwp_location_permission_ws = self.user.location_permission_ws {
+//                    UserDefaults.standard.set(unwp_location_permission_ws, forKey: "location_permission_ws")
+//                }
                 if let unwp_token = self.user.token {
                     UserDefaults.standard.set(unwp_token, forKey: "token")
                     self.requestStore.token = unwp_token
@@ -389,7 +392,7 @@ extension UserStore{
                 }
                 do {
                     if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
-                        print("JSON dictionary: \(jsonResult)")
+//                        print("JSON dictionary: \(jsonResult)")
                         
                         self.assignUser(dictUser: jsonResult)
                         OperationQueue.main.addOperation {
@@ -449,8 +452,8 @@ extension UserStore{
             }
             do {
                 if let jsonResult = try JSONSerialization.jsonObject(with: unwrapped_data, options: []) as? [String: Any] {
-                    print("--- This should include a ArryDataSourceObjects ----")
-                    print("JSON dictionary: \(jsonResult)")
+//                    print("--- This should include a ArryDataSourceObjects ----")
+//                    print("JSON dictionary: \(jsonResult)")
                     self.assignUser(dictUser: jsonResult)
                     self.assignArryDataSourceObjects(jsonResponse: jsonResult)
                     self.assignArryDashboardTableObjects(jsonResponse: jsonResult)

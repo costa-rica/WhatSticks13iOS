@@ -59,8 +59,9 @@ class TemplateVC: UIViewController {
         UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseOut], animations: {
             sender.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
         }, completion: nil)
-        print("in touchDown (TemplateVC)")
     }
+    
+    // I want to delete
     func templateAlert(alertTitle:String = "Alert",alertMessage: String,  backScreen: Bool = false, dismissView:Bool = false) {
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
         // This is used to go back
@@ -75,29 +76,29 @@ class TemplateVC: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func templateAlert(alertTitle:String?,alertMessage:String?,completion: @escaping() ->Void){
+    func templateAlert(alertTitle:String?,alertMessage:String?,completion: (() ->Void)?){
         
         let alert = UIAlertController(title: alertTitle ?? "", message: alertMessage ?? "", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-            completion()
+            completion?()
         }))
         self.present(alert, animated: true, completion: nil)
     }
     
-    func templateAlertMultipleChoice(alertTitle:String,alertMessage:String,choiceOne:String,choiceTwo:String, completion: @escaping (String) -> Void){
+    func templateAlertMultipleChoice(alertTitle:String,alertMessage:String,choiceOne:String,choiceTwo:String, completion: ((String) -> Void)?){
         // Create the alert controller
         let alertController = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
         
         // Add "Production" action
         let choiceOneAction = UIAlertAction(title: choiceOne, style: .default) { _ in
             // Call the completion handler with "Production"
-            completion(choiceOne)
+            completion?(choiceOne)
         }
         
         // Add "Development" action
         let choiceTwoAction = UIAlertAction(title: choiceTwo, style: .default) { _ in
             // Call the completion handler with "Development"
-            completion(choiceTwo)
+            completion?(choiceTwo)
         }
         
         // Add the actions to the alert controller
