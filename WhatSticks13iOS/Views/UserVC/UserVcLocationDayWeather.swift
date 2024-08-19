@@ -175,11 +175,28 @@ class UserVcLocationDayWeather: UIView {
                         }
                     }// CLOSE: self.userStore.callUpdateUserLocationDetails(
                 }// CLOSE: if let unwp_clLocation = clLocation {
-                else {
-                    self.delegate?.templateAlert(alertTitle: "",alertMessage: "Unable to update user location. \n\n This could be the resulte of already having sent your location once in the past 24hrs. \n\n If this is not the case try again or contact what-sticks.com@gmail.com.", completion: {
-                        self.delegate?.removeSpinner()
-                        self.switchErrorSwitchBack()
-                    })
+                else {// This is the case when the User Location has already been sent
+                    // This else is somewhat unncessary - API can receive as many locations updates, but ws_utilities screens for existing UserLocationDay, therefore, it won't add an additional loc even if iOS sends one.
+                    UserStore.shared.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: false) { resultStringOrError in
+                        switch resultStringOrError {
+                        case .success(_):
+                            self.delegate?.templateAlert(alertTitle: "Success!",alertMessage: nil, completion: {
+                                self.delegate?.removeSpinner()
+                            })
+                            
+                        default:
+                            self.delegate?.templateAlert(alertTitle: "",alertMessage: "Unable to reach What Sticks servers to analyze this update. \n\n Try again or contact what-sticks.com@gmail.com.", completion: {
+                                self.delegate?.removeSpinner()
+                                self.switchErrorSwitchBack()
+                            })
+                            
+                        }// CLOSE: UserStore.shared.callUpdateUserLocationDetails(endPoint: .update_user_location_details, sendUserLocations: false)
+                    }// CLOSE: self.userStore.callUpdateUserLocationDetails(
+                    
+//                    self.delegate?.templateAlert(alertTitle: "",alertMessage: "Unable to update user location. \n\n This could be the resulte of already having sent your location once in the past 24hrs. \n\n If this is not the case try again or contact what-sticks.com@gmail.com.", completion: {
+//                        self.delegate?.removeSpinner()
+//                        self.switchErrorSwitchBack()
+//                    })
                 }// CLOSE: if let unwp_clLocation = clLocation {} else
             }// CLOSE: locationFetcher.fetchLocationOnce { clLocation in
             LocationFetcher.shared.locationManager.startMonitoringSignificantLocationChanges()

@@ -602,23 +602,13 @@ extension UserStore{
 extension UserStore {
 
     func callUpdateUserLocationDetails(endPoint: EndPoint, sendUserLocations:Bool, completion: @escaping (Result<String,UserStoreError>) -> Void){
+        // sendUserLocations:Bool is somewhat unncessary - API can receive as many locations updates, but ws_utilities screens for existing UserLocationDay, therefore, it won't add an additional loc even if iOS sends one.
         print("in UserStore.callUpdateUserLocationDetails()")
         let updateUserLocDict = UpdateUserLocationDetailsDictionary()
         updateUserLocDict.location_permission_device = self.user.location_permission_device
         updateUserLocDict.location_permission_ws = self.user.location_permission_ws
         if sendUserLocations{
             updateUserLocDict.user_location = LocationFetcher.shared.arryUserLocation
-//            if let userLocationArray = UserDefaults.standard.array(forKey: "arryUserLocation") as? [UserDayLocation] {
-////                do {
-////                    let decoder = JSONDecoder()
-////                    let userDayLocations = try decoder.decode([UserDayLocation].self, from: userLocationArray)
-//                    updateUserLocDict.user_location = userLocationArray
-////                }
-//            } 
-//            
-//            else {
-//                print("There as a problem reading the UserDefaults.standard.array(forKey: user_location) in UserStore.callUpdateUserLocationDetails()")
-//            }
         }
         let requestStoreResult = requestStore.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateUserLocDict)
         switch requestStoreResult {
@@ -640,8 +630,6 @@ extension UserStore {
                     return
                 }
                 do {
-//                    if let jsonResult = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] {
-//                        self.assignUser(dictUser: jsonResult)
                     guard let jsonResult = try JSONSerialization.jsonObject(with: unwrappedData, options: []) as? [String: Any] else {
                         throw UserStoreError.failedDecode// throw will send to the catch block
                     }
@@ -649,17 +637,10 @@ extension UserStore {
                     guard let message = jsonResult["alert_message"] as? String else {
                         throw UserStoreError.failedDecode
                     }
-//                        if let message = jsonResult["alert_message"] as? String {
                     OperationQueue.main.addOperation {
                         print("--> successful callUpdateUser api response")
                         completion(.success(message))
                     }
-//                        }
-                        
-//                    } 
-//                    else {
-//                        throw UserStoreError.failedDecode
-//                    }
                 } catch {
                     print("---- UserStore.failedToUpdateUser: Failed to read response")
                     completion(.failure(UserStoreError.failedDecode))
@@ -670,7 +651,6 @@ extension UserStore {
             completion(.failure(UserStoreError.requestStoreError))
         }
     }
-    
 }
 
 /* Receive Apple Health Statistics from API */
@@ -703,59 +683,5 @@ extension UserStore {
             }
         }
         task.resume()
-    }
-}
-
-/* OBE */
-extension UserStore {
-    func connectDevice(){
-        print("- in connectDevice() ")
-        
-        //        UserDefaults.standard.removeObject(forKey: "userName")
-        deleteUserDefaults_User()
-        
-        if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
-            self.user.username = "new_user"
-            UserDefaults.standard.set("new_user", forKey: "userName")
-            // register user ambivalent_elf_####
-            callRegisterGenericUser { result_string_string_dict in
-                switch result_string_string_dict{
-                case .success(_):
-                    self.requestStore.token = self.user.token
-                    if let unwp_email = self.user.email{
-                        print("user email: \(unwp_email)")
-                    } else {
-                        print("email is null")
-                    }
-                    UserDefaults.standard.set(self.user.username!, forKey: "userName")
-                    self.isOnline=true
-                case .failure(_):
-                    print("--- Off line mode ")
-                }
-            }
-        } // Register Generic Elf
-        else {
-            self.user.username  = UserDefaults.standard.string(forKey: "userName")
-            // login user
-            // call /login
-            if UserDefaults.standard.string(forKey: "userEmail") == nil {
-                callLoginGenericUser(user: self.user) { result_dict_string_any_or_error in
-                    switch result_dict_string_any_or_error {
-                    case  .success(_):
-                        print("--- Success! : token \(self.user.token!)")
-                        self.isOnline=true
-                        self.requestStore.token = self.user.token
-                    case .failure(_):
-                        print("--- Off line mode ")
-                    }
-                }
-            } else {
-                print("login real user")
-            }
-        } // Login Generic Elf
-        if UserDefaults.standard.string(forKey: "hasLaunchedOnce") == nil {
-            UserDefaults.standard.set(true, forKey: "hasLaunchedOnce")
-            self.hasLaunchedOnce = true
-        }
     }
 }

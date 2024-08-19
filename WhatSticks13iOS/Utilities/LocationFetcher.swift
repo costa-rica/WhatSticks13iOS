@@ -52,8 +52,8 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
         }
     }
     var completionCLLocation: ((CLLocation?) -> Void)?
-//    private let updateInterval: TimeInterval = 86_400 // 24 hours in seconds
-    let updateInterval: TimeInterval = 1 // 24 hours in seconds
+    var updateInterval: TimeInterval = 86_400 // 24 hours in seconds
+
     
     override init() {
         super.init()
@@ -85,6 +85,7 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
     
     
     func fetchLocationOnce(completion: @escaping (CLLocation?) -> Void) {
+        // Optional unnecessary - API can receive as many locations updates, but ws_utilities screens for existing UserLocationDay, therefore, it won't add an additional loc even if iOS sends one.
         self.completionCLLocation = completion
         locationManager.requestLocation()
     }
@@ -100,17 +101,12 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
     }
     func setUserStoreUserLocationPermissionDevice(){
         switch locationManager.authorizationStatus{
-//        case .notDetermined, .restricted, .denied:
-//            UserStore.shared.user.location_permission_device = false
-//            UserDefaults.standard.set(false, forKey: "location_permission_device")
         case .authorizedAlways, .authorizedWhenInUse:
             UserStore.shared.user.location_permission_device = true
             UserDefaults.standard.set(true, forKey: "location_permission_device")
-//            print("*** assigned UserStore.shared.user.location_permission_device = true ")
         default:
             UserStore.shared.user.location_permission_device = false
             UserDefaults.standard.set(false, forKey: "location_permission_device")
-//            print("*** assigned UserStore.shared.user.location_permission_device = false ")
         }
     }
     

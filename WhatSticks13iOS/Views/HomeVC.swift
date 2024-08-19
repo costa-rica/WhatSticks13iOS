@@ -53,6 +53,8 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
                 self.setupScrollView()
                 self.setupContentView()
                 self.setup_vwStatusTemporary()
+                self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations", completion: nil)
+                LocationFetcher.shared.updateInterval = 1
             default:
                 print("Lets keep it simple")
             }
