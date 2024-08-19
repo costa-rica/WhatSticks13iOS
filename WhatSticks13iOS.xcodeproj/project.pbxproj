@@ -27,6 +27,11 @@
 		01312BE02C3031860089F9C0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BDF2C3031860089F9C0 /* Config.swift */; };
 		01312BE32C3032730089F9C0 /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BE22C3032730089F9C0 /* LocationFetcher.swift */; };
 		01312BE52C303A230089F9C0 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01312BE42C303A230089F9C0 /* RegisterVC.swift */; };
+		015328682C72222000B37485 /* UserVcDelete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015328672C72222000B37485 /* UserVcDelete.swift */; };
+		0153286A2C72226A00B37485 /* UserVcRegisterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015328692C72226A00B37485 /* UserVcRegisterButton.swift */; };
+		0153286C2C7222EC00B37485 /* UserVcUserStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0153286B2C7222EC00B37485 /* UserVcUserStatusView.swift */; };
+		0153286E2C72232200B37485 /* UserVcOffline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0153286D2C72232200B37485 /* UserVcOffline.swift */; };
+		015328702C72234900B37485 /* UserVcLocationDayWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0153286F2C72234900B37485 /* UserVcLocationDayWeather.swift */; };
 		01FF77232C3A99C200D3E93E /* UserVcComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77222C3A99C100D3E93E /* UserVcComponents.swift */; };
 		01FF77CA2C43F4DB00D3E93E /* ManageDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */; };
 		01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */; };
@@ -56,6 +61,11 @@
 		01312BDF2C3031860089F9C0 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		01312BE22C3032730089F9C0 /* LocationFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		01312BE42C303A230089F9C0 /* RegisterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
+		015328672C72222000B37485 /* UserVcDelete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcDelete.swift; sourceTree = "<group>"; };
+		015328692C72226A00B37485 /* UserVcRegisterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcRegisterButton.swift; sourceTree = "<group>"; };
+		0153286B2C7222EC00B37485 /* UserVcUserStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcUserStatusView.swift; sourceTree = "<group>"; };
+		0153286D2C72232200B37485 /* UserVcOffline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcOffline.swift; sourceTree = "<group>"; };
+		0153286F2C72234900B37485 /* UserVcLocationDayWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcLocationDayWeather.swift; sourceTree = "<group>"; };
 		01FF77222C3A99C100D3E93E /* UserVcComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcComponents.swift; sourceTree = "<group>"; };
 		01FF77242C3AA42200D3E93E /* WhatSticks13iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatSticks13iOS.entitlements; sourceTree = "<group>"; };
 		01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageDataVC.swift; sourceTree = "<group>"; };
@@ -146,6 +156,19 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		015328662C7221F300B37485 /* UserVC */ = {
+			isa = PBXGroup;
+			children = (
+				01FF77222C3A99C100D3E93E /* UserVcComponents.swift */,
+				015328672C72222000B37485 /* UserVcDelete.swift */,
+				0153286B2C7222EC00B37485 /* UserVcUserStatusView.swift */,
+				0153286F2C72234900B37485 /* UserVcLocationDayWeather.swift */,
+				0153286D2C72232200B37485 /* UserVcOffline.swift */,
+				015328692C72226A00B37485 /* UserVcRegisterButton.swift */,
+			);
+			path = UserVC;
+			sourceTree = "<group>";
+		};
 		01FF777A2C3C2A0B00D3E93E /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,8 +179,8 @@
 				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
 				011673922C6C9248008BF349 /* DashboardTableCell.swift */,
 				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
+				015328662C7221F300B37485 /* UserVC */,
 				011673902C6C821A008BF349 /* DashboardVcComponents.swift */,
-				01FF77222C3A99C100D3E93E /* UserVcComponents.swift */,
 				01312BE42C303A230089F9C0 /* RegisterVC.swift */,
 			);
 			path = Views;
@@ -236,9 +259,11 @@
 				01312BB92C2EC1C20089F9C0 /* HomeVC.swift in Sources */,
 				01312BCE2C2EC4B90089F9C0 /* UserVC.swift in Sources */,
 				01FF77CE2C441F2200D3E93E /* AppleHealthDataFetcher.swift in Sources */,
+				0153286C2C7222EC00B37485 /* UserVcUserStatusView.swift in Sources */,
 				01312BE32C3032730089F9C0 /* LocationFetcher.swift in Sources */,
 				01312BCA2C2EC2370089F9C0 /* TabController.swift in Sources */,
 				01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */,
+				015328702C72234900B37485 /* UserVcLocationDayWeather.swift in Sources */,
 				011673912C6C821A008BF349 /* DashboardVcComponents.swift in Sources */,
 				01312BE02C3031860089F9C0 /* Config.swift in Sources */,
 				01312BCC2C2EC49B0089F9C0 /* TemplateVC.swift in Sources */,
@@ -247,6 +272,8 @@
 				01312BDD2C302F9D0089F9C0 /* UrlStore.swift in Sources */,
 				01312BDE2C302F9D0089F9C0 /* RequestStore.swift in Sources */,
 				01312BE52C303A230089F9C0 /* RegisterVC.swift in Sources */,
+				0153286A2C72226A00B37485 /* UserVcRegisterButton.swift in Sources */,
+				015328682C72222000B37485 /* UserVcDelete.swift in Sources */,
 				01312BD52C302F030089F9C0 /* User.swift in Sources */,
 				011673932C6C9248008BF349 /* DashboardTableCell.swift in Sources */,
 				01312BD82C302F500089F9C0 /* UserStore.swift in Sources */,
@@ -255,6 +282,7 @@
 				01312BD22C2EC4DF0089F9C0 /* DashboardVC.swift in Sources */,
 				01312BB72C2EC1C20089F9C0 /* SceneDelegate.swift in Sources */,
 				01312BD02C2EC4C10089F9C0 /* MiscUtils.swift in Sources */,
+				0153286E2C72232200B37485 /* UserVcOffline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

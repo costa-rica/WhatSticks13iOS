@@ -24,11 +24,9 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        print(" in HomeVC -")
         let userStore = UserStore.shared
         let locationFetcher = LocationFetcher.shared
-        locationFetcher.requestLocationPermission()
+        locationFetcher.locationManager.requestAlwaysAuthorization()
         let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
         vwStatusTemporary.delegate = self
@@ -38,7 +36,6 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         self.lblScreenName.text = "Home"
         self.setup_TopSafeBar()
         setup_HomeScreen()
-        
         self.showSpinner()
         userStore.connectDevice {
             print("- finiehd connecting device")
@@ -46,17 +43,24 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
                 self.removeSpinner()
             }
         }
-        print("user name is \(userStore.user.username!)")
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
-            print("user locations: \(userLocationArray)")
-        }
-        
-        setup_vwHomeVcLine()
-        setupScrollView()
-        setupContentView()
-        setup_vwStatusTemporary()
-    }
 
+        
+
+        templateAlertMultipleChoice(alertTitle: "Select environment:", alertMessage: "", choiceOne: "Production", choiceTwo: "Development") { stringResponse in
+            switch stringResponse{
+            case "Development":
+                UserStore.shared.isInDevMode = true
+                self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+                self.setup_vwHomeVcLine()
+                self.setupScrollView()
+                self.setupContentView()
+                self.setup_vwStatusTemporary()
+            default:
+                print("Lets keep it simple")
+            }
+        }
+    }
+//    override func view
     func setup_HomeScreen(){
         guard let imgLogo = UIImage(named: "logo") else {
             print("Missing logo")

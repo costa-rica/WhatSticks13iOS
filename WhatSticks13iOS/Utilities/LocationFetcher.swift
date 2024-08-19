@@ -1,12 +1,9 @@
 //
-//  LocationFetcher.swift
-//  WS11iOS_v08
+//  NEW_LocationFetcher.swift
+//  WhatSticks13iOS
 //
-//  Created by Nick Rodriguez on 31/01/2024.
+//  Created by Nick Rodriguez on 18/08/2024.
 //
-
-// To recreated a user location:
-// [["20240713-0624", "37.785834", "-122.406417"], ["20240714-0702", "37.785834", "-122.406417"]]
 
 import Foundation
 import CoreLocation
@@ -23,172 +20,131 @@ enum LocationFetcherError:Error{
     }
 }
 
-class LocationFetcher: NSObject, CLLocationManagerDelegate {
-    
-    static let shared = LocationFetcher()
-    
-    private let locationManager = CLLocationManager()
-    var currentLocation: CLLocationCoordinate2D?
-    private var locationFetchCompletion: ((Bool) -> Void)?
-
-    var arryHistUserLocation: [UserDayLocation]?
-    var userLocationManagerAuthStatus: String {
-        // This computed property returns the string representation of the authorization status
-        didSet {
-            print(" SET: userLocationManagerAuthStatus --")
-            print("Authorization Status Updated: \(userLocationManagerAuthStatus)")
+extension CLAuthorizationStatus {
+    var localizedDescription: String {
+        switch self {
+        case .notDetermined:return "Not determined"
+        case .restricted:return  "Restricted"
+        case .denied:return "Denied"
+        case .authorizedAlways:   return "Always allowed"
+        case .authorizedWhenInUse: return "When in use"
+        @unknown default: return "Unknown"
         }
     }
-    private let userDefaults = UserDefaults.standard
+}
+
+class LocationFetcher: NSObject, CLLocationManagerDelegate {
+    
+    /* Properties */
+    static let shared = LocationFetcher()
+    let locationManager = CLLocationManager()
+    var arryUserLocation: [UserLocation] = [] {
+        didSet {
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(arryUserLocation) {
+                UserDefaults.standard.set(encoded, forKey: "arryUserLocation")
+            }
+        }
+    }
+    var lastLocationUpdateDate: Date = Calendar.current.date(byAdding: .hour, value: -24, to: Date())! {
+        didSet{
+            UserDefaults.standard.set(lastLocationUpdateDate, forKey: "lastLocationUpdateDate")
+        }
+    }
+    var completionCLLocation: ((CLLocation?) -> Void)?
     private let updateInterval: TimeInterval = 86_400 // 24 hours in seconds
     
     override init() {
-
-        userLocationManagerAuthStatus = LocationFetcher.string(for: locationManager.authorizationStatus)
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.allowsBackgroundLocationUpdates = true // Enable background location updates
         locationManager.pausesLocationUpdatesAutomatically = false // Prevent automatic pausing
-
+        loadLocationFetcherUserDefaults()
     }
-    // Convert CLLocationManager.AuthorizationStatus to a readable string
-    private static func string(for status: CLAuthorizationStatus) -> String {
-        switch status {
-        case .notDetermined: return "Not Determined"
-        case .restricted: return "Restricted"
-        case .denied: return "Denied"
-        case .authorizedAlways: return "Authorized Always"
-        case .authorizedWhenInUse: return "Authorized When In Use"
-        @unknown default: return "Unknown"
-        }
-    }
-    func requestLocationPermission() {
-        locationManager.requestAlwaysAuthorization()
-    }
-    func startMonitoringLocationChanges() {
-        DispatchQueue.global().async {
-            if CLLocationManager.locationServicesEnabled() {
-                self.locationManager.startMonitoringSignificantLocationChanges()
-                print("############################")
-                print("- START: monitoring location changes")
-                print("############################")
+    
+    
+    func loadLocationFetcherUserDefaults() {
+        arryUserLocation = []
+        if let encodedData = UserDefaults.standard.data(forKey: "arryUserLocation") {
+            do {
+                let decodedArray = try JSONDecoder().decode([UserLocation].self, from: encodedData)
+                arryUserLocation = decodedArray
+            } catch {
+                print("*** (1) This should occur on first Launch: \(error) ***")
             }
         }
-    }
-    func stopMonitoringLocationChanges() {
-        self.locationManager.stopMonitoringSignificantLocationChanges()
-        print("-----------------------------------")
-        print("- STOPPED: monitoring location changes")
-        print("-----------------------------------")
-    }
-    
-    
-    // --- > made edits here 2024-07-14
-    func fetchLocation(completion: @escaping (Bool) -> Void) {
-        DispatchQueue.global().async {
-            if CLLocationManager.locationServicesEnabled() {
-                switch self.locationManager.authorizationStatus {
-                case .authorizedAlways, .authorizedWhenInUse:
-                    self.locationFetchCompletion = completion // Store the completion handler
-                    self.locationManager.requestLocation() // Asynchronously updates location
-                    print("locationFetcher.fetchLocation: case .authorizedAlways, .authorizedWhenInUse:")
-                    // --- > made edits here 2024-07-14
-                    /// not sure how the completion handler is working here ??????
-                    if let unwp_locationArray = self.arryHistUserLocation{
-                        print("location: \(unwp_locationArray)")
-                        completion(true)
-                    } else {
-                        completion(false)
-                    }
-                    
-                default:
-                    completion(false)
-                }
-            } else {
-                completion(false)
-            }
-        }
-    }
-        
-    func appendLocationToUserDefaultArryHistUserLocation(lastLocation: CLLocation) {
-        
-//        let arryUserLocation = ["\(getCurrentUtcDateString())", "\(lastLocation.coordinate.latitude)", "\(lastLocation.coordinate.longitude)"]
-        let userDayLocation = UserDayLocation()
-        userDayLocation.timestamp = getCurrentUtcDateString()
-        userDayLocation.latitude = lastLocation.coordinate.latitude
-        userDayLocation.longitude = lastLocation.coordinate.longitude
-        if var arryUserLocation = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
-            arryUserLocation.append(userDayLocation)
-            UserDefaults.standard.set(arryUserLocation, forKey: "user_location")
-        } else {
-            UserDefaults.standard.set([userDayLocation], forKey: "user_location")
-        }
-    }
-
-    func checkUserDefaultUserLocation(){
-        if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation]{
-            self.arryHistUserLocation = userLocationArray
+        // Retrieve the date from UserDefaults
+        if let savedDate = UserDefaults.standard.object(forKey: "lastLocationUpdateDate") as? Date {
+            // Assign the retrieved date to the object's property
+            self.lastLocationUpdateDate = savedDate
         }
     }
     
-
-}
-
-// MARK: - CLLocationManagerDelegate
-extension LocationFetcher {
+    
+    func fetchLocationOnce(completion: @escaping (CLLocation?) -> Void) {
+        self.completionCLLocation = completion
+        locationManager.requestLocation()
+    }
+    
+    func appendLocationToArryHistUserLocation(lastLocation: CLLocation) {
+        let userLocation = UserLocation()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmm"
+        userLocation.timestampString = dateFormatter.string(from: userLocation.timestamp)
+        userLocation.latitude = lastLocation.coordinate.latitude
+        userLocation.longitude = lastLocation.coordinate.longitude
+        arryUserLocation.append(userLocation)
+    }
+    
+    
+    /* delegate methods */
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus{
+        case .notDetermined, .restricted, .denied:
+            UserStore.shared.user.location_permission_device = false
+        case .authorizedAlways, .authorizedWhenInUse:
+            UserStore.shared.user.location_permission_device = true
+        @unknown default:
+            UserStore.shared.user.location_permission_device = false
+        }
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("- acccessed locationManager(didUpdateLocations) ")
         guard let lastLocation = locations.last else {
-            print("- we got past the locationFetchCompletion step 0001")
-            locationFetchCompletion?(true) // Call completion with true since location is updated
-            locationFetchCompletion = nil // Clear the stored completion handler
-            return }
-        print("- we got past the locationFetchCompletion step 0002")
-        currentLocation = lastLocation.coordinate
-        let lastUpdateTimestamp = userDefaults.double(forKey: "lastUpdateTimestamp")
-        let now = Date().timeIntervalSince1970
-        if now - lastUpdateTimestamp >= updateInterval {
-//            appendLocationToFile(lastLocation: lastLocation)
-            appendLocationToUserDefaultArryHistUserLocation(lastLocation: lastLocation)
-            // Update the timestamp of the last processed update
-            userDefaults.set(now, forKey: "lastUpdateTimestamp")
-            print("- we got past the locationFetchCompletion step 0003")
+            completionCLLocation?(nil)
+            return
         }
-        else{
-            locationFetchCompletion?(true) // Call completion with true since location is updated
-            locationFetchCompletion = nil // Clear the stored completion handler
-            print("- we got past the locationFetchCompletion step 0004")
+        // If there is a saved
+        let savedDateConertedToDouble = lastLocationUpdateDate.timeIntervalSince1970// Converts to a double
+        let now = Date().timeIntervalSince1970// Converts to a double
+        if now - savedDateConertedToDouble < updateInterval {
+            completionCLLocation?(nil)
+            return
         }
+        lastLocationUpdateDate=Date()
+        completionCLLocation?(lastLocation)
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to find user's location: \(error.localizedDescription)")
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        // Update userLocationManagerAuthStatus when authorization status changes
-        userLocationManagerAuthStatus = LocationFetcher.string(for: status)
-        
+        // Handle the error here, e.g. show an alert to the user
     }
 }
 
 
-//class HistUserLocation:Codable{
-//    var dateTimeUtc:String?
-//    var latitude:String?
-//    var longitude:String?
-//}
 
-//class DictSendUserLocation:Codable{
-//    var user_location:[[String]]!
-//    var timestamp_utc:String!//"yyyyMMdd-HHmm"
-//}
+class UserLocation: Codable {
+    var timestamp: Date = Date()
+    var timestampString: String!
+    var latitude: Double!
+    var longitude: Double!
+    //    var appState: String?
+}
 
-//class DictUpdate:Codable{
-//    var latitude:String!
-//    var longitude:String!
-//    var location_permission:String!
-//    var location_reoccuring_permission:String!
-//}
+class UpdateUserLocationDetailsDictionary: Codable {
+    var location_permission_device: Bool?
+    var location_permission_ws: Bool?
+    var user_location: [UserLocation]?
+}

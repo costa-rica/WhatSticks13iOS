@@ -33,17 +33,14 @@ class TemplateVC: UIViewController {
         view.backgroundColor = UIColor(named: "ColorAppBackground")
 //        setupViews()
     }
-//    func setupIsDev(urlStore:URLStore){
-//        if urlStore.apiBase == .dev || urlStore.apiBase == .local {
-//            vwTopSafeBar.backgroundColor = UIColor(named: "yellow-dev")
-//        } else{
-//            vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
-//        }
-//
-//    }
+
     
     func setup_TopSafeBar(){
-        vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
+        if UserStore.shared.isInDevMode {
+            vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+        } else {
+            vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
+        }
         view.addSubview(vwTopSafeBar)
         vwTopSafeBar.translatesAutoresizingMaskIntoConstraints = false
         vwTopSafeBar.accessibilityIdentifier = "vwTopSafeBar"
@@ -54,15 +51,9 @@ class TemplateVC: UIViewController {
             vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075),
         ])
     }
-    func setup_vwFooter(){
-//        vwFooter.backgroundColor = UIColor(named: "ColorTableTabModalBack")
-        view.addSubview(vwFooter)
-        vwFooter.translatesAutoresizingMaskIntoConstraints = false
-        vwFooter.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        vwFooter.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        vwFooter.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        vwFooter.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.0).isActive = true
-    }
+//    func setTopSafeBarColorToDev(){
+//        vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+//    }
 
     @objc func touchDown(_ sender: UIButton) {
         UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseOut], animations: {
@@ -83,6 +74,41 @@ class TemplateVC: UIViewController {
         }))
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func templateAlert(alertTitle:String?,alertMessage:String?,completion: @escaping() ->Void){
+        
+        let alert = UIAlertController(title: alertTitle ?? "", message: alertMessage ?? "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+            completion()
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func templateAlertMultipleChoice(alertTitle:String,alertMessage:String,choiceOne:String,choiceTwo:String, completion: @escaping (String) -> Void){
+        // Create the alert controller
+        let alertController = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        
+        // Add "Production" action
+        let choiceOneAction = UIAlertAction(title: choiceOne, style: .default) { _ in
+            // Call the completion handler with "Production"
+            completion(choiceOne)
+        }
+        
+        // Add "Development" action
+        let choiceTwoAction = UIAlertAction(title: choiceTwo, style: .default) { _ in
+            // Call the completion handler with "Development"
+            completion(choiceTwo)
+        }
+        
+        // Add the actions to the alert controller
+        alertController.addAction(choiceOneAction)
+        alertController.addAction(choiceTwoAction)
+        
+        // Present the alert controller
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    
     func showSpinner() {
         print("- TemplateVC showSpinnner - ")
         spinnerView = UIView()
@@ -92,7 +118,6 @@ class TemplateVC: UIViewController {
         self.view.addSubview(spinnerView!)
         
         activityIndicator = UIActivityIndicatorView(style: .large)
-//        activityIndicator = UIActivityIndicatorView()
         activityIndicator.translatesAutoresizingMaskIntoConstraints=false
         activityIndicator.transform = CGAffineTransform(scaleX: 2, y: 2)// makes spinner bigger
         activityIndicator.center = spinnerView!.center
@@ -107,10 +132,7 @@ class TemplateVC: UIViewController {
             spinnerView!.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             activityIndicator.centerXAnchor.constraint(equalTo: spinnerView!.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: spinnerView!.centerYAnchor),
-//            activityIndicator.heightAnchor.constraint(equalToConstant: widthFromPct(percent: 15)),
-//            activityIndicator.widthAnchor.constraint(equalToConstant: widthFromPct(percent: 15)),
         ])
-
     }
     func spinnerScreenLblMessage(message:String){
 //        lblMessage.text = "This is a lot of data so it may take more than a minute"

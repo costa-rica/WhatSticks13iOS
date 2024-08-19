@@ -36,8 +36,8 @@ class UserStore {
     
     static let shared = UserStore()
     
-    let fileManager:FileManager
-    let documentsURL:URL
+//    let fileManager:FileManager
+//    let documentsURL:URL
     var user=User()
     var arryDataSourceObjects:[DataSourceObject]?
     var boolDashObjExists:Bool!
@@ -55,18 +55,19 @@ class UserStore {
     var existing_emails = [String]()
     var urlStore:URLStore!
     var requestStore:RequestStore!
-    var rememberMe = false
+//    var rememberMe = false
     var hasLaunchedOnce = false
     var isOnline = false
+    var isInDevMode = false
     let session: URLSession = {
         let config = URLSessionConfiguration.default
         return URLSession(configuration: config)
     }()
     
-    init() {
-        self.fileManager = FileManager.default
-        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
+//    init() {
+////        self.fileManager = FileManager.default
+////        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//    }
     
     func deleteUserDefaults_User(){
         UserDefaults.standard.removeObject(forKey: "userName")
@@ -77,10 +78,9 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "admin_permission")
         UserDefaults.standard.removeObject(forKey: "location_permission_device")
         UserDefaults.standard.removeObject(forKey: "location_permission_ws")
-        UserDefaults.standard.removeObject(forKey: "user_location")
+        UserDefaults.standard.removeObject(forKey: "arryUserLocation")
         UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
         UserDefaults.standard.removeObject(forKey: "arryDataSourceObjects")
-        //        userDefaults.staset(now, forKey: "lastUpdateTimestamp")
     }
     
     func assignArryDataSourceObjects(jsonResponse:[String:Any]){
@@ -604,16 +604,18 @@ extension UserStore {
         updateUserLocDict.location_permission_device = self.user.location_permission_device
         updateUserLocDict.location_permission_ws = self.user.location_permission_ws
         if sendUserLocations{
-            
-            if let userLocationArray = UserDefaults.standard.array(forKey: "user_location") as? [UserDayLocation] {
-//                do {
-//                    let decoder = JSONDecoder()
-//                    let userDayLocations = try decoder.decode([UserDayLocation].self, from: userLocationArray)
-                    updateUserLocDict.user_location = userLocationArray
-//                }
-            } else {
-                print("There as a problem reading the UserDefaults.standard.array(forKey: user_location) in UserStore.callUpdateUserLocationDetails()")
-            }
+            updateUserLocDict.user_location = LocationFetcher.shared.arryUserLocation
+//            if let userLocationArray = UserDefaults.standard.array(forKey: "arryUserLocation") as? [UserDayLocation] {
+////                do {
+////                    let decoder = JSONDecoder()
+////                    let userDayLocations = try decoder.decode([UserDayLocation].self, from: userLocationArray)
+//                    updateUserLocDict.user_location = userLocationArray
+////                }
+//            } 
+//            
+//            else {
+//                print("There as a problem reading the UserDefaults.standard.array(forKey: user_location) in UserStore.callUpdateUserLocationDetails()")
+//            }
         }
         let requestStoreResult = requestStore.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateUserLocDict)
         switch requestStoreResult {

@@ -68,13 +68,11 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 //                print("\(i.accessibilityIdentifier)")
 //            }
             // Trigger action for UserVC selection
+            user_vc.vwLocationDayWeather.setLocationSwitchBasedOnUserPermissions()
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
             print("MainTabBar - isOnline: \(userStore.isOnline)")
             
-//            for i in user_vc.view.subviews{
-//                print("- subviews -")
-//                print("\(i.accessibilityIdentifier)")
-//            }
+
             if user_vc.view.subviews.count > 0 {
                 if !userStore.isOnline, userStore.user.email == nil {
                     user_vc.case_option_1_Offline_and_generic_name()
@@ -90,10 +88,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             
             
         }
-//        if let home_vc = nav_vc.children[0] as? HomeVC {
-//            // Trigger action for HomeVC selection
-//
-//        }
+
         if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {// <--- altered for TEST DAta
             let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
             let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
