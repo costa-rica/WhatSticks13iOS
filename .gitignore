@@ -1,6 +1,7 @@
 # Nick ignores
 Config.swift
 Podfile.lock
+encryption_export_compliance.txt
 
 # ChatGPT suggested ignores
 # macOS system files
