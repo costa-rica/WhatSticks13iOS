@@ -69,6 +69,8 @@ class UserStatusDevelopmentView: UIView {
     let btnCheckArryDashboardTableObjects = UIButton()
     let btnDeleteUserDefaults = UIButton()
     
+    let btnLoadGuestUser = UIButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
@@ -78,6 +80,7 @@ class UserStatusDevelopmentView: UIView {
         setup_btnCheckArryDataSourceObjects()
         setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
+        setup_btnLoadGuestUser()
     }
     init(frame: CGRect, showLine: Bool) {
         self.showLine = showLine
@@ -88,6 +91,7 @@ class UserStatusDevelopmentView: UIView {
         setup_btnCheckArryDataSourceObjects()
         setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
+        setup_btnLoadGuestUser()
     }
 
     required init?(coder: NSCoder) {
@@ -215,12 +219,32 @@ class UserStatusDevelopmentView: UIView {
             btnDeleteUserDefaults.topAnchor.constraint(equalTo: btnCheckArryDashboardTableObjects.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnDeleteUserDefaults.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnDeleteUserDefaults.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
-            btnDeleteUserDefaults.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+//            btnDeleteUserDefaults.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
         ])
         btnDeleteUserDefaults.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnDeleteUserDefaults.addTarget(self, action: #selector(touchUpInside_DeleteUserDefaults(_:)), for: .touchUpInside)
     }
     
+    private func setup_btnLoadGuestUser(){
+        btnLoadGuestUser.accessibilityIdentifier = "btnLoadGuestUser"
+        btnLoadGuestUser.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnLoadGuestUser)
+        btnLoadGuestUser.setTitle("Load Guest", for: .normal)
+        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
+        btnLoadGuestUser.layer.borderColor = ui_color_btnDataSourceObj.cgColor
+        btnLoadGuestUser.layer.borderWidth = 2
+        btnLoadGuestUser.backgroundColor = ui_color_btnDataSourceObj
+        btnLoadGuestUser.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+            btnLoadGuestUser.topAnchor.constraint(equalTo: btnDeleteUserDefaults.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnLoadGuestUser.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnLoadGuestUser.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            btnLoadGuestUser.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+        ])
+        btnLoadGuestUser.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnLoadGuestUser.addTarget(self, action: #selector(touchUpInside_LoadGuest(_:)), for: .touchUpInside)
+    }
     
     
     
@@ -342,6 +366,16 @@ class UserStatusDevelopmentView: UIView {
                 print("")
             }
         })
+    }
+    
+    @objc func touchUpInside_LoadGuest(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+
+        print("Check Guest values")
+        UserStore.shared.loadGuestUser()
+        
     }
     
 }

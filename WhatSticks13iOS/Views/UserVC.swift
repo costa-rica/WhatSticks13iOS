@@ -229,6 +229,9 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         setup_vwLocationDayWeather()
         setup_vwUserStatus()
         vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+            vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
+        }
         NSLayoutConstraint.deactivate(vwUserStatus.constraints_NO_VwRegisterButton)
         vwUserStatus.setup_vcRegistrationButton()
         NSLayoutConstraint.activate(vwUserStatus.constraints_YES_VwRegisterButton)
@@ -239,6 +242,9 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         setup_vwLocationDayWeather()
         setup_vwUserStatus()
         vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+            vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
+        }
         NSLayoutConstraint.deactivate(vwUserStatus.constraints_YES_VwRegisterButton)
         vwUserStatus.vwRegisterButton.removeFromSuperview()
         NSLayoutConstraint.activate(vwUserStatus.constraints_NO_VwRegisterButton)
@@ -250,6 +256,9 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         setup_vwUserStatus()
         vwUserStatus.remove_vcRegistrationButton()
         vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
+        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+            vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
+        }
         setup_vwOffline()
         NSLayoutConstraint.activate(constraints_Offline_YesEmail)
     }

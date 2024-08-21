@@ -42,7 +42,7 @@ enum EndPoint: String {
 }
 
 class URLStore {
-
+    static let shared = URLStore()
     var apiBase:APIBase!
 
     func callEndpoint(endPoint: EndPoint) -> URL{

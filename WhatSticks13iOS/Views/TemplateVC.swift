@@ -12,9 +12,7 @@ class TemplateVC: UIViewController {
     let vwTopSafeBar = UIView()
     let vwTopBar = UIView()
     let lblScreenName = UILabel()
-//    let lblUsername = UILabel()
-//    let imgVwLogo = UIImageView()
-    let vwFooter = UIView()
+//    let vwFooter = UIView()
     var bodySidePaddingPercentage = Float(5.0)
     var bodyTopPaddingPercentage = Float(20.0)
     var smallPaddingTop = heightFromPct(percent: 2)
@@ -22,16 +20,12 @@ class TemplateVC: UIViewController {
     var spinnerView: UIView?
     var activityIndicator:UIActivityIndicatorView!
     var lblMessage = UILabel()
-//    var imgLogoTrailingAnchor: NSLayoutConstraint!
-//    var lblScreenNameTopAnchor: NSLayoutConstraint!
-//    var lblUserNameBottomAnchor: NSLayoutConstraint!
-    
+
     var isInitialViewController: Bool = false
      
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "ColorAppBackground")
-//        setupViews()
     }
 
     
@@ -51,9 +45,7 @@ class TemplateVC: UIViewController {
             vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075),
         ])
     }
-//    func setTopSafeBarColorToDev(){
-//        vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
-//    }
+
 
     @objc func touchDown(_ sender: UIButton) {
         UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseOut], animations: {

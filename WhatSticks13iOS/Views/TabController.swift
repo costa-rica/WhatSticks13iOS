@@ -59,14 +59,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
         if let user_vc = nav_vc.children[0] as? UserVC {
             print("-- TabController UserVC selected < ------ *")
-//            print("- user_vc subviews: \(user_vc.view.subviews.count)")
-//            print("\(user_vc.view.subviews)")
-//            for i in user_vc.view.subviews {
-//                print("\(i.accessibilityIdentifier)")
-//            }
-//            for i in user_vc.scrollView.subviews {
-//                print("\(i.accessibilityIdentifier)")
-//            }
+
             // Trigger action for UserVC selection
             user_vc.vwLocationDayWeather.setLocationSwitchBasedOnUserPermissions()
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
@@ -75,16 +68,6 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 
             if user_vc.view.subviews.count > 0 {
                 user_vc.manageUserVcOptionalViews()
-//                if !userStore.isOnline, userStore.user.email == nil {
-//                    user_vc.case_option_1_Offline_and_generic_name()
-//                }else if userStore.isOnline, userStore.user.email == nil{
-//                    print("MainTabBar - initiating case #2 --")
-//                    user_vc.case_option_2_Online_and_generic_name()
-//                } else if userStore.isOnline, userStore.user.email != nil{
-//                    user_vc.case_option_3_Online_and_custom_email()
-//                } else if !userStore.isOnline, userStore.user.email != nil {
-//                    user_vc.case_option_4_Offline_and_custom_email()
-//                }
             }
             
             

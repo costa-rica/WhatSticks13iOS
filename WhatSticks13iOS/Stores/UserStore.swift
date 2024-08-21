@@ -55,7 +55,6 @@ class UserStore {
     var existing_emails = [String]()
     var urlStore:URLStore!
     var requestStore:RequestStore!
-//    var rememberMe = false
     var hasLaunchedOnce = false
     var isOnline = false
     var isInDevMode = false
@@ -63,11 +62,7 @@ class UserStore {
         let config = URLSessionConfiguration.default
         return URLSession(configuration: config)
     }()
-    
-//    init() {
-////        self.fileManager = FileManager.default
-////        self.documentsURL = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//    }
+    var isGuest = false
     
     func deleteUserDefaults_User(){
         UserDefaults.standard.removeObject(forKey: "userName")
@@ -185,12 +180,6 @@ class UserStore {
                 if let unwp_admin_permission = self.user.admin_permission {
                     UserDefaults.standard.set(unwp_admin_permission, forKey: "admin_permission")
                 }
-//                if let unwp_location_permission_device = self.user.location_permission_device {
-//                    UserDefaults.standard.set(unwp_location_permission_device, forKey: "location_permission_device")
-//                }
-//                if let unwp_location_permission_ws = self.user.location_permission_ws {
-//                    UserDefaults.standard.set(unwp_location_permission_ws, forKey: "location_permission_ws")
-//                }
                 if let unwp_token = self.user.token {
                     UserDefaults.standard.set(unwp_token, forKey: "token")
                     self.requestStore.token = unwp_token
@@ -220,75 +209,111 @@ class UserStore {
     
     func connectDevice(completion: @escaping () -> Void){
         print("- in connectDevice(completion) ")
-        //        deleteUserDefaults_User()
-        checkUser()
-        // Condition #1: Register user ambivalent_elf_####
-        if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
-            callRegisterGenericUser { result_string_string_dict in
-                switch result_string_string_dict{
-                case .success(_):
-                    self.requestStore.token = self.user.token
-                    if let unwp_email = self.user.email{
-                        print("user email: \(unwp_email)")
-                    } else {
-                        print("email is null")
-                    }
-                    UserDefaults.standard.set(self.user.username!, forKey: "userName")
-                    self.isOnline=true
-                    completion()
-                case .failure(_):
-                    print("--- Off line mode (Condition #1)")
-                    self.loadArryDataSourceObjectsFromUserDefaults()
-                    self.loadArryDashboardTableFromUserDefaults()
-                    completion()
-                }
-            }
-        }
-        // Condition #2: Login with Generic Elf
-        else if UserDefaults.standard.string(forKey: "email") == nil  {
-            self.user.username  = UserDefaults.standard.string(forKey: "userName")
-            // login user
-            // call /login
-            if UserDefaults.standard.string(forKey: "userEmail") == nil {
-                callLoginGenericUser(user: self.user) { result_dict_string_any_or_error in
-                    switch result_dict_string_any_or_error {
-                    case  .success(_):
-                        print("--- Success! : token \(self.user.token!)")
-                        self.isOnline=true
+        if isGuest{
+            print("assign guest user and data")
+            
+            completion()
+        } else {
+            checkUser()
+            // Condition #1: Register user ambivalent_elf_####
+            if UserDefaults.standard.string(forKey: "userName") == nil || UserDefaults.standard.string(forKey: "userName") == "new_user"  {
+                callRegisterGenericUser { result_string_string_dict in
+                    switch result_string_string_dict{
+                    case .success(_):
                         self.requestStore.token = self.user.token
+                        if let unwp_email = self.user.email{
+                            print("user email: \(unwp_email)")
+                        } else {
+                            print("email is null")
+                        }
+                        UserDefaults.standard.set(self.user.username!, forKey: "userName")
+                        self.isOnline=true
                         completion()
                     case .failure(_):
-                        print("--- Off line mode (Condition #2:)")
+                        print("--- Off line mode (Condition #1)")
                         self.loadArryDataSourceObjectsFromUserDefaults()
                         self.loadArryDashboardTableFromUserDefaults()
                         completion()
                     }
                 }
-            } else {
-                print("login real user")
-                completion()
             }
-        }
-        // Condition #3: Login with account
-        else {
-            print("---- Login with email and password ---")
-            callLogin(user: self.user) { result_dict_or_error in
-                switch result_dict_or_error {
-                case .success(_):
-                    self.isOnline=true
+            // Condition #2: Login with Generic Elf
+            else if UserDefaults.standard.string(forKey: "email") == nil  {
+                self.user.username  = UserDefaults.standard.string(forKey: "userName")
+                // login user
+                // call /login
+                if UserDefaults.standard.string(forKey: "userEmail") == nil {
+                    callLoginGenericUser(user: self.user) { result_dict_string_any_or_error in
+                        switch result_dict_string_any_or_error {
+                        case  .success(_):
+                            print("--- Success! : token \(self.user.token!)")
+                            self.isOnline=true
+                            self.requestStore.token = self.user.token
+                            completion()
+                        case .failure(_):
+                            print("--- Off line mode (Condition #2:)")
+                            self.loadArryDataSourceObjectsFromUserDefaults()
+                            self.loadArryDashboardTableFromUserDefaults()
+                            completion()
+                        }
+                    }
+                } else {
+                    print("login real user")
                     completion()
-                case let .failure(error):
-                    print("-offline mode??? (Condition #3)")
-                    print("error: \(error)")
-                    self.loadArryDataSourceObjectsFromUserDefaults()
-                    self.loadArryDashboardTableFromUserDefaults()
-                    completion()
+                }
+            }
+            // Condition #3: Login with account
+            else {
+                print("---- Login with email and password ---")
+                callLogin(user: self.user) { result_dict_or_error in
+                    switch result_dict_or_error {
+                    case .success(_):
+                        self.isOnline=true
+                        completion()
+                    case let .failure(error):
+                        print("-offline mode??? (Condition #3)")
+                        print("error: \(error)")
+                        self.loadArryDataSourceObjectsFromUserDefaults()
+                        self.loadArryDashboardTableFromUserDefaults()
+                        completion()
+                    }
                 }
             }
         }
     }
     
-
+    func loadGuestDataSourceObjectArray() {
+        if let url = Bundle.main.url(forResource: "data_table_objects_array_guest", withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let objects = try decoder.decode([DataSourceObject].self, from: data)
+                self.arryDataSourceObjects = objects
+            } catch {
+                print("Error loading data: \(error)")
+            }
+        }
+    }
+    
+    
+    func loadGuestDashboardTableObjectsArray() {
+        if let url = Bundle.main.url(forResource: "data_table_objects_array_guest", withExtension: "json") {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let objects = try decoder.decode([DashboardTableObject].self, from: data)
+                self.arryDashboardTableObjects = objects
+            } catch {
+                print("Error loading data: \(error)")
+            }
+        }
+    }
+    
+    func loadGuestUser(){
+        self.user.username = "Guest User"
+        loadGuestDataSourceObjectArray()
+        loadGuestDashboardTableObjectsArray()
+    }
     
 }
 
