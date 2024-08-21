@@ -74,16 +74,17 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             
 
             if user_vc.view.subviews.count > 0 {
-                if !userStore.isOnline, userStore.user.email == nil {
-                    user_vc.case_option_1_Offline_and_generic_name()
-                }else if userStore.isOnline, userStore.user.email == nil{
-                    print("MainTabBar - initiating case #2 --")
-                    user_vc.case_option_2_Online_and_generic_name()
-                } else if userStore.isOnline, userStore.user.email != nil{
-                    user_vc.case_option_3_Online_and_custom_email()
-                } else if !userStore.isOnline, userStore.user.email != nil {
-                    user_vc.case_option_4_Offline_and_custom_email()
-                }
+                user_vc.manageUserVcOptionalViews()
+//                if !userStore.isOnline, userStore.user.email == nil {
+//                    user_vc.case_option_1_Offline_and_generic_name()
+//                }else if userStore.isOnline, userStore.user.email == nil{
+//                    print("MainTabBar - initiating case #2 --")
+//                    user_vc.case_option_2_Online_and_generic_name()
+//                } else if userStore.isOnline, userStore.user.email != nil{
+//                    user_vc.case_option_3_Online_and_custom_email()
+//                } else if !userStore.isOnline, userStore.user.email != nil {
+//                    user_vc.case_option_4_Offline_and_custom_email()
+//                }
             }
             
             

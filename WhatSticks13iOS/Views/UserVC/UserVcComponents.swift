@@ -55,8 +55,8 @@ class UserVcFindAppleHealthPermissionsView: UIView {
 
 /* Maintanence -- for delete */
 
-class UserStatusTemporaryView: UIView {
-    weak var delegate: UserStatusTemporaryViewDelegate?
+class UserStatusDevelopmentView: UIView {
+    weak var delegate: UserStatusDevelopmentViewDelegate?
     let userStore = UserStore.shared
     var showLine:Bool!
     let vwUserStatusTemporaryLine = UIView()
@@ -89,14 +89,7 @@ class UserStatusTemporaryView: UIView {
         setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
     }
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//        setup_UserStatusTemporaryView()
-//        setup_btnCheckUserDeafultUserLocaiton()
-//        setup_btnCheckArryDataSourceObjects()
-//        setup_btnCheckArrayDashboardTableObjects()
-//        setup_btnDeleteUserDefaults()
-//    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -353,7 +346,7 @@ class UserStatusTemporaryView: UIView {
     
 }
 
-protocol UserStatusTemporaryViewDelegate: AnyObject {
+protocol UserStatusDevelopmentViewDelegate: AnyObject {
     func removeSpinner()
     func showSpinner()
 //    func templateAlert(alertTitle:String,alertMessage: String,  backScreen: Bool, dismissView:Bool)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
+class HomeVC: TemplateVC {
     
     
     
@@ -20,8 +20,9 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
     let vwHomeVcHeader = HomeVcHeaderView()
     let scrollView = UIScrollView()
     let contentView = UIView()
+    var didPresentAppModeOption = false
     
-    let vwStatusTemporary = UserStatusTemporaryView()
+//    let vwStatusTemporary = UserStatusTemporaryView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +31,10 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
         locationFetcher.locationManager.requestAlwaysAuthorization()
         let parentRequestStore = RequestStore.shared
         userStore.requestStore = parentRequestStore
-        vwStatusTemporary.delegate = self
+
         let healthDataStore = HealthDataStore.shared
         healthDataStore.requestStore = parentRequestStore
-        
-//        self.lblScreenName.text = "Home"
+
         self.setup_TopSafeBar()
         setupHomeVcHeader()
         self.showSpinner()
@@ -59,6 +59,31 @@ class HomeVC: TemplateVC, UserStatusTemporaryViewDelegate {
 //                print("Lets keep it simple")
 //            }
 //        }
+    }
+    override func viewIsAppearing(_ animated: Bool) {
+        print("- HomeVc viewIsAppearing")
+        if !didPresentAppModeOption{
+            templateAlertMultipleChoice(alertTitle: "Select environment:", alertMessage: "", choiceOne: "Production", choiceTwo: "Development") { stringResponse in
+                switch stringResponse{
+                case "Development":
+                    
+                    UserStore.shared.isInDevMode = true
+                    self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+                    //                self.setupScrollView()
+                    //                self.setupContentView()
+                    //                self.setup_vwStatusTemporary()
+                    self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations", completion: nil)
+                    LocationFetcher.shared.updateInterval = 1
+                default:
+//                    didPresentAppModeOption = true
+                    print("Lets keep it simple")
+                }
+                self.didPresentAppModeOption = true
+            }
+        }
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        print("- HomeVc viewWillAppear")
     }
     //    override func view
     func setupHomeVcHeader(){
