@@ -11,22 +11,24 @@ class ManageDataVC: TemplateVC {
     var userStore: UserStore!
     var appleHealthDataFetcher:AppleHealthDataFetcher!
     var healthDataStore: HealthDataStore!
-    let lblManageDataVcTitle = UILabel()
+    var vwManageDataVcHeader = ManageDataVcHeader()
+    var vwManageDataVcOffline = InformationView()
+//    let lblManageDataVcTitle = UILabel()
     
-    let stckVwManageData = UIStackView()
-
-    let stckVwRecordCount = UIStackView()
-    let lblRecordCountFilled = UILabel()
-    let btnRecordCountFilled = UIButton()
-    
-    let stckVwEarliestDate = UIStackView()
-    let lblEarliestDateFilled = UILabel()
-    let btnEarliestDateFilled = UIButton()
+//    let stckVwManageData = UIStackView()
+//
+//    let stckVwRecordCount = UIStackView()
+//    let lblRecordCountFilled = UILabel()
+//    let btnRecordCountFilled = UIButton()
+//    
+//    let stckVwEarliestDate = UIStackView()
+//    let lblEarliestDateFilled = UILabel()
+//    let btnEarliestDateFilled = UIButton()
 
     let datePicker = UIDatePicker()
     var dtUserHistory:Date?
     
-    let btnConnectData = UIButton()
+    let btnSendData = UIButton()
     
     var arryStepsDict = [AppleHealthQuantityCategory](){
         didSet{
@@ -35,7 +37,6 @@ class ManageDataVC: TemplateVC {
     }
     var arrySleepDict = [AppleHealthQuantityCategory](){
         didSet{
-//            arrySleepDict=[AppleHealthQuantityCategory]()
             actionGetHeartRateData()
         }
     }
@@ -46,7 +47,6 @@ class ManageDataVC: TemplateVC {
     }
     var arryExerciseTimeDict = [AppleHealthQuantityCategory](){
         didSet{
-            //            necessaryDataCollected()
             actionGetWorkoutData()
         }
     }
@@ -60,157 +60,81 @@ class ManageDataVC: TemplateVC {
     
     override func viewDidLoad() {
         userStore = UserStore.shared
-        appleHealthDataFetcher = AppleHealthDataFetcher.shared
-        healthDataStore = HealthDataStore.shared
-        appleHealthDataFetcher.authorizeHealthKit()
-        
+//        appleHealthDataFetcher = AppleHealthDataFetcher.shared
+//        healthDataStore = HealthDataStore.shared
+        AppleHealthDataFetcher.shared.authorizeHealthKit()
+//        appleHealthDataFetcher.authorizeHealthKit()
         setup_TopSafeBar()
-        setup_ManageDataVcTitle()
-        setup_UserVcAccountView()
-//        setupDatePicker()
-//        setup_btnConnectData()
         view.backgroundColor = UIColor(named: "ColorAppBackground")
     }
-    
-    private func setup_ManageDataVcTitle(){
-        lblManageDataVcTitle.accessibilityIdentifier="lblManageDataVcTitle"
-        lblManageDataVcTitle.translatesAutoresizingMaskIntoConstraints = false
-        lblManageDataVcTitle.text = "Manage Data"
-        lblManageDataVcTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
-        lblManageDataVcTitle.numberOfLines=0
-        view.addSubview(lblManageDataVcTitle)
-                
+    func setupManageDataVcOffline(){
+        datePicker.removeFromSuperview()
+        btnSendData.removeFromSuperview()
+        vwManageDataVcOffline.lblTitle.text = "Ooops ...."
+        vwManageDataVcOffline.lblDescription.text = "This app has not been able to connect with the What Sticks server. Either restart or try back later...  ¯\\_(ツ)_/¯"
+        vwManageDataVcOffline.accessibilityIdentifier="vwDashboardHasNoData"
+        vwManageDataVcOffline.translatesAutoresizingMaskIntoConstraints=false
+        vwManageDataVcOffline.layer.cornerRadius = 12
+        view.addSubview(vwManageDataVcOffline)
         NSLayoutConstraint.activate([
-            lblManageDataVcTitle.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 3)),
-            lblManageDataVcTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
-            lblManageDataVcTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
-
+            self.vwManageDataVcOffline.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            self.vwManageDataVcOffline.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: smallPaddingSide),
+            self.vwManageDataVcOffline.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -smallPaddingTop),
         ])
     }
-    
-    private func setup_UserVcAccountView(){
-        userStore = UserStore.shared
-
-        stckVwManageData.accessibilityIdentifier = "stckVwManageData"
-        stckVwManageData.translatesAutoresizingMaskIntoConstraints=false
-
-        stckVwManageData.axis = .vertical
-        stckVwManageData.alignment = .fill
-        stckVwManageData.distribution = .fillEqually
-        stckVwManageData.spacing = 10
-
-        stckVwRecordCount.accessibilityIdentifier = "stckVwRecordCount"
-        stckVwRecordCount.translatesAutoresizingMaskIntoConstraints=false
-        stckVwRecordCount.axis = .horizontal
-        stckVwRecordCount.alignment = .fill
-        stckVwRecordCount.distribution = .fill
-        stckVwRecordCount.spacing = 10
-
-        stckVwEarliestDate.accessibilityIdentifier = "stckVwEarliestDate"
-        stckVwEarliestDate.translatesAutoresizingMaskIntoConstraints=false
-        stckVwEarliestDate.axis = .horizontal
-        stckVwEarliestDate.alignment = .fill
-        stckVwEarliestDate.distribution = .fill
-        stckVwEarliestDate.spacing = 10
-
-        lblRecordCountFilled.accessibilityIdentifier="lblRecordCountFilled"
-        lblRecordCountFilled.text = "Record count:"
-        lblRecordCountFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
-        lblRecordCountFilled.translatesAutoresizingMaskIntoConstraints=false
-        lblRecordCountFilled.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
-        /* there is also setContentCompressionResistancePriority */
-
-        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
-        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
-            btnRecordCountFilled.titleLabel?.font = font
-        }
-        btnRecordCountFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
-        btnRecordCountFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
-        btnRecordCountFilled.layer.borderWidth = 1
-        btnRecordCountFilled.layer.cornerRadius = 5
-        btnRecordCountFilled.translatesAutoresizingMaskIntoConstraints = false
-//        btnRecordCountFilled.accessibilityIdentifier="btnRecordCountFilled"
-
-        stckVwRecordCount.addArrangedSubview(lblRecordCountFilled)
-        stckVwRecordCount.addArrangedSubview(btnRecordCountFilled)
-
-        stckVwEarliestDate.accessibilityIdentifier = "stckVwEarliestDate"
-        stckVwEarliestDate.translatesAutoresizingMaskIntoConstraints=false
-
-        lblEarliestDateFilled.accessibilityIdentifier="lblEarliestDateFilled"
-        lblEarliestDateFilled.text = "Earliest date:"
-        lblEarliestDateFilled.font = UIFont(name: "ArialRoundedMTBold", size: 15)
-        lblEarliestDateFilled.translatesAutoresizingMaskIntoConstraints=false
-        lblEarliestDateFilled.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
-
-        btnEarliestDateFilled.accessibilityIdentifier="btnEarliestDateFilled"
-//        btnRecordCountFilled.setTitle("0", for: .normal)
-        if let font = UIFont(name: "ArialRoundedMTBold", size: 17) {
-            btnEarliestDateFilled.titleLabel?.font = font
-        }
-        btnEarliestDateFilled.setTitleColor(UIColor(named: "lineColor"), for: .normal)
-        btnEarliestDateFilled.backgroundColor = UIColor(named: "ColorRow3Textfields")
-        btnEarliestDateFilled.layer.borderWidth = 1
-        btnEarliestDateFilled.layer.cornerRadius = 5
-        btnEarliestDateFilled.translatesAutoresizingMaskIntoConstraints = false
-//        btnEarliestDateFilled.accessibilityIdentifier="btnRecordCountFilled"
-
-        stckVwEarliestDate.addArrangedSubview(lblEarliestDateFilled)
-        stckVwEarliestDate.addArrangedSubview(btnEarliestDateFilled)
-
-        stckVwManageData.addArrangedSubview(stckVwRecordCount)
-        stckVwManageData.addArrangedSubview(stckVwEarliestDate)
-
-        view.addSubview(stckVwManageData)
-
-
-        NSLayoutConstraint.activate([
-
-
-            stckVwManageData.topAnchor.constraint(equalTo: lblManageDataVcTitle.bottomAnchor,constant: heightFromPct(percent: 2)),
-            stckVwManageData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -30)),
-            stckVwManageData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
-//            stckVwManageData.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: heightFromPct(percent: -3)),
-            btnRecordCountFilled.widthAnchor.constraint(lessThanOrEqualTo: btnEarliestDateFilled.widthAnchor)
-            ])
+    func setupManageDataVcOnline(){
+        vwManageDataVcOffline.removeFromSuperview()
+        setupManageDataVcHeaderView()
+//        setup_ManageDataVcTitle()
+//        setup_UserVcAccountView()
+        setupDatePicker()
+        setup_btnSendData()
     }
     
+    func setupManageDataVcHeaderView(){
+        vwManageDataVcHeader.accessibilityIdentifier = "vwManageDataVcHeader"
+        vwManageDataVcHeader.translatesAutoresizingMaskIntoConstraints = false
+//        vwDashboardHeader.backgroundColor = UIColor(named: "ColorRow2")
+
+        view.addSubview(vwManageDataVcHeader)
+        NSLayoutConstraint.activate([
+            vwManageDataVcHeader.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor),
+            vwManageDataVcHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            vwManageDataVcHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            vwManageDataVcHeader.bottomAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 10))
+        ])
+    }
+
+
     func setupDatePicker() {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(datePicker)
         datePicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        datePicker.topAnchor.constraint(equalTo: stckVwManageData.bottomAnchor, constant: heightFromPct(percent: 2)).isActive = true
+        datePicker.topAnchor.constraint(equalTo: vwManageDataVcHeader.bottomAnchor, constant: heightFromPct(percent: 2)).isActive = true
     }
     
-    func setup_btnConnectData(){
-        btnConnectData.accessibilityIdentifier = "btnConnectData"
-        btnConnectData.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(btnConnectData)
-        btnConnectData.setTitle("Connect Data", for: .normal)
-        btnConnectData.layer.borderColor = UIColor.systemBlue.cgColor
-        btnConnectData.layer.borderWidth = 2
-        btnConnectData.backgroundColor = .systemBlue
-        btnConnectData.layer.cornerRadius = 10
+    func setup_btnSendData(){
+        btnSendData.accessibilityIdentifier = "btnSendData"
+        btnSendData.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(btnSendData)
+        btnSendData.setTitle("Analze Data", for: .normal)
+        btnSendData.layer.borderColor = UIColor.systemBlue.cgColor
+        btnSendData.layer.borderWidth = 2
+        btnSendData.backgroundColor = .systemBlue
+        btnSendData.layer.cornerRadius = 10
         
-        btnConnectData.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        btnConnectData.addTarget(self, action: #selector(touchUpInsideStartCollectingAppleHealth(_:)), for: .touchUpInside)
+        btnSendData.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        btnSendData.addTarget(self, action: #selector(touchUpInsideStartCollectingAppleHealth(_:)), for: .touchUpInside)
         NSLayoutConstraint.activate([
-            btnConnectData.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: heightFromPct(percent: 2)),
-            btnConnectData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
-            btnConnectData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -3))
+            btnSendData.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: heightFromPct(percent: 2)),
+            btnSendData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 3)),
+            btnSendData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -3))
         ])
     }
     
-    func setup_manageDataVcOffline(){
-        datePicker.removeFromSuperview()
-        btnConnectData.removeFromSuperview()
-    }
-    func setup_manageDataVcOnline(){
-        setupDatePicker()
-        setup_btnConnectData()
-    }
+
     
     @objc func touchUpInsideStartCollectingAppleHealth(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {

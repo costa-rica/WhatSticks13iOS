@@ -89,15 +89,17 @@ class UserStatusTemporaryView: UIView {
         setup_btnCheckArrayDashboardTableObjects()
         setup_btnDeleteUserDefaults()
     }
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        setup_UserStatusTemporaryView()
+//        setup_btnCheckUserDeafultUserLocaiton()
+//        setup_btnCheckArryDataSourceObjects()
+//        setup_btnCheckArrayDashboardTableObjects()
+//        setup_btnDeleteUserDefaults()
+//    }
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup_UserStatusTemporaryView()
-        setup_btnCheckUserDeafultUserLocaiton()
-        setup_btnCheckArryDataSourceObjects()
-        setup_btnCheckArrayDashboardTableObjects()
-        setup_btnDeleteUserDefaults()
+        fatalError("init(coder:) has not been implemented")
     }
-    
     private func setup_UserStatusTemporaryView_lineOption(){
         vwUserStatusTemporaryLine.accessibilityIdentifier = "vwUserStatusTemporaryLine"
         vwUserStatusTemporaryLine.translatesAutoresizingMaskIntoConstraints = false

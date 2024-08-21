@@ -25,11 +25,13 @@ class UserVcRegisterButton: UIView {
         setup_UserVcRegisterButton()
     }
     
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        setup_UserVcRegisterButton()
+//    }
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup_UserVcRegisterButton()
+        fatalError("init(coder:) has not been implemented")
     }
-    
     
     private func setup_UserVcRegisterButtonViewDisclaimer(){
         lblWhyUsernameTitle.accessibilityIdentifier="lblWhyUsernameTitle"

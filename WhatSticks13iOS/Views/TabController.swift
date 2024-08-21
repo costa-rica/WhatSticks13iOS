@@ -90,15 +90,18 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
 
         if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {// <--- altered for TEST DAta
-            let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
-            let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
-            manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)
-            manage_data_vc.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
+
             if userStore.isOnline{
-                manage_data_vc.setup_manageDataVcOnline()
+                manage_data_vc.setupManageDataVcOnline()
+                let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
+                let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
+    //            manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)
+                manage_data_vc.vwManageDataVcHeader.btnRecordCountFilled.setTitle(records, for: .normal)
+    //            manage_data_vc.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
+                manage_data_vc.vwManageDataVcHeader.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
             }
             else if !userStore.isOnline{
-                manage_data_vc.setup_manageDataVcOffline()
+                manage_data_vc.setupManageDataVcOffline()
             }
         }
         if let dash_vc = nav_vc.children[0] as? DashboardVC {
@@ -109,6 +112,9 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
                     let btnTitle = " " + unwp_dashTitle + " "
                     dash_vc.vwDashboardHeader.btnDashboardNamePicker.setTitle(btnTitle, for: .normal)
                 }
+            } else {
+                print("*** No dashboard set up")
+                dash_vc.setupUserHasNODashboard()
             }
             
         }

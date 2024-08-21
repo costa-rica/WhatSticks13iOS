@@ -43,9 +43,12 @@ class UserVcUserStatusView: UIView {
         setup_UserVcAccountView_lineOption()
         setup_UserVcAccountView()
     }
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        setup_UserVcAccountView()
+//    }
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup_UserVcAccountView()
+        fatalError("init(coder:) has not been implemented")
     }
     private func setup_UserVcAccountView_lineOption(){
         vwUserStatusLine.accessibilityIdentifier = "vwUserStatusLine"

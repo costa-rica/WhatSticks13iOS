@@ -10,49 +10,59 @@ import UIKit
 class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegate {
     
     var userStore:UserStore!
-    let lblDashboardVcTitle = UILabel()
     let vwDashboardHeader = DashboardHeader()
-    var btnRefreshDashboard:UIButton?
-    
     var tblDashboard:UITableView?
-//    var refreshControlTblDashboard:UIRefreshControl?
-    
+    var vwDashboardHasNoData = InformationView()
+    //    let lblDashboardVcTitle = UILabel()
+    //    var btnRefreshDashboard:UIButton?
+    //    var refreshControlTblDashboard:UIRefreshControl?
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         userStore = UserStore.shared
         vwDashboardHeader.delegate = self
         setup_TopSafeBar()
-
     }
     
     func setupUserHasNODashboard(){
-        
+        vwDashboardHeader.removeFromSuperview()
+        tblDashboard?.removeFromSuperview()
         // MARK: remove vwDashboardHeader and table
-        
-        self.btnRefreshDashboard = UIButton()
-        self.btnRefreshDashboard!.accessibilityIdentifier = "btnRefreshDashboard"
-        self.btnRefreshDashboard!.translatesAutoresizingMaskIntoConstraints=false
-        self.btnRefreshDashboard!.backgroundColor = .systemGray
-        self.btnRefreshDashboard!.layer.cornerRadius = 10
-        self.btnRefreshDashboard!.setTitle(" Refresh Table ", for: .normal)
-        self.btnRefreshDashboard!.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
-        self.btnRefreshDashboard!.addTarget(self, action: #selector(touchUpInside_btnRefreshDashboard(_:)), for: .touchUpInside)
-        view.addSubview(self.btnRefreshDashboard!)
+//        vwDashboardHasNoData = DashboardVcNoDataView()
+        vwDashboardHasNoData.lblTitle.text = "No Data"
+        vwDashboardHasNoData.lblDescription.text = "Go to Manage Data to submit your data for analysis"
+        vwDashboardHasNoData.accessibilityIdentifier="vwDashboardHasNoData"
+        vwDashboardHasNoData.translatesAutoresizingMaskIntoConstraints=false
+        vwDashboardHasNoData.layer.cornerRadius = 12
+        view.addSubview(vwDashboardHasNoData)
         NSLayoutConstraint.activate([
-            self.btnRefreshDashboard!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            self.btnRefreshDashboard!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
-            self.btnRefreshDashboard!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
+            self.vwDashboardHasNoData.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            self.vwDashboardHasNoData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: smallPaddingSide),
+            self.vwDashboardHasNoData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -smallPaddingTop),
         ])
+//        self.btnRefreshDashboard = UIButton()
+//        self.btnRefreshDashboard!.accessibilityIdentifier = "btnRefreshDashboard"
+//        self.btnRefreshDashboard!.translatesAutoresizingMaskIntoConstraints=false
+//        self.btnRefreshDashboard!.backgroundColor = .systemGray
+//        self.btnRefreshDashboard!.layer.cornerRadius = 10
+//        self.btnRefreshDashboard!.setTitle(" Refresh Table ", for: .normal)
+//        self.btnRefreshDashboard!.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
+//        self.btnRefreshDashboard!.addTarget(self, action: #selector(touchUpInside_btnRefreshDashboard(_:)), for: .touchUpInside)
+//        view.addSubview(self.btnRefreshDashboard!)
+//        NSLayoutConstraint.activate([
+//            self.btnRefreshDashboard!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            self.btnRefreshDashboard!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
+//            self.btnRefreshDashboard!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
+//        ])
     }
     
     func setupUserHasDashboard(){
-        btnRefreshDashboard?.removeFromSuperview()
+//        btnRefreshDashboard?.removeFromSuperview()
+        vwDashboardHasNoData.removeFromSuperview()
         setup_vwDashboardHeader()
         setup_tblDashboard()
-//        self.lblUsername.text = userStore.user.username
-//        self.lblScreenName.text = "Dashboard"
     }
+    
     
     private func setup_vwDashboardHeader(){
         vwDashboardHeader.accessibilityIdentifier = "vwDashboardHeader"
@@ -138,21 +148,20 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
         self.present(selectDashboardVC, animated: true, completion: nil)
     }
     
-    
-    /* OBE */
-    private func setup_some_Label(){
-        lblDashboardVcTitle.accessibilityIdentifier="lblDashboardVcTitle"
-        lblDashboardVcTitle.translatesAutoresizingMaskIntoConstraints = false
-        lblDashboardVcTitle.text = "Dashboard VC"
-        lblDashboardVcTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
-        lblDashboardVcTitle.numberOfLines=0
-        view.addSubview(lblDashboardVcTitle)
-        NSLayoutConstraint.activate([
-            lblDashboardVcTitle.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 3)),
-            lblDashboardVcTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
-            lblDashboardVcTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
-        ])
-    }
+//    /* OBE */
+//    private func setup_some_Label(){
+//        lblDashboardVcTitle.accessibilityIdentifier="lblDashboardVcTitle"
+//        lblDashboardVcTitle.translatesAutoresizingMaskIntoConstraints = false
+//        lblDashboardVcTitle.text = "Dashboard VC"
+//        lblDashboardVcTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
+//        lblDashboardVcTitle.numberOfLines=0
+//        view.addSubview(lblDashboardVcTitle)
+//        NSLayoutConstraint.activate([
+//            lblDashboardVcTitle.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 3)),
+//            lblDashboardVcTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
+//            lblDashboardVcTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
+//        ])
+//    }
 }
 
 extension DashboardVC: UITableViewDelegate{
@@ -189,4 +198,51 @@ extension DashboardVC: UITableViewDataSource{
     }
     
 }
+
+
+
+//class DashboardVcNoDataView: UIView {
+//    let lblTitle = UILabel()
+//    let lblDescription = UILabel()
+//
+//    
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupView()
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//    
+//    func setupView(){
+//        self.backgroundColor = UIColor(named: "ColorTableTabModalBack")
+//        lblTitle.accessibilityIdentifier="lblTitle"
+//        lblTitle.text = "No Data"
+//        lblTitle.translatesAutoresizingMaskIntoConstraints=false
+//        lblTitle.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+//        lblTitle.numberOfLines = 0
+//        self.addSubview(lblTitle)
+//        
+//        lblDescription.accessibilityIdentifier="lblDescription"
+//        lblDescription.text = "If you have not already sent data to analyze, go to Manage Data"
+//        lblDescription.translatesAutoresizingMaskIntoConstraints=false
+////        lblDescription.font = UIFont(name: "ArialRoundedMTBold", size: 25)
+//        lblDescription.numberOfLines = 0
+//        self.addSubview(lblDescription)
+//        
+//        NSLayoutConstraint.activate([
+//            lblTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 3)),
+//            lblTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+////            lblTitle.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+//            
+//            lblDescription.topAnchor.constraint(equalTo: lblTitle.bottomAnchor, constant: heightFromPct(percent: 1)),
+//            lblDescription.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+//            lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -2)),
+//            
+//            lblDescription.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: heightFromPct(percent: -5))
+//        ])
+//    }
+//}
+
 

@@ -17,22 +17,22 @@ class DashboardHeader: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         // This triggers as soon as the app starts
-//        self.showLine = false
         setup_view()
     }
 
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        setup_view()
+//    }
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup_view()
+        fatalError("init(coder:) has not been implemented")
     }
-    
     private func setup_view(){
         btnDashboardNamePicker.accessibilityIdentifier="btnDashboardNamePicker"
         btnDashboardNamePicker.translatesAutoresizingMaskIntoConstraints=false
         btnDashboardNamePicker.backgroundColor = .systemBlue
         btnDashboardNamePicker.layer.cornerRadius = 10
         btnDashboardNamePicker.setTitle(" Dashboards ", for: .normal)
-        
         
         btnDashboardNamePicker.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
         btnDashboardNamePicker.addTarget(self, action: #selector(touchUpInside_btnSelectDashboard(_:)), for: .touchUpInside)

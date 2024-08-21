@@ -29,11 +29,13 @@ class UserVcOffline: UIView {
         setup_UserVcOfflineViews_lineOption()
         setup_UserVcOfflineViews()
     }
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        setup_UserVcOfflineViews()
+//    }
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup_UserVcOfflineViews()
+        fatalError("init(coder:) has not been implemented")
     }
-    
     private func setup_UserVcOfflineViews_lineOption(){
         vwOfflineLine.accessibilityIdentifier = "vwOfflineLine"
         vwOfflineLine.translatesAutoresizingMaskIntoConstraints = false
