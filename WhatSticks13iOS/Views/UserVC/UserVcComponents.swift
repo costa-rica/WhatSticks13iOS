@@ -151,7 +151,7 @@ class UserStatusDevelopmentView: UIView {
         btnCheckUserDefaultUserLocation.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(btnCheckUserDefaultUserLocation)
         btnCheckUserDefaultUserLocation.setTitle("User Location", for: .normal)
-        let ui_color_btnUserLoc = UIColor(red: 0.8, green: 0.5, blue: 0.5, alpha: 1.0)
+        let ui_color_btnUserLoc = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
         btnCheckUserDefaultUserLocation.layer.borderColor = ui_color_btnUserLoc.cgColor
         btnCheckUserDefaultUserLocation.layer.borderWidth = 2
         btnCheckUserDefaultUserLocation.backgroundColor = ui_color_btnUserLoc
@@ -209,7 +209,7 @@ class UserStatusDevelopmentView: UIView {
         btnDeleteUserDefaults.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(btnDeleteUserDefaults)
         btnDeleteUserDefaults.setTitle("Clear UserDefaults", for: .normal)
-        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
+        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.4, blue: 0.3, alpha: 1.0)
         btnDeleteUserDefaults.layer.borderColor = ui_color_btnDataSourceObj.cgColor
         btnDeleteUserDefaults.layer.borderWidth = 2
         btnDeleteUserDefaults.backgroundColor = ui_color_btnDataSourceObj
@@ -224,14 +224,13 @@ class UserStatusDevelopmentView: UIView {
         btnDeleteUserDefaults.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnDeleteUserDefaults.addTarget(self, action: #selector(touchUpInside_DeleteUserDefaults(_:)), for: .touchUpInside)
     }
-    
     private func setup_btnLoadGuestUser(){
         btnLoadGuestUser.accessibilityIdentifier = "btnLoadGuestUser"
         btnLoadGuestUser.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(btnLoadGuestUser)
         btnLoadGuestUser.setTitle("Load Guest", for: .normal)
-        let ui_color_btnDataSourceObj = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
-        btnLoadGuestUser.layer.borderColor = ui_color_btnDataSourceObj.cgColor
+        let ui_color_btnDataSourceObj = UIColor(named: "ColorDevMode")
+        btnLoadGuestUser.layer.borderColor = ui_color_btnDataSourceObj?.cgColor
         btnLoadGuestUser.layer.borderWidth = 2
         btnLoadGuestUser.backgroundColor = ui_color_btnDataSourceObj
         btnLoadGuestUser.layer.cornerRadius = 10
@@ -375,6 +374,7 @@ class UserStatusDevelopmentView: UIView {
 
         print("Check Guest values")
         UserStore.shared.loadGuestUser()
+        self.delegate?.templateAlert(alertTitle: "Guest Mode Activated", alertMessage: "You my need to change screens to refresh", completion: nil)
         
     }
     

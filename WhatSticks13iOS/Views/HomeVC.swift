@@ -18,6 +18,10 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        URLStore.shared.apiBase = .prod
+        URLStore.shared.apiBase = .dev
+//        URLStore.shared.apiBase = .local
+        
         let userStore = UserStore.shared
         let locationFetcher = LocationFetcher.shared
         locationFetcher.locationManager.requestAlwaysAuthorization()

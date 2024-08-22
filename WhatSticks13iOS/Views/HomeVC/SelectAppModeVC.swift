@@ -54,7 +54,7 @@ class SelectAppModeVC: TemplateVC{
         btnGuest.backgroundColor = UIColor(named: "ColorDevMode")
         btnGuest.setTitleColor(UIColor(named: "lineColor"), for: .normal)
         btnGuest.layer.borderWidth = 1
-        btnGuest.layer.cornerRadius = 5
+        btnGuest.layer.cornerRadius = 10
         btnGuest.translatesAutoresizingMaskIntoConstraints = false
         btnGuest.setTitle("Guest Mode", for: .normal)
         btnGuest.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 24)
@@ -65,9 +65,9 @@ class SelectAppModeVC: TemplateVC{
         btnProduction.backgroundColor = .blue
         btnProduction.setTitleColor(UIColor(named: "lineColor"), for: .normal)
         btnProduction.layer.borderWidth = 1
-        btnProduction.layer.cornerRadius = 5
+        btnProduction.layer.cornerRadius = 10
         btnProduction.translatesAutoresizingMaskIntoConstraints = false
-        btnProduction.setTitle("I might submit data", for: .normal)
+        btnProduction.setTitle("Normal Mode", for: .normal)
         btnProduction.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 24)
         btnProduction.addTarget(self, action: #selector(touchDown), for: .touchDown)
         btnProduction.addTarget(self, action: #selector(touchUpInsideProduction), for: .touchUpInside)
@@ -76,7 +76,7 @@ class SelectAppModeVC: TemplateVC{
         btnDevelopment.backgroundColor = .gray
         btnDevelopment.setTitleColor(UIColor(named: "lineColor"), for: .normal)
         btnDevelopment.layer.borderWidth = 1
-        btnDevelopment.layer.cornerRadius = 5
+        btnDevelopment.layer.cornerRadius = 10
         btnDevelopment.translatesAutoresizingMaskIntoConstraints = false
         btnDevelopment.setTitle("Development", for: .normal)
         btnDevelopment.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 24)

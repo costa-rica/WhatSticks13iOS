@@ -22,7 +22,7 @@ enum RequestStoreError: Error{
 
 class RequestStore {
     static let shared = RequestStore()
-    var urlStore:URLStore!
+//    var urlStore:URLStore!
     var token: String!
     let session: URLSession = {
         let config = URLSessionConfiguration.default
@@ -30,17 +30,17 @@ class RequestStore {
         return URLSession(configuration: config)
     }()
     
-    init() {
-
-        self.urlStore=URLStore()
+//    init() {
+//
+//        self.urlStore=URLStore()
 //        self.urlStore.apiBase = APIBase.prod
-//        self.urlStore.apiBase = APIBase.dev
-        self.urlStore.apiBase = APIBase.local
-    }
+////        self.urlStore.apiBase = APIBase.dev
+////        self.urlStore.apiBase = APIBase.local
+//    }
     
     
     func createRequestLogin(email:String, password:String)->Result<URLRequest,Error>{
-        let url = urlStore.callEndpoint(endPoint: .login)
+        let url = URLStore.shared.callEndpoint(endPoint: .login)
         var request = URLRequest(url:url)
         request.httpMethod = "POST"
         request.addValue("application/json",forHTTPHeaderField: "Content-Type")
@@ -55,7 +55,7 @@ class RequestStore {
     }
     
     func createRequestWithToken(endpoint:EndPoint) ->URLRequest{
-        let url = urlStore.callEndpoint(endPoint: endpoint)
+        let url = URLStore.shared.callEndpoint(endPoint: endpoint)
         var request = URLRequest(url:url)
         request.httpMethod = "POST"
         request.addValue("application/json",forHTTPHeaderField: "Content-Type")
@@ -68,7 +68,7 @@ class RequestStore {
     
     func createRequestWithTokenAndBody<T: Encodable>(endPoint: EndPoint, token:Bool,body: T) ->Result<URLRequest,Error> {
         print("- createRequestWithTokenAndBody")
-        let url = urlStore.callEndpoint(endPoint: endPoint)
+        let url = URLStore.shared.callEndpoint(endPoint: endPoint)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json",forHTTPHeaderField: "Content-Type")
@@ -90,7 +90,7 @@ class RequestStore {
     
     func createRequestWithTokenAndBodyWithAuth(endPoint:EndPoint,token:Bool,stringDict:[String:String]) -> Result<URLRequest,Error>{
         print("- createRequestWithBodyTokenAndAuth")
-        let url = urlStore.callEndpoint(endPoint: endPoint)
+        let url = URLStore.shared.callEndpoint(endPoint: endPoint)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json",forHTTPHeaderField: "Content-Type")
@@ -127,7 +127,7 @@ class RequestStore {
     
     func createRequestWithUsername<T: Encodable>(endPoint:EndPoint,body:T) -> URLRequest{
         print("- createRequestWithUsername")
-        let url = urlStore.callEndpoint(endPoint: endPoint)
+        let url = URLStore.shared.callEndpoint(endPoint: endPoint)
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json",forHTTPHeaderField: "Content-Type")
