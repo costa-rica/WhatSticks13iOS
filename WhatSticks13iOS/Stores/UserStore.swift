@@ -280,7 +280,6 @@ class UserStore {
                 let decoder = JSONDecoder()
                 let array_data_source_obj = try decoder.decode([DataSourceObject].self, from: data)
                 self.arryDataSourceObjects = array_data_source_obj
-
             } catch {
                 print("Error loading GUEST DataSourceObject data: \(error)")
             }
@@ -302,6 +301,7 @@ class UserStore {
     }
     
     func loadGuestUser(){
+        self.isGuestMode = true
         self.user.username = "Guest User"
         loadGuestDataSourceObjectArray()
         loadGuestDashboardTableObjectsArray()
