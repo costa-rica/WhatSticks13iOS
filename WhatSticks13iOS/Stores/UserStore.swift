@@ -62,7 +62,7 @@ class UserStore {
         let config = URLSessionConfiguration.default
         return URLSession(configuration: config)
     }()
-    var isGuest = false
+    var isGuestMode = false
     
     func deleteUserDefaults_User(){
         UserDefaults.standard.removeObject(forKey: "userName")
@@ -82,8 +82,8 @@ class UserStore {
         print("---- in assignArryDataSourceObjects() ")
         
         if let unwp_array = jsonResponse["arryDataSourceObjects"] as? [[String: Any]] {
-            print("What is unwp_array:")
-            print("\(unwp_array)")
+//            print("What is unwp_array:")
+//            print("\(unwp_array)")
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: unwp_array, options: [])
                 let array_data_source_obj = try JSONDecoder().decode([DataSourceObject].self, from: jsonData)
@@ -93,8 +93,6 @@ class UserStore {
                 // Store the encoded Data in UserDefaults
                 UserDefaults.standard.set(encodedData, forKey: "arryDataSourceObjects")
                 print("--- successfully decodeed arryDataSourceObjects")
-//                print("self.arryDataSourceObjects:")
-//                print(self.arryDataSourceObjects)
             }
             catch {
                 print("failed to decode arryDataSourceObjects into [DataSourceObject]")
@@ -121,8 +119,8 @@ class UserStore {
         print("---- in assignArryDashboardTableObjects() ")
         
         if let unwp_array = jsonResponse["arryDashboardTableObjects"] as? [[String: Any]] {
-            print("What is unwp_array:")
-            print("\(unwp_array)")
+//            print("What is unwp_array:")
+//            print("\(unwp_array)")
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: unwp_array, options: [])
                 let array_dashboard_table_obj = try JSONDecoder().decode([DashboardTableObject].self, from: jsonData)
@@ -132,9 +130,9 @@ class UserStore {
                 let encodedData = try JSONEncoder().encode(self.arryDashboardTableObjects)
                 // Store the encoded Data in UserDefaults
                 UserDefaults.standard.set(encodedData, forKey: "arryDashboardTableObjects")
-                print("--- successfully decodeed arryDashboardTableObjects")
-                print("self.arryDashboardTableObjects:")
-                print(self.arryDashboardTableObjects)
+//                print("--- successfully decodeed arryDashboardTableObjects")
+//                print("self.arryDashboardTableObjects:")
+//                print(self.arryDashboardTableObjects)
             }
             catch {
                 print("failed to decode arryDashboardTableObjects into [DashboardTableObject]")
@@ -209,9 +207,9 @@ class UserStore {
     
     func connectDevice(completion: @escaping () -> Void){
         print("- in connectDevice(completion) ")
-        if isGuest{
+        if isGuestMode{
             print("assign guest user and data")
-            
+            loadGuestUser()
             completion()
         } else {
             checkUser()
@@ -221,11 +219,6 @@ class UserStore {
                     switch result_string_string_dict{
                     case .success(_):
                         self.requestStore.token = self.user.token
-                        if let unwp_email = self.user.email{
-                            print("user email: \(unwp_email)")
-                        } else {
-                            print("email is null")
-                        }
                         UserDefaults.standard.set(self.user.username!, forKey: "userName")
                         self.isOnline=true
                         completion()
@@ -240,13 +233,11 @@ class UserStore {
             // Condition #2: Login with Generic Elf
             else if UserDefaults.standard.string(forKey: "email") == nil  {
                 self.user.username  = UserDefaults.standard.string(forKey: "userName")
-                // login user
-                // call /login
+                // /login user
                 if UserDefaults.standard.string(forKey: "userEmail") == nil {
                     callLoginGenericUser(user: self.user) { result_dict_string_any_or_error in
                         switch result_dict_string_any_or_error {
                         case  .success(_):
-                            print("--- Success! : token \(self.user.token!)")
                             self.isOnline=true
                             self.requestStore.token = self.user.token
                             completion()
@@ -283,14 +274,15 @@ class UserStore {
     }
     
     func loadGuestDataSourceObjectArray() {
-        if let url = Bundle.main.url(forResource: "data_table_objects_array_guest", withExtension: "json") {
+        if let url = Bundle.main.url(forResource: "data_source_list_for_user_guest", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()
-                let objects = try decoder.decode([DataSourceObject].self, from: data)
-                self.arryDataSourceObjects = objects
+                let array_data_source_obj = try decoder.decode([DataSourceObject].self, from: data)
+                self.arryDataSourceObjects = array_data_source_obj
+
             } catch {
-                print("Error loading data: \(error)")
+                print("Error loading GUEST DataSourceObject data: \(error)")
             }
         }
     }
@@ -304,7 +296,7 @@ class UserStore {
                 let objects = try decoder.decode([DashboardTableObject].self, from: data)
                 self.arryDashboardTableObjects = objects
             } catch {
-                print("Error loading data: \(error)")
+                print("Error loading GUEST DashboardTableObject data: \(error)")
             }
         }
     }

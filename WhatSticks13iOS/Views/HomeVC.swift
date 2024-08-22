@@ -103,7 +103,7 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             sender.transform = .identity
         }, completion: nil)
         self.showSpinner()
-        UserStore.shared.isGuest = true
+        UserStore.shared.isGuestMode = true
         UserStore.shared.connectDevice {
             self.removeSpinner()
             self.selectAppModeVc.dismiss(animated: true)

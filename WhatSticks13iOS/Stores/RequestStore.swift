@@ -34,8 +34,8 @@ class RequestStore {
 
         self.urlStore=URLStore()
 //        self.urlStore.apiBase = APIBase.prod
-        self.urlStore.apiBase = APIBase.dev
-//        self.urlStore.apiBase = APIBase.local
+//        self.urlStore.apiBase = APIBase.dev
+        self.urlStore.apiBase = APIBase.local
     }
     
     

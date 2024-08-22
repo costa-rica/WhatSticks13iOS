@@ -9,8 +9,6 @@ import UIKit
 
 class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegate, UserVcRegisterButtonDelegate, UserVcDeleteDelegate, RegModalVcDelegate, AreYouSureModalVcDelegate, UserStatusDevelopmentViewDelegate{
 
-
-    var userStore: UserStore!
     
     let scrollView = UIScrollView()
     let contentView = UIView()
@@ -44,7 +42,6 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         vwUserStatus.vwRegisterButton.delegate = self
         vwLocationDayWeather.delegate = self
         vwUserDeleteAccount.delegate = self
-        userStore = UserStore.shared
 
         self.setup_TopSafeBar()
         setupScrollView()
@@ -160,13 +157,16 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
     func manageUserVcOptionalViews(){
         
         // Choose the bottomAnchor depending on isOnline and email status
-        if !userStore.isOnline, userStore.user.email == nil {
+        if UserStore.shared.isGuestMode{
+            bottomAnchorForUserVcContentBottomAnchor = vwUserStatus.bottomAnchor// same as case_option_2_
+        }
+        else if !UserStore.shared.isOnline, UserStore.shared.user.email == nil {
             bottomAnchorForUserVcContentBottomAnchor = vwOffline.bottomAnchor
-        }else if userStore.isOnline, userStore.user.email == nil{
+        }else if UserStore.shared.isOnline, UserStore.shared.user.email == nil{
             bottomAnchorForUserVcContentBottomAnchor = vwUserStatus.bottomAnchor
-        } else if userStore.isOnline, userStore.user.email != nil{
+        } else if UserStore.shared.isOnline, UserStore.shared.user.email != nil{
             bottomAnchorForUserVcContentBottomAnchor = vwUserDeleteAccount.bottomAnchor
-        } else if !userStore.isOnline, userStore.user.email != nil {
+        } else if !UserStore.shared.isOnline, UserStore.shared.user.email != nil {
             bottomAnchorForUserVcContentBottomAnchor = vwOffline.bottomAnchor
         }
         
@@ -184,14 +184,17 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
             ]
         }
         
-        // Choose case depending on isOnline and email
-        if !userStore.isOnline, userStore.user.email == nil {
-            case_option_1_Offline_and_generic_name()
-        }else if userStore.isOnline, userStore.user.email == nil{
+        // Choose case depending on isGuestMode, isOnline and email
+        if UserStore.shared.isGuestMode{
             case_option_2_Online_and_generic_name()
-        } else if userStore.isOnline, userStore.user.email != nil{
+        }
+        else if !UserStore.shared.isOnline, UserStore.shared.user.email == nil {
+            case_option_1_Offline_and_generic_name()
+        }else if UserStore.shared.isOnline, UserStore.shared.user.email == nil{
+            case_option_2_Online_and_generic_name()
+        } else if UserStore.shared.isOnline, UserStore.shared.user.email != nil{
             case_option_3_Online_and_custom_email()
-        } else if !userStore.isOnline, userStore.user.email != nil {
+        } else if !UserStore.shared.isOnline, UserStore.shared.user.email != nil {
             case_option_4_Offline_and_custom_email()
         }
         
@@ -228,8 +231,8 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         remove_optionalViews()
         setup_vwLocationDayWeather()
         setup_vwUserStatus()
-        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
-        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+        vwUserStatus.btnUsernameFilled.setTitle(UserStore.shared.user.username, for: .normal)
+        if let unwp_dataSourceObj = UserStore.shared.arryDataSourceObjects {
             vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
         }
         NSLayoutConstraint.deactivate(vwUserStatus.constraints_NO_VwRegisterButton)
@@ -241,8 +244,8 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         remove_optionalViews()
         setup_vwLocationDayWeather()
         setup_vwUserStatus()
-        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
-        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+        vwUserStatus.btnUsernameFilled.setTitle(UserStore.shared.user.username, for: .normal)
+        if let unwp_dataSourceObj = UserStore.shared.arryDataSourceObjects {
             vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
         }
         NSLayoutConstraint.deactivate(vwUserStatus.constraints_YES_VwRegisterButton)
@@ -255,8 +258,8 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
         remove_optionalViews()
         setup_vwUserStatus()
         vwUserStatus.remove_vcRegistrationButton()
-        vwUserStatus.btnUsernameFilled.setTitle(userStore.user.username, for: .normal)
-        if let unwp_dataSourceObj = userStore.arryDataSourceObjects {
+        vwUserStatus.btnUsernameFilled.setTitle(UserStore.shared.user.username, for: .normal)
+        if let unwp_dataSourceObj = UserStore.shared.arryDataSourceObjects {
             vwUserStatus.btnRecordCountFilled.setTitle(unwp_dataSourceObj[0].recordCount, for: .normal)
         }
         setup_vwOffline()
