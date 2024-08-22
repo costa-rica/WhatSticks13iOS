@@ -305,6 +305,10 @@ class UserStore {
         self.user.username = "Guest User"
         loadGuestDataSourceObjectArray()
         loadGuestDashboardTableObjectsArray()
+        if arryDashboardTableObjects.count > 0 {
+            currentDashboardObjPos = 0
+            currentDashboardObject = arryDashboardTableObjects[currentDashboardObjPos]
+        }
     }
     
 }

@@ -121,13 +121,11 @@ class UserVcRegisterButton: UIView {
         
         if UserStore.shared.isGuestMode{
             let informationVc = InformationVC()
-//            let infoView = InformationView(frame: CGRect.zero, title: "Guest Mode", description: "While in guest mode user's cannot send data. \n\n If you would like to analyze your data please close the app and restart in Normal mode.")
             informationVc.vwInformation.lblTitle.text = "Guest Mode"
             informationVc.vwInformation.lblDescription.text = "While in guest mode user's cannot send data. \n\n If you would like to analyze your data please close the app and restart in Normal mode."
             informationVc.modalPresentationStyle = .overCurrentContext
             informationVc.modalTransitionStyle = .crossDissolve
             self.delegate?.presentNewView(informationVc)
-//            regModalVC.delegate = self.delegate as? any RegModalVcDelegate
         }
         else {
             let regModalVC = RegModalVC()

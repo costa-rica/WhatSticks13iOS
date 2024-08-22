@@ -13,12 +13,10 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
     let vwDashboardHeader = DashboardHeader()
     var tblDashboard:UITableView?
     var vwDashboardHasNoData = InformationView()
-    //    let lblDashboardVcTitle = UILabel()
-    //    var btnRefreshDashboard:UIButton?
+
     //    var refreshControlTblDashboard:UIRefreshControl?
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         userStore = UserStore.shared
         vwDashboardHeader.delegate = self
         setup_TopSafeBar()
@@ -27,8 +25,6 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
     func setupUserHasNODashboard(){
         vwDashboardHeader.removeFromSuperview()
         tblDashboard?.removeFromSuperview()
-        // MARK: remove vwDashboardHeader and table
-//        vwDashboardHasNoData = DashboardVcNoDataView()
         vwDashboardHasNoData.lblTitle.text = "No Data"
         vwDashboardHasNoData.lblDescription.text = "Go to Manage Data to submit your data for analysis"
         vwDashboardHasNoData.accessibilityIdentifier="vwDashboardHasNoData"
@@ -40,24 +36,9 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
             self.vwDashboardHasNoData.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: smallPaddingSide),
             self.vwDashboardHasNoData.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -smallPaddingTop),
         ])
-//        self.btnRefreshDashboard = UIButton()
-//        self.btnRefreshDashboard!.accessibilityIdentifier = "btnRefreshDashboard"
-//        self.btnRefreshDashboard!.translatesAutoresizingMaskIntoConstraints=false
-//        self.btnRefreshDashboard!.backgroundColor = .systemGray
-//        self.btnRefreshDashboard!.layer.cornerRadius = 10
-//        self.btnRefreshDashboard!.setTitle(" Refresh Table ", for: .normal)
-//        self.btnRefreshDashboard!.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
-//        self.btnRefreshDashboard!.addTarget(self, action: #selector(touchUpInside_btnRefreshDashboard(_:)), for: .touchUpInside)
-//        view.addSubview(self.btnRefreshDashboard!)
-//        NSLayoutConstraint.activate([
-//            self.btnRefreshDashboard!.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-//            self.btnRefreshDashboard!.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
-//            self.btnRefreshDashboard!.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
-//        ])
     }
     
     func setupUserHasDashboard(){
-//        btnRefreshDashboard?.removeFromSuperview()
         vwDashboardHasNoData.removeFromSuperview()
         setup_vwDashboardHeader()
         setup_tblDashboard()
@@ -67,7 +48,6 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
     private func setup_vwDashboardHeader(){
         vwDashboardHeader.accessibilityIdentifier = "vwDashboardHeader"
         vwDashboardHeader.translatesAutoresizingMaskIntoConstraints = false
-//        vwDashboardHeader.backgroundColor = UIColor(named: "ColorRow2")
         vwDashboardHeader.btnDashboardNamePicker.backgroundColor = UIColor(named: "ColorRow3Textfields")
         vwDashboardHeader.btnDashboardNamePicker.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 27)
         view.addSubview(vwDashboardHeader)
@@ -148,20 +128,7 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
         self.present(selectDashboardVC, animated: true, completion: nil)
     }
     
-//    /* OBE */
-//    private func setup_some_Label(){
-//        lblDashboardVcTitle.accessibilityIdentifier="lblDashboardVcTitle"
-//        lblDashboardVcTitle.translatesAutoresizingMaskIntoConstraints = false
-//        lblDashboardVcTitle.text = "Dashboard VC"
-//        lblDashboardVcTitle.font = UIFont(name: "ArialRoundedMTBold", size: 45)
-//        lblDashboardVcTitle.numberOfLines=0
-//        view.addSubview(lblDashboardVcTitle)
-//        NSLayoutConstraint.activate([
-//            lblDashboardVcTitle.topAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor, constant: heightFromPct(percent: 3)),
-//            lblDashboardVcTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: widthFromPct(percent: -2)),
-//            lblDashboardVcTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: widthFromPct(percent: 2)),
-//        ])
-//    }
+
 }
 
 extension DashboardVC: UITableViewDelegate{
@@ -176,12 +143,9 @@ extension DashboardVC: UITableViewDelegate{
 
 extension DashboardVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("- numberOfRowsInSection")
         guard let dashTableObj = self.userStore.currentDashboardObject else {
-            print("-- > zero")
             return 0
         }
-        print("-- > \(dashTableObj.arryIndepVarObjects!.count)")
         return dashTableObj.arryIndepVarObjects!.count
     }
     

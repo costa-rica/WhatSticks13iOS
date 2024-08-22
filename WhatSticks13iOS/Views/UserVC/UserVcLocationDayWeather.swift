@@ -122,7 +122,10 @@ class UserVcLocationDayWeather: UIView {
     
     /* Operational Methods */
     func setLocationSwitchBasedOnUserPermissions(){
-        if UserStore.shared.user.location_permission_ws == true {
+        if UserStore.shared.isGuestMode{
+            swtchLocTrackReoccurring.isOn = false
+        }
+        else if UserStore.shared.user.location_permission_ws == true {
             swtchLocTrackReoccurring.isOn = true
         } else {
             swtchLocTrackReoccurring.isOn = false
@@ -152,8 +155,18 @@ class UserVcLocationDayWeather: UIView {
     @objc func switchValueChanged(_ sender: UISwitch) {
         print("- in switchValueChanged")
         delegate?.showSpinner()
-        if sender.isOn{
-//            print("LocationManager Auth Status: \(LocationFetcher.shared.locationManager.authorizationStatus)")
+        if UserStore.shared.isGuestMode{
+            let informationVc = InformationVC()
+            informationVc.vwInformation.lblTitle.text = "Guest Mode"
+            informationVc.vwInformation.lblDescription.text = "While in guest mode user's cannot send data. \n\n If you would like to analyze your data please close the app and restart in Normal mode."
+            informationVc.modalPresentationStyle = .overCurrentContext
+            informationVc.modalTransitionStyle = .crossDissolve
+            self.delegate?.presentNewView(informationVc)
+            self.switchErrorSwitchBack()
+            delegate?.removeSpinner()
+        }// CLOSE: if UserStore.shared.isGuestMode{
+        
+        else if sender.isOn{
             UserStore.shared.user.location_permission_ws = true
             LocationFetcher.shared.fetchLocationOnce { clLocation in
                 if let unwp_clLocation = clLocation{
@@ -226,6 +239,7 @@ protocol UserVcLocationDayWeatherDelegate: AnyObject {
     func removeSpinner()
     func showSpinner()
     func templateAlert(alertTitle:String?,alertMessage: String?, completion:(()->Void)?)
+    func presentNewView(_ uiViewController: UIViewController)
 }
 
 

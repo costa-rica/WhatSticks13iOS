@@ -13,18 +13,6 @@ class ManageDataVC: TemplateVC {
     var healthDataStore: HealthDataStore!
     var vwManageDataVcHeader = ManageDataVcHeader()
     var vwManageDataVcOffline = InformationView()
-//    let lblManageDataVcTitle = UILabel()
-    
-//    let stckVwManageData = UIStackView()
-//
-//    let stckVwRecordCount = UIStackView()
-//    let lblRecordCountFilled = UILabel()
-//    let btnRecordCountFilled = UIButton()
-//    
-//    let stckVwEarliestDate = UIStackView()
-//    let lblEarliestDateFilled = UILabel()
-//    let btnEarliestDateFilled = UIButton()
-
     let datePicker = UIDatePicker()
     var dtUserHistory:Date?
     
@@ -141,19 +129,28 @@ class ManageDataVC: TemplateVC {
             sender.transform = .identity
         }, completion: nil)
         print(" send data")
-        dtUserHistory = datePicker.date
-        
-        let calendar = Calendar.current
-        // Strip off time components from both dates
-        let selectedDate = calendar.startOfDay(for: datePicker.date)
-        let currentDate = calendar.startOfDay(for: Date())
-        // Check if selectedDate is today or in the future
-        if selectedDate >= currentDate {
-            self.templateAlert(alertMessage: "You must pick a day in the past.")
-            return
+        if UserStore.shared.isGuestMode{
+            let informationVc = InformationVC()
+            informationVc.vwInformation.lblTitle.text = "Guest Mode"
+            informationVc.vwInformation.lblDescription.text = "While in guest mode user's cannot send data. \n\n If you would like to analyze your data please close the app and restart in Normal mode."
+            informationVc.modalPresentationStyle = .overCurrentContext
+            informationVc.modalTransitionStyle = .crossDissolve
+            self.presentNewView(informationVc)
         }
-//        self.templateAlert(alertMessage: "\(dtUserHistory)")
-        actionGetStepsData()
+        else {
+            dtUserHistory = datePicker.date
+            
+            let calendar = Calendar.current
+            // Strip off time components from both dates
+            let selectedDate = calendar.startOfDay(for: datePicker.date)
+            let currentDate = calendar.startOfDay(for: Date())
+            // Check if selectedDate is today or in the future
+            if selectedDate >= currentDate {
+                self.templateAlert(alertMessage: "You must pick a day in the past.")
+                return
+            }
+            actionGetStepsData()
+        }
     }
 }
 

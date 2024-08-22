@@ -75,7 +75,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 
         if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {// <--- altered for TEST DAta
 
-            if userStore.isOnline{
+            if userStore.isOnline || userStore.isGuestMode {
                 manage_data_vc.setupManageDataVcOnline()
                 let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
                 let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
@@ -90,6 +90,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         }
         if let dash_vc = nav_vc.children[0] as? DashboardVC {
             if userStore.arryDashboardTableObjects.count > 0{
+                print("in MainTabBarController dash_vc --------")
                 dash_vc.setupUserHasDashboard()
                 let currentDashboardObjPos = userStore.currentDashboardObjPos ?? 0
                 if let unwp_dashTitle = self.userStore.arryDashboardTableObjects[currentDashboardObjPos].dependentVarName {
