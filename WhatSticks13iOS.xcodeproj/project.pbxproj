@@ -42,6 +42,7 @@
 		01FF77CA2C43F4DB00D3E93E /* ManageDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */; };
 		01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */; };
 		01FF77CE2C441F2200D3E93E /* AppleHealthDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CD2C441F2200D3E93E /* AppleHealthDataFetcher.swift */; };
+		8420F25D0A2B5D98542DD833 /* Pods_WhatSticks13iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C2BDD2DC1133E7AB738639C /* Pods_WhatSticks13iOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,9 @@
 		01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageDataVC.swift; sourceTree = "<group>"; };
 		01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthDataStore.swift; sourceTree = "<group>"; };
 		01FF77CD2C441F2200D3E93E /* AppleHealthDataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppleHealthDataFetcher.swift; sourceTree = "<group>"; };
+		51424A3F62D5395A42126C7B /* Pods-WhatSticks13iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatSticks13iOS.debug.xcconfig"; path = "Target Support Files/Pods-WhatSticks13iOS/Pods-WhatSticks13iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		7C2BDD2DC1133E7AB738639C /* Pods_WhatSticks13iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhatSticks13iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		828F5281E97B58818E6B4C61 /* Pods-WhatSticks13iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatSticks13iOS.release.xcconfig"; path = "Target Support Files/Pods-WhatSticks13iOS/Pods-WhatSticks13iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8420F25D0A2B5D98542DD833 /* Pods_WhatSticks13iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +107,8 @@
 				01312BDF2C3031860089F9C0 /* Config.swift */,
 				01312BB32C2EC1C20089F9C0 /* WhatSticks13iOS */,
 				01312BB22C2EC1C20089F9C0 /* Products */,
+				1FCF0FE7F5A98F2D740E0251 /* Pods */,
+				13C3CD32EE3F28D2B13DF540 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -220,6 +227,23 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		13C3CD32EE3F28D2B13DF540 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7C2BDD2DC1133E7AB738639C /* Pods_WhatSticks13iOS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1FCF0FE7F5A98F2D740E0251 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				51424A3F62D5395A42126C7B /* Pods-WhatSticks13iOS.debug.xcconfig */,
+				828F5281E97B58818E6B4C61 /* Pods-WhatSticks13iOS.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -227,9 +251,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 01312BC52C2EC1C40089F9C0 /* Build configuration list for PBXNativeTarget "WhatSticks13iOS" */;
 			buildPhases = (
+				A3D41FEDAAD998AEFF95ABD7 /* [CP] Check Pods Manifest.lock */,
 				01312BAD2C2EC1C20089F9C0 /* Sources */,
 				01312BAE2C2EC1C20089F9C0 /* Frameworks */,
 				01312BAF2C2EC1C20089F9C0 /* Resources */,
+				BA3093B442D2D9D15CA6F53A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -286,6 +312,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A3D41FEDAAD998AEFF95ABD7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WhatSticks13iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BA3093B442D2D9D15CA6F53A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WhatSticks13iOS/Pods-WhatSticks13iOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WhatSticks13iOS/Pods-WhatSticks13iOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WhatSticks13iOS/Pods-WhatSticks13iOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		01312BAD2C2EC1C20089F9C0 /* Sources */ = {
@@ -461,6 +529,7 @@
 		};
 		01312BC62C2EC1C40089F9C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51424A3F62D5395A42126C7B /* Pods-WhatSticks13iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -469,6 +538,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GL5QL25H5M;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WhatSticks13iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What Sticks";
@@ -499,6 +569,7 @@
 		};
 		01312BC72C2EC1C40089F9C0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 828F5281E97B58818E6B4C61 /* Pods-WhatSticks13iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -507,6 +578,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GL5QL25H5M;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WhatSticks13iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What Sticks";
