@@ -71,6 +71,7 @@ class UserStatusDevelopmentView: UIView {
     let btnLoadGuestUser = UIButton()
     let btnSentryCrash = UIButton()
     let btnCreateUiCrash = UIButton()
+    let btnResetUserDefaultShowLuanchVideo = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,6 +85,7 @@ class UserStatusDevelopmentView: UIView {
         setup_btnLoadGuestUser()
         setup_btnSentryCrash()
         setup_btnCreateUiCrash()
+        setup_btnResetUserDefaultHasShowLuanchVideo()
     }
     init(frame: CGRect, showLine: Bool) {
         self.showLine = showLine
@@ -97,6 +99,7 @@ class UserStatusDevelopmentView: UIView {
         setup_btnLoadGuestUser()
         setup_btnSentryCrash()
         setup_btnCreateUiCrash()
+        setup_btnResetUserDefaultHasShowLuanchVideo()
     }
 
     required init?(coder: NSCoder) {
@@ -123,7 +126,6 @@ class UserStatusDevelopmentView: UIView {
         btnLoadGuestUser.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnLoadGuestUser.addTarget(self, action: #selector(touchUpInside_LoadGuest(_:)), for: .touchUpInside)
     }
-    
     private func setup_btnSentryCrash(){
         btnSentryCrash.accessibilityIdentifier = "btnSentryCrash"
         btnSentryCrash.translatesAutoresizingMaskIntoConstraints = false
@@ -144,8 +146,6 @@ class UserStatusDevelopmentView: UIView {
         btnSentryCrash.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnSentryCrash.addTarget(self, action: #selector(touchUpInside_SentryCrash(_:)), for: .touchUpInside)
     }
-    
-    
     private func setup_btnCreateUiCrash(){
         btnCreateUiCrash.accessibilityIdentifier = "btnCreateUiCrash"
         btnCreateUiCrash.translatesAutoresizingMaskIntoConstraints = false
@@ -161,12 +161,31 @@ class UserStatusDevelopmentView: UIView {
             btnCreateUiCrash.topAnchor.constraint(equalTo: btnSentryCrash.bottomAnchor, constant: heightFromPct(percent: 3)),
             btnCreateUiCrash.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
             btnCreateUiCrash.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
-            btnCreateUiCrash.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+//            btnCreateUiCrash.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
         ])
         btnCreateUiCrash.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
         btnCreateUiCrash.addTarget(self, action: #selector(touchUpInside_UiCrash(_:)), for: .touchUpInside)
     }
-    
+    private func setup_btnResetUserDefaultHasShowLuanchVideo(){
+        btnResetUserDefaultShowLuanchVideo.accessibilityIdentifier = "btnResetUserDefaultShowLuanchVideo"
+        btnResetUserDefaultShowLuanchVideo.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(btnResetUserDefaultShowLuanchVideo)
+        btnResetUserDefaultShowLuanchVideo.setTitle("Reset UD ShowLuanchVideo", for: .normal)
+        let ui_color_btnDataSourceObj = UIColor.orange
+        btnResetUserDefaultShowLuanchVideo.layer.borderColor = ui_color_btnDataSourceObj.cgColor
+        btnResetUserDefaultShowLuanchVideo.layer.borderWidth = 2
+        btnResetUserDefaultShowLuanchVideo.backgroundColor = ui_color_btnDataSourceObj
+        btnResetUserDefaultShowLuanchVideo.layer.cornerRadius = 10
+        
+        NSLayoutConstraint.activate([
+            btnResetUserDefaultShowLuanchVideo.topAnchor.constraint(equalTo: btnCreateUiCrash.bottomAnchor, constant: heightFromPct(percent: 3)),
+            btnResetUserDefaultShowLuanchVideo.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnResetUserDefaultShowLuanchVideo.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
+            btnResetUserDefaultShowLuanchVideo.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant: heightFromPct(percent: -5))
+        ])
+        btnResetUserDefaultShowLuanchVideo.addTarget(self, action: #selector(buttonTouchDown), for: .touchDown)
+        btnResetUserDefaultShowLuanchVideo.addTarget(self, action: #selector(touchUpInside_ResetUdHasShowLaunchVideo(_:)), for: .touchUpInside)
+    }
     
     
     /* user Button */
@@ -199,10 +218,18 @@ class UserStatusDevelopmentView: UIView {
         }, completion: nil)
         let vwToCrash = UIView()
         vwToCrash.accessibilityIdentifier = "vwToCrash"
-//        self.addSubview(vwToCrash)
         NSLayoutConstraint.activate([
             vwToCrash.topAnchor.constraint(equalTo: vwUserStatusTemporaryLine.bottomAnchor)
         ])
+    }
+    
+    @objc func touchUpInside_ResetUdHasShowLaunchVideo(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+
+        UserDefaults.standard.set(false, forKey: "hasShownLaunchVideo")
+        print("Reset hasShownLaunchVideo ")
     }
     
 }
