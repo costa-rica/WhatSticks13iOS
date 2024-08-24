@@ -56,11 +56,25 @@ class SelectAppModeVC: TemplateVC{
         btnGuest.layer.borderWidth = 1
         btnGuest.layer.cornerRadius = 10
         btnGuest.translatesAutoresizingMaskIntoConstraints = false
-        btnGuest.setTitle("Guest Mode", for: .normal)
-        btnGuest.titleLabel?.font = UIFont(name: "ArialRoundedMTBold", size: 24)
+        btnGuest.titleLabel?.numberOfLines = 0
+        btnGuest.titleLabel?.lineBreakMode = .byWordWrapping
+        btnGuest.titleLabel?.textAlignment = .center  // Center the text
+        let firstLineAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont(name: "ArialRoundedMTBold", size: 24)!,
+        ]
+        let firstLineText = NSAttributedString(string: "Guest Mode\n", attributes: firstLineAttributes)
+        let secondLineAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 14),
+        ]
+        let secondLineText = NSAttributedString(string: "(populated with sample data)", attributes: secondLineAttributes)
+        let combinedText = NSMutableAttributedString()
+        combinedText.append(firstLineText)
+        combinedText.append(secondLineText)
+        btnGuest.setAttributedTitle(combinedText, for: .normal)
         btnGuest.addTarget(self, action: #selector(touchDown), for: .touchDown)
         btnGuest.addTarget(self, action: #selector(touchUpInsideGuest), for: .touchUpInside)
-        
+
+       
         btnProduction.accessibilityIdentifier="btnProduction"
         btnProduction.backgroundColor = .blue
         btnProduction.setTitleColor(UIColor(named: "lineColor"), for: .normal)
@@ -94,6 +108,7 @@ class SelectAppModeVC: TemplateVC{
                 btnGuest.topAnchor.constraint(equalTo: lblSelectAppModeVcTitle.bottomAnchor, constant: heightFromPct(percent: 3)),
                 btnGuest.leadingAnchor.constraint(equalTo: vwSelectAppModeBackground.leadingAnchor, constant: widthFromPct(percent: 3)),
                 btnGuest.trailingAnchor.constraint(equalTo: vwSelectAppModeBackground.trailingAnchor, constant: widthFromPct(percent: -3)),
+//                btnGuest.heightAnchor.constraint(equalToConstant: 70),
                 
                 btnProduction.topAnchor.constraint(equalTo: btnGuest.bottomAnchor, constant: heightFromPct(percent: 3)),
                 btnProduction.leadingAnchor.constraint(equalTo: vwSelectAppModeBackground.leadingAnchor, constant: widthFromPct(percent: 3)),
