@@ -11,11 +11,11 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
 //    weak var delegate_to_userVc: MainTabBarControllerDelegate?
     var lineSelectedTab = UIView()
-    var userStore:UserStore!
+//    var userStore:UserStore!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        userStore = UserStore.shared
+//        userStore = UserStore.shared
         print("- in TabController -")
         self.setupTabs()
         self.tabBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
@@ -23,6 +23,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         self.tabBar.unselectedItemTintColor = UIColor(named: "ColorTabBarUnselected")
         self.tabBar.selectionIndicatorImage = UIImage().createSelectionIndicator(color: UIColor(named: "ColorTabBarSelected")!, size: CGSize(width: tabBar.frame.width/CGFloat(tabBar.items!.count), height:  tabBar.frame.height), lineWidth: 4.0)
         self.delegate = self
+        
+        navigationItem.hidesBackButton = true
     }
     
 
@@ -63,7 +65,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             // Trigger action for UserVC selection
             user_vc.vwLocationDayWeather.setLocationSwitchBasedOnUserPermissions()
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
-            print("MainTabBar - isOnline: \(userStore.isOnline)")
+//            print("MainTabBar - isOnline: \(userStore.isOnline)")
             
 
             if user_vc.view.subviews.count > 0 {
@@ -75,25 +77,25 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 
         if let manage_data_vc = nav_vc.children[0] as? ManageDataVC {// <--- altered for TEST DAta
 
-            if userStore.isOnline || userStore.isGuestMode {
+            if UserStore.shared.isOnline || UserStore.shared.isGuestMode {
                 manage_data_vc.setupManageDataVcOnline()
-                let records = userStore.arryDataSourceObjects?[0].recordCount ?? "0"
-                let earliestRecordDate = userStore.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
+                let records = UserStore.shared.arryDataSourceObjects?[0].recordCount ?? "0"
+                let earliestRecordDate = UserStore.shared.arryDataSourceObjects?[0].earliestRecordDate ?? "no data"
     //            manage_data_vc.btnRecordCountFilled.setTitle(records, for: .normal)
                 manage_data_vc.vwManageDataVcHeader.btnRecordCountFilled.setTitle(records, for: .normal)
     //            manage_data_vc.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
                 manage_data_vc.vwManageDataVcHeader.btnEarliestDateFilled.setTitle(earliestRecordDate, for: .normal)
             }
-            else if !userStore.isOnline{
+            else if !UserStore.shared.isOnline{
                 manage_data_vc.setupManageDataVcOffline()
             }
         }
         if let dash_vc = nav_vc.children[0] as? DashboardVC {
-            if userStore.arryDashboardTableObjects.count > 0{
+            if UserStore.shared.arryDashboardTableObjects.count > 0{
                 print("in MainTabBarController dash_vc --------")
                 dash_vc.setupUserHasDashboard()
-                let currentDashboardObjPos = userStore.currentDashboardObjPos ?? 0
-                if let unwp_dashTitle = self.userStore.arryDashboardTableObjects[currentDashboardObjPos].dependentVarName {
+                let currentDashboardObjPos = UserStore.shared.currentDashboardObjPos ?? 0
+                if let unwp_dashTitle = UserStore.shared.arryDashboardTableObjects[currentDashboardObjPos].dependentVarName {
                     let btnTitle = " " + unwp_dashTitle + " "
                     dash_vc.vwDashboardHeader.btnDashboardNamePicker.setTitle(btnTitle, for: .normal)
                 }

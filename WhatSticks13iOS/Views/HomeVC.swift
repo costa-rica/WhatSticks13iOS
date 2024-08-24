@@ -33,28 +33,8 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
         
         self.setup_TopSafeBar()
         setupHomeVcHeader()
-        //        self.showSpinner()
-        //        UserStore.shared.connectDevice {
-        //            print("- finied connecting device")
-        //            OperationQueue.main.addOperation {
-        //                self.removeSpinner()
-        //            }
-        //        }
-        
-        //        templateAlertMultipleChoice(alertTitle: "Select environment:", alertMessage: "", choiceOne: "Production", choiceTwo: "Development") { stringResponse in
-        //            switch stringResponse{
-        //            case "Development":
-        //                UserStore.shared.isInDevMode = true
-        //                self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
-        //                self.setupScrollView()
-        //                self.setupContentView()
-        //                self.setup_vwStatusTemporary()
-        //                self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations", completion: nil)
-        //                LocationFetcher.shared.updateInterval = 1
-        //            default:
-        //                print("Lets keep it simple")
-        //            }
-        //        }
+
+
     }
     override func viewIsAppearing(_ animated: Bool) {
         print("- HomeVc viewIsAppearing")

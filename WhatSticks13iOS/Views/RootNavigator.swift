@@ -21,7 +21,6 @@ class RootNavigator: UINavigationController {
         print("setupRootViewController, hasShownLaunchVideo: \(hasShownLaunchVideo)")
 
         if hasShownLaunchVideo {
-//            showHomeVC()
             showMainTabBar()
         } else {
             print("- about to present LaunchVideoVC()")
@@ -30,12 +29,6 @@ class RootNavigator: UINavigationController {
         }
     }
 
-    private func showHomeVC() {
-        print("in showHomeVC")
-        let homeVC = HomeVC()
-        setViewControllers([homeVC], animated: false)
-        UserDefaults.standard.set(true, forKey: "hasShownLaunchVideo")
-    }
     
     func showMainTabBar(){
         print("- in showMainTabBar()")

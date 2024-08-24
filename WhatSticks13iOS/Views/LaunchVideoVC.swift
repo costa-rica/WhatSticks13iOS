@@ -33,17 +33,11 @@ class LaunchVideoVC: UIViewController {
         self.view.layer.addSublayer(playerLayer)
         player.play()
 
-//        // Automatically transition to LoginVC after 20 seconds
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 18) { [weak self] in
-//            self?.showLoginVC()
-//        }
         // Use a DispatchWorkItem for the delayed transition
         let task = DispatchWorkItem { [weak self] in
-//            self?.showHomeVC()
             self?.showMainTabBar()
         }
         self.delayedTransitionTask = task
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 18, execute: task)
     }
 
@@ -61,20 +55,12 @@ class LaunchVideoVC: UIViewController {
 
     @objc private func skipTapped() {
         delayedTransitionTask?.cancel()
-//        showHomeVC()
         showMainTabBar()
     }
 
-    // Inside LaunchVideoVC
-    private func showHomeVC() {
-//        let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "HomeVC") as! HomeVC
-        let homeVC = HomeVC()
-        self.navigationController?.pushViewController(homeVC, animated: true)
-    }
     func showMainTabBar(){
         print("- in showMainTabBar()")
         let mainTabBar = MainTabBarController()
-//        setViewControllers([mainTabBar], animated: true)
         self.navigationController?.pushViewController(mainTabBar, animated: true)
         UserDefaults.standard.set(true, forKey: "hasShownLaunchVideo")
     }
