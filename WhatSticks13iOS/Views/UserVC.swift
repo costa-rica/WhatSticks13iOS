@@ -88,7 +88,7 @@ class UserVC: TemplateVC, UserVcLocationDayWeatherDelegate, UserVcOfflineDelegat
             vwOffline.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             // Bottom Anchor is selected in manageUserVcOptionalViews() method
         ]
-        
+        self.setupNonNormalMode()
     }
     
     func setupScrollView() {

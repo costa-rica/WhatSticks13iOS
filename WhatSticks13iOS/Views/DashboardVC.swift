@@ -20,6 +20,7 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
         userStore = UserStore.shared
         vwDashboardHeader.delegate = self
         setup_TopSafeBar()
+//        setupNonNormalMode()
     }
     
     func setupUserHasNODashboard(){

@@ -11,8 +11,9 @@ class TemplateVC: UIViewController {
     
     let vwTopSafeBar = UIView()
     let vwTopBar = UIView()
-    let lblScreenName = UILabel()
-//    let vwFooter = UIView()
+//    let lblScreenName = UILabel()
+    var lblAppMode = UILabel()
+    var bottomConstraintVwTopSafeBar: NSLayoutConstraint!
     var bodySidePaddingPercentage = Float(5.0)
     var bodyTopPaddingPercentage = Float(20.0)
     var smallPaddingTop = heightFromPct(percent: 2)
@@ -30,20 +31,48 @@ class TemplateVC: UIViewController {
 
     
     func setup_TopSafeBar(){
-        if UserStore.shared.isInDevMode {
-            vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
-        } else {
-            vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
-        }
+        vwTopSafeBar.backgroundColor = UIColor(named: "ColorTableTabModalBack")
         view.addSubview(vwTopSafeBar)
         vwTopSafeBar.translatesAutoresizingMaskIntoConstraints = false
         vwTopSafeBar.accessibilityIdentifier = "vwTopSafeBar"
+        bottomConstraintVwTopSafeBar = vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075)
         NSLayoutConstraint.activate([
             vwTopSafeBar.topAnchor.constraint(equalTo: view.topAnchor),
             vwTopSafeBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             vwTopSafeBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075),
+            bottomConstraintVwTopSafeBar
         ])
+
+    }
+    func setupNonNormalMode(){
+        if UserStore.shared.isInDevMode {
+            lblAppMode.text = "Development"
+            vwTopSafeBar.backgroundColor = .orange
+            
+            NSLayoutConstraint.deactivate([bottomConstraintVwTopSafeBar])
+            bottomConstraintVwTopSafeBar = vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1)
+        }
+        else if UserStore.shared.isGuestMode {
+            lblAppMode.text = "Guest"
+            vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+            NSLayoutConstraint.deactivate([bottomConstraintVwTopSafeBar])
+            bottomConstraintVwTopSafeBar = vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1)
+        }
+        else {
+            NSLayoutConstraint.deactivate([bottomConstraintVwTopSafeBar])
+            bottomConstraintVwTopSafeBar = vwTopSafeBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.075)
+        }
+        
+        lblAppMode.accessibilityIdentifier="lblAppMode"
+        lblAppMode.font = UIFont(name: "ArialRoundedMTBold", size: 24)
+        lblAppMode.translatesAutoresizingMaskIntoConstraints=false
+        vwTopSafeBar.addSubview(lblAppMode)
+        NSLayoutConstraint.activate([
+            lblAppMode.bottomAnchor.constraint(equalTo: vwTopSafeBar.bottomAnchor,constant: heightFromPct(percent: -0.1)),
+            lblAppMode.centerXAnchor.constraint(equalTo: vwTopSafeBar.centerXAnchor),
+            bottomConstraintVwTopSafeBar
+        ])
+        
     }
 
 

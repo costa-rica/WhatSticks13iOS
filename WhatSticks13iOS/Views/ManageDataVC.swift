@@ -48,12 +48,10 @@ class ManageDataVC: TemplateVC {
     
     override func viewDidLoad() {
         userStore = UserStore.shared
-//        appleHealthDataFetcher = AppleHealthDataFetcher.shared
-//        healthDataStore = HealthDataStore.shared
         AppleHealthDataFetcher.shared.authorizeHealthKit()
-//        appleHealthDataFetcher.authorizeHealthKit()
         setup_TopSafeBar()
         view.backgroundColor = UIColor(named: "ColorAppBackground")
+        setupNonNormalMode()
     }
     func setupManageDataVcOffline(){
         datePicker.removeFromSuperview()

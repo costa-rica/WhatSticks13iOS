@@ -47,25 +47,6 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             self.present(selectAppModeVc, animated: true, completion: nil)
             self.didPresentAppModeOption = true
             
-            //            templateAlertMultipleChoice(alertTitle: "Select environment:", alertMessage: "", choiceOne: "Production", choiceTwo: "Development") { stringResponse in
-            //                switch stringResponse{
-            //                case "Development":
-            //
-            //                    UserStore.shared.isInDevMode = true
-            //                    self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
-            //                    self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations", completion: nil)
-            //                    LocationFetcher.shared.updateInterval = 1
-            //                default:
-            //                    print("Lets keep it simple")
-            //                            UserStore.shared.connectDevice {
-            //                                print("- finied connecting device")
-            //                                OperationQueue.main.addOperation {
-            //                                    self.removeSpinner()
-            //                                }
-            //                            }
-            //                }
-            //                self.didPresentAppModeOption = true
-            //            }
         }
     }
     
@@ -88,6 +69,7 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
         }, completion: nil)
         self.showSpinner()
         UserStore.shared.isGuestMode = true
+        self.setupNonNormalMode()
         UserStore.shared.connectDevice {
             self.removeSpinner()
             self.selectAppModeVc.dismiss(animated: true)
@@ -99,9 +81,11 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             sender.transform = .identity
         }, completion: nil)
         self.showSpinner()
+        self.setupNonNormalMode()
         UserStore.shared.connectDevice {
             self.selectAppModeVc.dismiss(animated: true)
             self.removeSpinner()
+            
         }
     }
     
@@ -113,7 +97,8 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
         self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations") {
             UserStore.shared.connectDevice {
                 UserStore.shared.isInDevMode = true
-                self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+//                self.vwTopSafeBar.backgroundColor = UIColor(named:"ColorDevMode")
+                self.setupNonNormalMode()
                 self.selectAppModeVc.dismiss(animated: true)
                 LocationFetcher.shared.updateInterval = 1
                 self.removeSpinner()

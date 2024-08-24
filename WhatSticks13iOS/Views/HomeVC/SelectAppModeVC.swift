@@ -26,7 +26,7 @@ class SelectAppModeVC: TemplateVC{
         super.viewDidLoad()
         self.view.frame = UIScreen.main.bounds.inset(by: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
         setupView()
-        addTapGestureRecognizer()
+//        addTapGestureRecognizer()
     }
 
     private func setupView(){
@@ -139,15 +139,15 @@ class SelectAppModeVC: TemplateVC{
         }
     }
     
-    private func addTapGestureRecognizer() {
-        // Create a tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        // Add the gesture recognizer to the view
-        view.addGestureRecognizer(tapGesture)
-    }
-    @objc private func handleTap(_ sender: UITapGestureRecognizer) {
-            dismiss(animated: true, completion: nil)
-    }
+//    private func addTapGestureRecognizer() {
+//        // Create a tap gesture recognizer
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+//        // Add the gesture recognizer to the view
+//        view.addGestureRecognizer(tapGesture)
+//    }
+//    @objc private func handleTap(_ sender: UITapGestureRecognizer) {
+//            dismiss(animated: true, completion: nil)
+//    }
     
     @objc private func touchUpInsideGuest() {
         delegate?.touchUpInsideGuest(btnGuest)
@@ -165,4 +165,5 @@ protocol SelectAppModeVcDelegate: AnyObject {
     func touchUpInsideGuest(_ sender: UIButton)
     func touchUpInsideProduction(_ sender: UIButton)
     func touchUpInsideDevelopment(_ sender: UIButton)
+
 }
