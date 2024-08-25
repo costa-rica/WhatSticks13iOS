@@ -52,6 +52,7 @@ class ManageDataVC: TemplateVC {
         setup_TopSafeBar()
         view.backgroundColor = UIColor(named: "ColorAppBackground")
         setupNonNormalMode()
+        navigationController?.setNavigationBarHidden(true, animated: false)// This seems to really hide the UINavigationBar
     }
     func setupManageDataVcOffline(){
         datePicker.removeFromSuperview()

@@ -13,8 +13,9 @@ class RootNavigator: UINavigationController {
         super.viewDidLoad()
         print("-in RootNavigator viewDidLoad ")
         setupRootViewController()
-        
+        self.navigationBar.isHidden = true// sort of hides the naviagationBar       
     }
+    
     
     private func setupRootViewController() {
         let hasShownLaunchVideo = UserDefaults.standard.bool(forKey: "hasShownLaunchVideo")

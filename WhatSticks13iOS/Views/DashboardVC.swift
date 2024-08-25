@@ -20,7 +20,8 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
         userStore = UserStore.shared
         vwDashboardHeader.delegate = self
         setup_TopSafeBar()
-//        setupNonNormalMode()
+
+        navigationController?.setNavigationBarHidden(true, animated: false)// This seems to really hide the UINavigationBar
     }
     
     func setupUserHasNODashboard(){

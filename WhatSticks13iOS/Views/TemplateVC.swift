@@ -27,6 +27,7 @@ class TemplateVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "ColorAppBackground")
+        navigationController?.setNavigationBarHidden(true, animated: false)// This seems to really hide the UINavigationBar
     }
 
     

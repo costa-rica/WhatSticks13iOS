@@ -21,7 +21,6 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         self.tabBar.selectionIndicatorImage = UIImage().createSelectionIndicator(color: UIColor(named: "ColorTabBarSelected")!, size: CGSize(width: tabBar.frame.width/CGFloat(tabBar.items!.count), height:  tabBar.frame.height), lineWidth: 4.0)
         self.delegate = self
         
-        navigationItem.hidesBackButton = true
     }
     
 
@@ -37,6 +36,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         user.tabBarItem.tag = 3
         
         self.setViewControllers([home,dash, manage_data, user], animated: true)
+        
     }
     
     private func createNav(with title: String, and image: UIImage?, vc: UIViewController) -> UINavigationController{
@@ -52,6 +52,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             print("- Item is not a UINavigationController")
             return
         }
+
         if let user_vc = nav_vc.children[0] as? UserVC {
             user_vc.vwLocationDayWeather.setLocationSwitchBasedOnUserPermissions()
             user_vc.vwLocationDayWeather.setLocationSwitchLabelText()
