@@ -76,6 +76,7 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "arryUserLocation")
         UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
         UserDefaults.standard.removeObject(forKey: "arryDataSourceObjects")
+        UserDefaults.standard.removeObject(forKey: "hasShownLaunchVideo")
     }
     
     func assignArryDataSourceObjects(jsonResponse:[String:Any]){

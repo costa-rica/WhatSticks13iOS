@@ -23,7 +23,7 @@ class LaunchVideoVC: UIViewController {
     }
 
     private func setupVideoPlayer() {
-        guard let path = Bundle.main.path(forResource: "LaunchVideo_v02", ofType:"mp4") else {
+        guard let path = Bundle.main.path(forResource: "LaunchVideo_v06", ofType:"mp4") else {
             debugPrint("video.mp4 not found")
             return
         }

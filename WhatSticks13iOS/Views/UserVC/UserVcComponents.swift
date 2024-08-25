@@ -228,7 +228,8 @@ class UserStatusDevelopmentView: UIView {
             sender.transform = .identity
         }, completion: nil)
 
-        UserDefaults.standard.set(false, forKey: "hasShownLaunchVideo")
+//        UserDefaults.standard.set(false, forKey: "hasShownLaunchVideo")
+        UserDefaults.standard.removeObject(forKey: "hasShownLaunchVideo")
         print("Reset hasShownLaunchVideo ")
     }
     
