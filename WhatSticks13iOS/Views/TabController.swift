@@ -52,6 +52,10 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             print("- Item is not a UINavigationController")
             return
         }
+        if let home_vc = nav_vc.children[0] as? HomeVC {
+            
+        }
+        
 
         if let user_vc = nav_vc.children[0] as? UserVC {
             user_vc.vwLocationDayWeather.setLocationSwitchBasedOnUserPermissions()

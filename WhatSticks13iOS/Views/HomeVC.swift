@@ -39,7 +39,8 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
     override func viewIsAppearing(_ animated: Bool) {
         print("- HomeVc viewIsAppearing")
         if !didPresentAppModeOption{
-            
+            // deactivate Tab Bar items while present
+            tabBarController?.tabBar.isUserInteractionEnabled = false
             //            let selectAppModeVc = SelectAppModeVC()
             selectAppModeVc.delegate = self
             selectAppModeVc.modalPresentationStyle = .overCurrentContext
@@ -68,6 +69,7 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             sender.transform = .identity
         }, completion: nil)
         self.showSpinner()
+        tabBarController?.tabBar.isUserInteractionEnabled = true// re-activate the Tab Bar items
         UserStore.shared.isGuestMode = true
         self.setupNonNormalMode()
         UserStore.shared.connectDevice {
@@ -81,6 +83,7 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             sender.transform = .identity
         }, completion: nil)
         self.showSpinner()
+        tabBarController?.tabBar.isUserInteractionEnabled = true// re-activate the Tab Bar items
         self.setupNonNormalMode()
         UserStore.shared.connectDevice {
             self.selectAppModeVc.dismiss(animated: true)
@@ -94,6 +97,7 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
             sender.transform = .identity
         }, completion: nil)
         self.showSpinner()
+        tabBarController?.tabBar.isUserInteractionEnabled = true// re-activate the Tab Bar items
         self.templateAlert(alertTitle: "⚠️", alertMessage: "Remember: development setting has no restrictions on collecting/sending locations") {
             UserStore.shared.connectDevice {
                 UserStore.shared.isInDevMode = true
