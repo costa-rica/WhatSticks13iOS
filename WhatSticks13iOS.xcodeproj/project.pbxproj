@@ -41,6 +41,7 @@
 		01D6FEEA2C78907100087708 /* LaunchVideoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6FEE92C78907100087708 /* LaunchVideoVC.swift */; };
 		01D6FF712C79B8F200087708 /* RootNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6FF702C79B8F200087708 /* RootNavigator.swift */; };
 		01D6FF7D2C7B63D800087708 /* LaunchVideo_v06.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 01D6FF7C2C7B63D700087708 /* LaunchVideo_v06.mp4 */; };
+		01D6FF802C7CAB8500087708 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 01D6FF7F2C7CAB8500087708 /* README.md */; };
 		01FF77232C3A99C200D3E93E /* UserVcComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77222C3A99C100D3E93E /* UserVcComponents.swift */; };
 		01FF77CA2C43F4DB00D3E93E /* ManageDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */; };
 		01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */; };
@@ -85,6 +86,7 @@
 		01D6FEE92C78907100087708 /* LaunchVideoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchVideoVC.swift; sourceTree = "<group>"; };
 		01D6FF702C79B8F200087708 /* RootNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigator.swift; sourceTree = "<group>"; };
 		01D6FF7C2C7B63D700087708 /* LaunchVideo_v06.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LaunchVideo_v06.mp4; sourceTree = "<group>"; };
+		01D6FF7F2C7CAB8500087708 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		01FF77222C3A99C100D3E93E /* UserVcComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcComponents.swift; sourceTree = "<group>"; };
 		01FF77242C3AA42200D3E93E /* WhatSticks13iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatSticks13iOS.entitlements; sourceTree = "<group>"; };
 		01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageDataVC.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 		01312BA82C2EC1C20089F9C0 = {
 			isa = PBXGroup;
 			children = (
+				01D6FF7F2C7CAB8500087708 /* README.md */,
 				01312BDF2C3031860089F9C0 /* Config.swift */,
 				01312BB32C2EC1C20089F9C0 /* WhatSticks13iOS */,
 				01312BB22C2EC1C20089F9C0 /* Products */,
@@ -321,6 +324,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01D6FF802C7CAB8500087708 /* README.md in Resources */,
 				01312BC12C2EC1C40089F9C0 /* LaunchScreen.storyboard in Resources */,
 				01312BBE2C2EC1C40089F9C0 /* Assets.xcassets in Resources */,
 				01BF10482C763749004006CC /* data_table_objects_array_guest.json in Resources */,
