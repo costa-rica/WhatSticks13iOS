@@ -15,7 +15,7 @@ What Sticks 13 iOS uses data collected by Apple Health to provide users with ins
 ## Details
 This application connects with the [WhatSticks13Api](https://github.com/costa-rica/WhatSticks13Api).
 
-The testing environment is on the web now [dev13.what-sticks.com](dev13.what-sticks.com).
+The testing environment is on the web now [dev13.what-sticks.com](https://dev13.what-sticks.com).
 
 ## Issues:
 1. 2024-08-26: we do not delete UserLocations from the device. The API removes dates already collected so it is not an a calculation issue, it is simply a carrying more data than we need. After we know location collection is being done properly we can start looking into deleting the UserDefault for arryUserLocation once the data is sent. Also the LocationFetcher.arryUserLocation property will need to deleted to a clean slate.
