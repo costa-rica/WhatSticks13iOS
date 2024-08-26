@@ -130,6 +130,20 @@ class DashboardVC: TemplateVC, DashboardHeaderDelegate, SelectDashboardVCDelegat
         self.present(selectDashboardVC, animated: true, completion: nil)
     }
     
+    func presentHeaderTitleInfo(){
+        let title = UserStore.shared.currentDashboardObject?.dependentVarName
+        let description = UserStore.shared.currentDashboardObject?.definition
+//        let vwInfo = InformationView(frame: CGRect.zero, title: title, description: description)
+        let infoVC = InformationVC()
+        infoVC.vwInformation.lblTitle.text = title
+        infoVC.vwInformation.lblDescription.text = description
+//        let infoVC = InfoVC(dashboardTableObject: UserStore.shared.currentDashboardObject)
+        infoVC.modalPresentationStyle = .overCurrentContext
+        infoVC.modalTransitionStyle = .crossDissolve
+        self.present(infoVC, animated: true, completion: nil)
+//        delegate?.presentNewView(infoVC)
+    }
+    
 
 }
 

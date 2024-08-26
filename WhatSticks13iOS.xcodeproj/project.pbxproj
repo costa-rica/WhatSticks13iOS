@@ -187,12 +187,14 @@
 		015328662C7221F300B37485 /* UserVC */ = {
 			isa = PBXGroup;
 			children = (
+				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
 				01FF77222C3A99C100D3E93E /* UserVcComponents.swift */,
 				015328672C72222000B37485 /* UserVcDelete.swift */,
 				0153286B2C7222EC00B37485 /* UserVcUserStatusView.swift */,
 				0153286F2C72234900B37485 /* UserVcLocationDayWeather.swift */,
 				0153286D2C72232200B37485 /* UserVcOffline.swift */,
 				015328692C72226A00B37485 /* UserVcRegisterButton.swift */,
+				01312BE42C303A230089F9C0 /* RegisterVC.swift */,
 			);
 			path = UserVC;
 			sourceTree = "<group>";
@@ -200,6 +202,7 @@
 		0153287C2C747C6C00B37485 /* ManageDataVC */ = {
 			isa = PBXGroup;
 			children = (
+				01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */,
 				0153287D2C747CCF00B37485 /* ManageDataVcHeader.swift */,
 			);
 			path = ManageDataVC;
@@ -208,30 +211,35 @@
 		0153287F2C74B2C300B37485 /* HomeVC */ = {
 			isa = PBXGroup;
 			children = (
+				01312BB82C2EC1C20089F9C0 /* HomeVC.swift */,
 				015328802C74B2E200B37485 /* HomeVcHeaderView.swift */,
 				01BF10432C762527004006CC /* SelectAppModeVC.swift */,
+				01D6FEE92C78907100087708 /* LaunchVideoVC.swift */,
 			);
 			path = HomeVC;
+			sourceTree = "<group>";
+		};
+		01D6FF7E2C7BBAEA00087708 /* DashboardVC */ = {
+			isa = PBXGroup;
+			children = (
+				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
+				011673922C6C9248008BF349 /* DashboardTableCell.swift */,
+				011673902C6C821A008BF349 /* DashboardVcComponents.swift */,
+			);
+			path = DashboardVC;
 			sourceTree = "<group>";
 		};
 		01FF777A2C3C2A0B00D3E93E /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				01D6FF702C79B8F200087708 /* RootNavigator.swift */,
-				01312BCB2C2EC49B0089F9C0 /* TemplateVC.swift */,
 				01312BC92C2EC2370089F9C0 /* TabController.swift */,
-				01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */,
-				0153287C2C747C6C00B37485 /* ManageDataVC */,
-				01312BB82C2EC1C20089F9C0 /* HomeVC.swift */,
-				0153287F2C74B2C300B37485 /* HomeVC */,
-				01312BD12C2EC4DF0089F9C0 /* DashboardVC.swift */,
-				011673922C6C9248008BF349 /* DashboardTableCell.swift */,
-				011673902C6C821A008BF349 /* DashboardVcComponents.swift */,
-				01D6FEE92C78907100087708 /* LaunchVideoVC.swift */,
-				01312BCD2C2EC4B90089F9C0 /* UserVC.swift */,
-				015328662C7221F300B37485 /* UserVC */,
-				01312BE42C303A230089F9C0 /* RegisterVC.swift */,
+				01312BCB2C2EC49B0089F9C0 /* TemplateVC.swift */,
 				0153287A2C7474DA00B37485 /* InformationView.swift */,
+				0153287C2C747C6C00B37485 /* ManageDataVC */,
+				0153287F2C74B2C300B37485 /* HomeVC */,
+				01D6FF7E2C7BBAEA00087708 /* DashboardVC */,
+				015328662C7221F300B37485 /* UserVC */,
 			);
 			path = Views;
 			sourceTree = "<group>";

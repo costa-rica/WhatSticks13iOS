@@ -9,8 +9,8 @@ import UIKit
 
 class ManageDataVC: TemplateVC {
     var userStore: UserStore!
-    var appleHealthDataFetcher:AppleHealthDataFetcher!
-    var healthDataStore: HealthDataStore!
+//    var appleHealthDataFetcher:AppleHealthDataFetcher!
+//    var healthDataStore: HealthDataStore!
     var vwManageDataVcHeader = ManageDataVcHeader()
     var vwManageDataVcOffline = InformationView()
     let datePicker = UIDatePicker()
@@ -175,7 +175,7 @@ extension ManageDataVC{
             }
 //        }
         self.showSpinner()
-        self.appleHealthDataFetcher.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .stepCount, startDate: self.dtUserHistory) { fetcherResult in
+        AppleHealthDataFetcher.shared.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .stepCount, startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{
             case let .success(arryStepsDict):
                 print("succesfully collected - arryStepsDict - from healthFetcher class")
@@ -191,7 +191,7 @@ extension ManageDataVC{
         }
     }
     func actionGetSleepData(){
-        self.appleHealthDataFetcher.fetchSleepDataAndOtherCategoryType(categoryTypeIdentifier:.sleepAnalysis, startDate: self.dtUserHistory) { fetcherResult in
+        AppleHealthDataFetcher.shared.fetchSleepDataAndOtherCategoryType(categoryTypeIdentifier:.sleepAnalysis, startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{
             case let .success(arrySleepDict):
                 print("succesfully collected - arrySleepDict - from healthFetcher class")
@@ -210,7 +210,7 @@ extension ManageDataVC{
         }
     }
     func actionGetHeartRateData(){
-        self.appleHealthDataFetcher.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .heartRate, startDate: self.dtUserHistory) { fetcherResult in
+        AppleHealthDataFetcher.shared.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .heartRate, startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{
             case let .success(arryHeartRateDict):
                 print("succesfully collected - arryHeartRateDict - from healthFetcher class")
@@ -226,7 +226,7 @@ extension ManageDataVC{
         }
     }
     func actionGetExerciseTimeData(){
-        self.appleHealthDataFetcher.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .appleExerciseTime, startDate: self.dtUserHistory) { fetcherResult in
+        AppleHealthDataFetcher.shared.fetchStepsAndOtherQuantityType(quantityTypeIdentifier: .appleExerciseTime, startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{
             case let .success(arryExerciseTimeDict):
                 print("succesfully collected - arryExerciseTimeDict - from healthFetcher class")
@@ -244,7 +244,7 @@ extension ManageDataVC{
         }
     }
     func actionGetWorkoutData(){
-        self.appleHealthDataFetcher.fetchWorkoutData( startDate: self.dtUserHistory) { fetcherResult in
+        AppleHealthDataFetcher.shared.fetchWorkoutData( startDate: self.dtUserHistory) { fetcherResult in
             switch fetcherResult{
             case let .success(arryWorkoutDict):
                 print("succesfully collected - arryWorkoutDict - from healthFetcher class")
@@ -280,7 +280,7 @@ extension ManageDataVC{
                 self.spinnerScreenLblMessage(message: "Sending Apple Health \(formatted_qty_cat_and_workouts_count) records to \nWhat Sticks API")
             }
         }
-            self.healthDataStore.callReceiveAppleWorkoutsData(userId: user_id,dateStringTimeStamp:dateStringTimeStamp, arryAppleWorkouts: arryWorkoutDict) { resultResponse in
+        HealthDataStore.shared.callReceiveAppleWorkoutsData(userId: user_id,dateStringTimeStamp:dateStringTimeStamp, arryAppleWorkouts: arryWorkoutDict) { resultResponse in
                 switch resultResponse{
                 case .success(_):
                     self.sendAppleHealthData(userMessage:"updated apple workouts", dateStringTimeStamp:dateStringTimeStamp)
@@ -301,7 +301,7 @@ extension ManageDataVC{
             let arryQtyCatData = arrySleepDict + arryStepsDict + arryHeartRateDict + arryExerciseTimeDict
 
             /* Send apple works outs first */
-            self.healthDataStore.sendChunksToWSAPI(userId:user_id,dateStringTimeStamp:dateStringTimeStamp ,arryAppleHealthData: arryQtyCatData) { responseResult in
+        HealthDataStore.shared.sendChunksToWSAPI(userId:user_id,dateStringTimeStamp:dateStringTimeStamp ,arryAppleHealthData: arryQtyCatData) { responseResult in
                 self.removeSpinner()
                 switch responseResult{
                 case .success(_):

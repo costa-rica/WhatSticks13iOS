@@ -20,10 +20,7 @@ class DashboardHeader: UIView {
         setup_view()
     }
 
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//        setup_view()
-//    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -33,13 +30,40 @@ class DashboardHeader: UIView {
         btnDashboardNamePicker.backgroundColor = .systemBlue
         btnDashboardNamePicker.layer.cornerRadius = 10
         btnDashboardNamePicker.setTitle(" Dashboards ", for: .normal)
+        btnDashboardNamePicker.titleLabel?.numberOfLines = 0
+        btnDashboardNamePicker.titleLabel?.lineBreakMode = .byWordWrapping
         
         btnDashboardNamePicker.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
         btnDashboardNamePicker.addTarget(self, action: #selector(touchUpInside_btnSelectDashboard(_:)), for: .touchUpInside)
         self.addSubview(btnDashboardNamePicker)
+        
+        
+        // Info button //
+        if let unwrapped_image = UIImage(named: "information") {
+
+            let small_image = unwrapped_image.scaleImage(toSize: CGSize(width: 10, height: 10))
+            btnDashboardTitleInfo.setImage(small_image, for: .normal)
+            print("btnDashboardTitleInfo image: calendar.badge.exclamationmark")
+        } else {
+            btnDashboardTitleInfo.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
+//            print("btnDashboardTitleInfo image: calendar.badge.exclamationmark")
+        }
+//        
+        btnDashboardTitleInfo.accessibilityIdentifier="btnDashboardTitleInfo"
+        btnDashboardTitleInfo.translatesAutoresizingMaskIntoConstraints=false
+//        btnDashboardTitleInfo.setTitle("Info", for: .normal)
+        btnDashboardTitleInfo.addTarget(self, action: #selector(self.touchDown(_:)), for: .touchDown)
+        btnDashboardTitleInfo.addTarget(self, action: #selector(touchUpInside_btnDashboardTitleInfo(_:)), for: .touchUpInside)
+        self.addSubview(btnDashboardTitleInfo)
+        
+        
         NSLayoutConstraint.activate([
-            btnDashboardNamePicker.topAnchor.constraint(equalTo: self.topAnchor, constant: heightFromPct(percent: 2)),
+            btnDashboardNamePicker.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             btnDashboardNamePicker.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: widthFromPct(percent: 2)),
+            btnDashboardNamePicker.widthAnchor.constraint(lessThanOrEqualToConstant: widthFromPct(percent: 80)),
+            
+            btnDashboardTitleInfo.leadingAnchor.constraint(equalTo: btnDashboardNamePicker.trailingAnchor, constant: widthFromPct(percent: 1)),
+            btnDashboardTitleInfo.centerYAnchor.constraint(equalTo: btnDashboardNamePicker.topAnchor)
         ])
     }
     @objc private func touchDown(_ sender: UIButton) {
@@ -51,12 +75,32 @@ class DashboardHeader: UIView {
         delegate?.touchUpInside_btnSelectDashboards(sender)
     }
     
+    @objc private func touchUpInside_btnDashboardTitleInfo(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: [.curveEaseInOut], animations: {
+            sender.transform = .identity
+        }, completion: nil)
+//        let title = UserStore.shared.currentDashboardObject?.dependentVarName
+//        let description = UserStore.shared.currentDashboardObject?.definition
+//        let vwInfo = InformationView(frame: CGRect.zero, title: title, description: description)
+//        let infoVC = InformationVC()
+//        infoVC.vwInformation = vwInfo
+////        let infoVC = InfoVC(dashboardTableObject: UserStore.shared.currentDashboardObject)
+//        infoVC.modalPresentationStyle = .overCurrentContext
+//        infoVC.modalTransitionStyle = .crossDissolve
+////        self.present(infoVC, animated: true, completion: nil)
+//        delegate?.presentNewView(infoVC)
+        delegate?.presentHeaderTitleInfo()
+    }
+    
+    
 }
 
 
 protocol DashboardHeaderDelegate: AnyObject {
     func touchDown(_ sender: UIButton)
     func touchUpInside_btnSelectDashboards(_ sender: UIRefreshControl)
+    func presentNewView(_ uiViewController: UIViewController)
+    func presentHeaderTitleInfo()
 }
 
 

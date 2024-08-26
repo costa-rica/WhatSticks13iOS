@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SentrySDK.start { options in
             options.dsn = Config.sentryDSN
             options.debug = false // Enabled debug when first installing is always helpful
+            options.tracesSampleRate = 1.0
+            options.appHangTimeoutInterval = 40
+
         }
 
         return true
