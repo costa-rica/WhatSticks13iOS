@@ -13,7 +13,7 @@ class HomeVcHeaderView: UIView {
     let lblWhatSticks = UILabel()
     let lblDescription = UILabel()
     
-    let vwHomeVcLine = UIView()
+//    let vwHomeVcLine = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,10 +47,10 @@ class HomeVcHeaderView: UIView {
         self.addSubview(lblDescription)
         lblDescription.accessibilityIdentifier="lblDescription"
         
-        vwHomeVcLine.accessibilityIdentifier = "vwHomeVcLine"
-        vwHomeVcLine.translatesAutoresizingMaskIntoConstraints = false
-        vwHomeVcLine.backgroundColor = UIColor(named: "lineColor")
-        self.addSubview(vwHomeVcLine)
+//        vwHomeVcLine.accessibilityIdentifier = "vwHomeVcLine"
+//        vwHomeVcLine.translatesAutoresizingMaskIntoConstraints = false
+//        vwHomeVcLine.backgroundColor = UIColor(named: "lineColor")
+//        self.addSubview(vwHomeVcLine)
         
         NSLayoutConstraint.activate([
             imgVwLogo.heightAnchor.constraint(equalTo: imgVwLogo.widthAnchor, multiplier: 1.0),
@@ -64,11 +64,11 @@ class HomeVcHeaderView: UIView {
             lblDescription.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: widthFromPct(percent: -1)),
             lblDescription.topAnchor.constraint(equalTo: lblWhatSticks.bottomAnchor, constant: widthFromPct(percent: 3)),
             
-            vwHomeVcLine.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 3)),
-            vwHomeVcLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            vwHomeVcLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            vwHomeVcLine.heightAnchor.constraint(equalToConstant: 1),
-            vwHomeVcLine.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+//            vwHomeVcLine.topAnchor.constraint(equalTo: lblDescription.bottomAnchor, constant: heightFromPct(percent: 3)),
+//            vwHomeVcLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+//            vwHomeVcLine.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+//            vwHomeVcLine.heightAnchor.constraint(equalToConstant: 1),
+//            vwHomeVcLine.bottomAnchor.constraint(equalTo: self.bottomAnchor)
             
         ])
         

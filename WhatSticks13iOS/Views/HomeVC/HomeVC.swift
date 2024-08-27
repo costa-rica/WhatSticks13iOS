@@ -22,14 +22,14 @@ class HomeVC: TemplateVC, SelectAppModeVcDelegate {
         URLStore.shared.apiBase = .dev
 //        URLStore.shared.apiBase = .local
         
-        let userStore = UserStore.shared
-        let locationFetcher = LocationFetcher.shared
-        locationFetcher.locationManager.requestAlwaysAuthorization()
-        let parentRequestStore = RequestStore.shared
-        userStore.requestStore = parentRequestStore
+//        let userStore = UserStore.shared
+//        let locationFetcher = LocationFetcher.shared
+        LocationFetcher.shared.locationManager.requestAlwaysAuthorization()
+//        let parentRequestStore = RequestStore.shared
+//        UserStore.shared.requestStore = RequestStore.shared
         
-        let healthDataStore = HealthDataStore.shared
-        healthDataStore.requestStore = parentRequestStore
+//        let healthDataStore = HealthDataStore.shared
+//        healthDataStore.requestStore = parentRequestStore
         
         self.setup_TopSafeBar()
         setupHomeVcHeader()

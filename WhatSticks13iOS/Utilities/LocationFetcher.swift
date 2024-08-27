@@ -38,11 +38,12 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
     /* Properties */
     static let shared = LocationFetcher()
     let locationManager = CLLocationManager()
-    var arryUserLocation: [UserLocation] = [] {
+    var arryUserLocation: [UserLocation] {
         didSet {
             let encoder = JSONEncoder()
             if let encoded = try? encoder.encode(arryUserLocation) {
                 UserDefaults.standard.set(encoded, forKey: "arryUserLocation")
+                print("- appended a UserLocation to UserDefault")
             }
         }
     }
@@ -56,16 +57,33 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate {
 
     
     override init() {
+        // Initialize arryUserLocation with value from UserDefaults
+        if let encodedData = UserDefaults.standard.data(forKey: "arryUserLocation") {
+            do {
+                let decodedArray = try JSONDecoder().decode([UserLocation].self, from: encodedData)
+                arryUserLocation = decodedArray
+                print("- Load: arryUserLocation from UserDefaults ")
+            } catch {
+                print("- No arryUserLocation in UserDefaults. This should occur on first Launch, error: \(error) ***")
+                arryUserLocation = [] // Fallback if decoding fails
+            }
+        } else {
+            arryUserLocation = [] // Fallback if there's no data in UserDefaults
+        }
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.allowsBackgroundLocationUpdates = true // Enable background location updates
         locationManager.pausesLocationUpdatesAutomatically = false // Prevent automatic pausing
-        loadLocationFetcherUserDefaults()
+//        loadLocationFetcherUserDefaults()
         setUserStoreUserLocationPermissionDevice()
     }
     
-    
+    func deletedUser(){
+        arryUserLocation = []
+        UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
+        UserDefaults.standard.removeObject(forKey: "arryUserLocation")
+    }
     func loadLocationFetcherUserDefaults() {
         arryUserLocation = []
         if let encodedData = UserDefaults.standard.data(forKey: "arryUserLocation") {

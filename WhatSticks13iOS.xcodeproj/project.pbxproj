@@ -42,6 +42,7 @@
 		01D6FF712C79B8F200087708 /* RootNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6FF702C79B8F200087708 /* RootNavigator.swift */; };
 		01D6FF7D2C7B63D800087708 /* LaunchVideo_v06.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 01D6FF7C2C7B63D700087708 /* LaunchVideo_v06.mp4 */; };
 		01D6FF802C7CAB8500087708 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 01D6FF7F2C7CAB8500087708 /* README.md */; };
+		01D6FF822C7CB1A100087708 /* AreYouSureModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6FF812C7CB1A100087708 /* AreYouSureModalVC.swift */; };
 		01FF77232C3A99C200D3E93E /* UserVcComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77222C3A99C100D3E93E /* UserVcComponents.swift */; };
 		01FF77CA2C43F4DB00D3E93E /* ManageDataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */; };
 		01FF77CC2C441B1800D3E93E /* HealthDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FF77CB2C441B1800D3E93E /* HealthDataStore.swift */; };
@@ -87,6 +88,7 @@
 		01D6FF702C79B8F200087708 /* RootNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigator.swift; sourceTree = "<group>"; };
 		01D6FF7C2C7B63D700087708 /* LaunchVideo_v06.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LaunchVideo_v06.mp4; sourceTree = "<group>"; };
 		01D6FF7F2C7CAB8500087708 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		01D6FF812C7CB1A100087708 /* AreYouSureModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AreYouSureModalVC.swift; sourceTree = "<group>"; };
 		01FF77222C3A99C100D3E93E /* UserVcComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVcComponents.swift; sourceTree = "<group>"; };
 		01FF77242C3AA42200D3E93E /* WhatSticks13iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatSticks13iOS.entitlements; sourceTree = "<group>"; };
 		01FF77C92C43F4DB00D3E93E /* ManageDataVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageDataVC.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 			children = (
 				01D6FF702C79B8F200087708 /* RootNavigator.swift */,
 				01312BC92C2EC2370089F9C0 /* TabController.swift */,
+				01D6FF812C7CB1A100087708 /* AreYouSureModalVC.swift */,
 				01312BCB2C2EC49B0089F9C0 /* TemplateVC.swift */,
 				0153287A2C7474DA00B37485 /* InformationView.swift */,
 				0153287C2C747C6C00B37485 /* ManageDataVC */,
@@ -384,6 +387,7 @@
 			files = (
 				01312BB92C2EC1C20089F9C0 /* HomeVC.swift in Sources */,
 				01312BCE2C2EC4B90089F9C0 /* UserVC.swift in Sources */,
+				01D6FF822C7CB1A100087708 /* AreYouSureModalVC.swift in Sources */,
 				01FF77CE2C441F2200D3E93E /* AppleHealthDataFetcher.swift in Sources */,
 				01D6FF712C79B8F200087708 /* RootNavigator.swift in Sources */,
 				0153286C2C7222EC00B37485 /* UserVcUserStatusView.swift in Sources */,

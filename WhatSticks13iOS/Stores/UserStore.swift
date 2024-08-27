@@ -53,8 +53,8 @@ class UserStore {
     var currentDashboardObject:DashboardTableObject?
     var currentDashboardObjPos: Int!
     var existing_emails = [String]()
-    var urlStore:URLStore!
-    var requestStore:RequestStore!
+//    var urlStore:URLStore!
+//    var requestStore:RequestStore!
     var hasLaunchedOnce = false
     var isOnline = false
     var isInDevMode = false
@@ -77,6 +77,15 @@ class UserStore {
         UserDefaults.standard.removeObject(forKey: "lastUpdateTimestamp")
         UserDefaults.standard.removeObject(forKey: "arryDataSourceObjects")
         UserDefaults.standard.removeObject(forKey: "hasShownLaunchVideo")
+    }
+    func deletedUser(){
+        arryDashboardTableObjects = [DashboardTableObject]()
+        arryDataSourceObjects = [DataSourceObject]()
+        currentDashboardObject=DashboardTableObject()
+        currentDashboardObjPos=0
+        UserDefaults.standard.removeObject(forKey: "arryDashboardTableObjects")
+        UserDefaults.standard.removeObject(forKey: "arryDataSourceObjects")
+
     }
     
     func assignArryDataSourceObjects(jsonResponse:[String:Any]){
@@ -181,7 +190,7 @@ class UserStore {
                 }
                 if let unwp_token = self.user.token {
                     UserDefaults.standard.set(unwp_token, forKey: "token")
-                    self.requestStore.token = unwp_token
+                    RequestStore.shared.token = unwp_token
                 }
             }
             print("- finished decoding and assigning User")
@@ -219,7 +228,7 @@ class UserStore {
                 callRegisterGenericUser { result_string_string_dict in
                     switch result_string_string_dict{
                     case .success(_):
-                        self.requestStore.token = self.user.token
+                        RequestStore.shared.token = self.user.token
                         UserDefaults.standard.set(self.user.username!, forKey: "userName")
                         self.isOnline=true
                         completion()
@@ -240,7 +249,7 @@ class UserStore {
                         switch result_dict_string_any_or_error {
                         case  .success(_):
                             self.isOnline=true
-                            self.requestStore.token = self.user.token
+                            RequestStore.shared.token = self.user.token
                             completion()
                         case .failure(_):
                             print("--- Off line mode (Condition #2:)")
@@ -331,7 +340,7 @@ extension UserStore{
             parameters["password"] = password
         }
         //        let request = requestStore.createRequestWithBody(endPoint: .register,token:true, body: parameters)
-        let result = requestStore.createRequestWithTokenAndBodyWithAuth(endPoint: .convert_generic_account_to_custom_account,token:true, stringDict: parameters)
+        let result = RequestStore.shared.createRequestWithTokenAndBodyWithAuth(endPoint: .convert_generic_account_to_custom_account,token:true, stringDict: parameters)
         
         switch result {
         case .success(let request):
@@ -398,7 +407,7 @@ extension UserStore{
             completion(.failure(UserStoreError.userHasNoUsername))
             return
         }
-        let result = requestStore.createRequestWithTokenAndBody(endPoint: .register_generic_account, token: false, body: ["new_username": unwp_email, "ws_api_password":Config.ws_api_password])
+        let result = RequestStore.shared.createRequestWithTokenAndBody(endPoint: .register_generic_account, token: false, body: ["new_username": unwp_email, "ws_api_password":Config.ws_api_password])
         
         
         switch result {
@@ -449,7 +458,7 @@ extension UserStore{
             completion(.failure(UserStoreError.failedToLogin))
             return
         }
-        let request = requestStore.createRequestWithUsername(endPoint: .login_generic_account,body: parameters)
+        let request = RequestStore.shared.createRequestWithUsername(endPoint: .login_generic_account,body: parameters)
         
         let task = session.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -506,7 +515,7 @@ extension UserStore{
             completion(.failure(UserStoreError.failedToLogin))
             return
         }
-        let result = requestStore.createRequestWithTokenAndBodyWithAuth(endPoint: .login,token:false, stringDict: parameters)
+        let result = RequestStore.shared.createRequestWithTokenAndBodyWithAuth(endPoint: .login,token:false, stringDict: parameters)
         
         switch result {
         case .success(let request):
@@ -570,8 +579,8 @@ extension UserStore{
     
     func callDeleteUser(completion: @escaping (Result<[String: String], UserStoreError>) -> Void) {
         print("- in callDeleteAppleHealthData")
-        let request = requestStore.createRequestWithToken(endpoint: .delete_user)
-        let task = requestStore.session.dataTask(with: request) { data, response, error in
+        let request = RequestStore.shared.createRequestWithToken(endpoint: .delete_user)
+        let task = RequestStore.shared.session.dataTask(with: request) { data, response, error in
             // Handle potential error from the data task
             if let error = error {
                 DispatchQueue.main.async {
@@ -632,7 +641,7 @@ extension UserStore {
         if sendUserLocations{
             updateUserLocDict.user_location = LocationFetcher.shared.arryUserLocation
         }
-        let requestStoreResult = requestStore.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateUserLocDict)
+        let requestStoreResult = RequestStore.shared.createRequestWithTokenAndBody(endPoint: endPoint,token:true, body: updateUserLocDict)
         switch requestStoreResult {
         case let .success(request):
             let task = session.dataTask(with: request){ data, response, error in
@@ -679,8 +688,8 @@ extension UserStore {
 extension UserStore {
     func callSendDataSourceObjects(completion:@escaping (Result<Bool,Error>) -> Void){
         print("- in callSendDataSourceObjects")
-        let request = requestStore.createRequestWithToken(endpoint: .send_data_source_objects)
-        let task = requestStore.session.dataTask(with: request) { data, urlResponse, error in
+        let request = RequestStore.shared.createRequestWithToken(endpoint: .send_data_source_objects)
+        let task = RequestStore.shared.session.dataTask(with: request) { data, urlResponse, error in
             guard let unwrapped_data = data else {
                 OperationQueue.main.addOperation {
                     completion(.failure(UserStoreError.failedToReceiveServerResponse))

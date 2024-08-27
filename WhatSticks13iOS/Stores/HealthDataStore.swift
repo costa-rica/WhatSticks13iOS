@@ -25,7 +25,7 @@ enum HealthDataStoreError: Error {
 
 class HealthDataStore {
     static let shared = HealthDataStore()
-    var requestStore:RequestStore!
+//    var requestStore:RequestStore!
     
     func callReceiveAppleHealthData(dateStringTimeStamp: String, lastChunk: String, arryAppleHealthData: [AppleHealthQuantityCategory], completion: @escaping (Result<[String: String], Error>) -> Void) {
         print("- in callRecieveAppleHealthData")
@@ -34,10 +34,10 @@ class HealthDataStore {
         receiveAppleHealthObject.dateStringTimeStamp = dateStringTimeStamp
         receiveAppleHealthObject.last_chunk = lastChunk
         receiveAppleHealthObject.arryAppleHealthQuantityCategory = arryAppleHealthData
-        let result = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_qty_cat_data, token: true, body: receiveAppleHealthObject)
+        let result = RequestStore.shared.createRequestWithTokenAndBody(endPoint: .receive_apple_qty_cat_data, token: true, body: receiveAppleHealthObject)
         switch result {
         case .success(let request):
-            let task = requestStore.session.dataTask(with: request) { data, response, error in
+            let task = RequestStore.shared.session.dataTask(with: request) { data, response, error in
                 // Handle potential error from the data task
                 if let error = error {
                     print("HealthDataStore.callRecieveAppleHealthData received an error. Error: \(error)")
@@ -90,10 +90,10 @@ class HealthDataStore {
         let receiveAppleWorkoutObject = RecieveAppleWorkout()
         receiveAppleWorkoutObject.dateStringTimeStamp = dateStringTimeStamp
         receiveAppleWorkoutObject.arryAppleHealthWorkout = arryAppleWorkouts
-        let result = requestStore.createRequestWithTokenAndBody(endPoint: .receive_apple_workouts_data, token: true, body: receiveAppleWorkoutObject)
+        let result = RequestStore.shared.createRequestWithTokenAndBody(endPoint: .receive_apple_workouts_data, token: true, body: receiveAppleWorkoutObject)
         switch result {
         case .success(let request):
-            let task = requestStore.session.dataTask(with: request) { data, response, error in
+            let task = RequestStore.shared.session.dataTask(with: request) { data, response, error in
                 print("task sent")
                 // Handle potential error from the data task
                 if let error = error {
@@ -158,8 +158,8 @@ class HealthDataStore {
 extension HealthDataStore {
     func callDeleteAppleHealthData(completion: @escaping (Result<[String: String], Error>) -> Void) {
         print("- in callDeleteAppleHealthData")
-        let request = requestStore.createRequestWithToken(endpoint: .delete_apple_health_for_user)
-        let task = requestStore.session.dataTask(with: request) { data, response, error in
+        let request = RequestStore.shared.createRequestWithToken(endpoint: .delete_apple_health_for_user)
+        let task = RequestStore.shared.session.dataTask(with: request) { data, response, error in
             // Handle potential error from the data task
             if let error = error {
                 DispatchQueue.main.async {
